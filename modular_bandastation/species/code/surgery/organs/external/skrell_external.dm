@@ -54,8 +54,12 @@
 // MARK: Bodypart overlay
 
 /datum/bodypart_overlay/mutant/head_tentacle
-	layers = EXTERNAL_FRONT|EXTERNAL_ADJACENT
+	layers = list(
+		EXTERNAL_FRONT = BODY_FRONT_LAYER,
+		EXTERNAL_ADJACENT = BODY_ADJ_LAYER,
+	)
 	feature_key = FEATURE_SKRELL_HEAD_TENTACLE
+	offset_location = UPPER_BODY
 	color_source = ORGAN_COLOR_INHERIT
 
 /datum/bodypart_overlay/mutant/head_tentacle/get_global_feature_list()
@@ -80,8 +84,12 @@
 	organ_flags = parent_type::organ_flags | ORGAN_UNREMOVABLE
 
 /datum/bodypart_overlay/mutant/cloth_wrap
-	layers = EXTERNAL_FRONT|EXTERNAL_ADJACENT
+	layers = list(
+		EXTERNAL_FRONT = BODY_FRONT_LAYER,
+		EXTERNAL_ADJACENT = BODY_ADJ_LAYER,
+	)
 	feature_key = FEATURE_SKRELL_CLOTH_WRAP
+	offset_location = UPPER_BODY
 	color_source = ORGAN_COLOR_INHERIT
 	var/cloth_wrap_key = NONE
 	var/skrell_cloth_wrap_color = "#FFFFFF"
@@ -153,8 +161,12 @@
 	organ_flags = parent_type::organ_flags | ORGAN_UNREMOVABLE
 
 /datum/bodypart_overlay/mutant/tentacle_ornament
-	layers = EXTERNAL_FRONT|EXTERNAL_ADJACENT
+	layers = list(
+		EXTERNAL_FRONT = BODY_FRONT_LAYER,
+		EXTERNAL_ADJACENT = BODY_ADJ_LAYER,
+	)
 	feature_key = FEATURE_SKRELL_HEAD_TENTACLE_ORNAMENT
+	offset_location = UPPER_BODY
 	color_source = ORGAN_COLOR_INHERIT
 	var/skrell_ornament_key = NONE
 

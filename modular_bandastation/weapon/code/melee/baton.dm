@@ -6,6 +6,16 @@
 	lefthand_file = 'modular_bandastation/weapon/icons/melee/inhands/lefthand.dmi'
 	righthand_file = 'modular_bandastation/weapon/icons/melee/inhands/righthand.dmi'
 	inhand_icon_state = "cane_nt"
+	var/limbless_slowdown_modifier = 0.4 // reduces slowdown by 60%
+	var/causes_waddling = FALSE
+
+/obj/item/melee/baton/nt_cane/Initialize(mapload)
+	. = ..()
+	AddComponent(/datum/component/walking_aid, limbless_slowdown_modifier, get_walking_aid_required_trait(), causes_waddling)
+
+/// Determines if a trait is required to be used as a walking aid (ex. foldable canes)
+/obj/item/melee/baton/nt_cane/proc/get_walking_aid_required_trait()
+	return null
 
 /datum/action/item_action/toggle_nt_cane_safety
 	name = "toggle safety"
@@ -56,8 +66,8 @@
 
 /obj/item/melee/baton/nt_cane/gun/examine(mob/user)
 	. = ..()
-	. += "предохранитель: [safety_on ? "включен" : "выключен"]."
-	. += "заряд: [diamond_loaded ? "есть" : "отсутствует"]."
+	. += "Предохранитель: [safety_on ? "включён" : "выключен"]."
+	. += "Заряд: [diamond_loaded ? "есть" : "отсутствует"]."
 
 /obj/item/melee/baton/nt_cane/gun/proc/try_load_diamond(obj/item/item, mob/user)
 	if(diamond_loaded)
@@ -108,7 +118,7 @@
 	COOLDOWN_START(src, safety_toggle_cooldown, 3 SECONDS)
 
 	safety_on = !safety_on
-	user.balloon_alert(user, "предохранитель: [safety_on ? "включен" : "выключен"].")
+	user.balloon_alert(user, "предохранитель: [safety_on ? "включён" : "выключен"].")
 	add_fingerprint(user)
 	update_item_action_buttons()
 	INVOKE_ASYNC(src, PROC_REF(play_safety_sound), user)

@@ -20,8 +20,6 @@
 	high_threshold_cleared = span_info("Your vision functions passably once more.")
 	low_threshold_cleared = span_info("Your vision is cleared of any ailment.")
 
-	/// Sight flags this eye pair imparts on its user.
-	var/sight_flags = NONE
 	/// How much innate tint these eyes have
 	var/tint = 0
 	/// How much innare flash protection these eyes have, usually paired with tint
@@ -51,7 +49,7 @@
 	var/obj/effect/abstract/eyelid_effect/eyelid_left
 	var/obj/effect/abstract/eyelid_effect/eyelid_right
 
-	/// Glasses cannot be worn over these eyes. Currently unused
+	/// Glasses cannot be worn over these eyes.
 	var/no_glasses = FALSE
 	/// Native FOV that will be applied if a config is enabled
 	var/native_fov = FOV_90_DEGREES
@@ -130,8 +128,6 @@
 		affected_human.add_eye_color_right(eye_color_right, EYE_COLOR_ORGAN_PRIORITY, update_body = FALSE)
 	refresh_atom_color_overrides()
 
-	if(HAS_TRAIT(affected_human, TRAIT_NIGHT_VISION) && !lighting_cutoff)
-		lighting_cutoff = LIGHTING_CUTOFF_REAL_LOW
 	if(CONFIG_GET(flag/native_fov) && native_fov)
 		affected_human.add_fov_trait(type, native_fov)
 
@@ -140,6 +136,9 @@
 
 /obj/item/organ/eyes/on_mob_remove(mob/living/carbon/organ_owner, special, movement_flags)
 	. = ..()
+	// Don't forget about the eyelids
+	organ_owner.vis_contents -= eyelid_left
+	organ_owner.vis_contents -= eyelid_right
 
 	if(ishuman(organ_owner))
 		var/mob/living/carbon/human/human_owner = organ_owner
@@ -271,11 +270,12 @@
 #define OFFSET_Y 2
 
 /// Similar to get_status_text, but appends the text after the damage report, for additional status info
-/obj/item/organ/eyes/get_status_appendix(advanced, add_tooltips)
-	if(owner.stat == DEAD || HAS_TRAIT(owner, TRAIT_KNOCKEDOUT))
-		return
+/obj/item/organ/eyes/get_status_appendix(scanpower, add_tooltips)
+	if(owner.stat == DEAD || IS_UNCONSCIOUS(owner))
+		return // you're blind when dead or unconscious so it's redundant to show it
+
 	if(owner.is_blind())
-		if(advanced)
+		if(scanpower >= SCANPOWER_ADVANCED)
 			if(owner.is_blind_from(QUIRK_TRAIT))
 				return conditional_tooltip("Субъект полностью слеп.", "Не поддаётся лечению в обычных условиях.", add_tooltips)
 			if(owner.is_blind_from(EYE_SCARRING_TRAIT))
@@ -288,11 +288,11 @@
 				return conditional_tooltip("Субъект слеп из-за повреждения глаз.", "Восстановите хирургически, используйте медикаменты, такие как [/datum/reagent/medicine/oculine::name], или защитите глаза повязкой.", add_tooltips)
 		return "Субъект слеп."
 	if(owner.is_nearsighted())
-		if(advanced)
+		if(scanpower >= SCANPOWER_ADVANCED)
 			if(owner.is_nearsighted_from(QUIRK_TRAIT))
 				return conditional_tooltip("Субъект страдает от постоянной близорукости.", "Не поддаётся лечению в обычных условиях. Очки с диоптриями смягчат эффект.", add_tooltips)
 			if(owner.is_nearsighted_from(TRAIT_RIGHT_EYE_SCAR) || owner.is_nearsighted_from(TRAIT_LEFT_EYE_SCAR))
-				return conditional_tooltip("Субъект страдает близорукостью из-за серьёзных рубцов на глазах.", "Требуется хирургическая замена глаз, иначе состояние необратимо.", add_tooltips)
+				return conditional_tooltip("Субъект страдает близорукостью из-за серьёзных рубцов на глазе.", "Требуется хирургическая замена глаз, иначе состояние необратимо.", add_tooltips)
 			if(owner.is_nearsighted_from(GENETIC_MUTATION))
 				return conditional_tooltip("Субъект страдает генетической близорукостью.", "Используйте медикаменты, такие как [/datum/reagent/medicine/mutadone::name]. Очки с диоптриями смягчат эффект.", add_tooltips)
 			if(owner.is_nearsighted_from(EYE_DAMAGE))
@@ -302,7 +302,7 @@
 
 /obj/item/organ/eyes/show_on_condensed_scans()
 	// Always show if we have an appendix
-	return ..() || (owner.stat != DEAD && !HAS_TRAIT(owner, TRAIT_KNOCKEDOUT) && (owner.is_blind() || owner.is_nearsighted()))
+	return ..() || (owner.stat != DEAD && !IS_UNCONSCIOUS(owner) && (owner.is_blind() || owner.is_nearsighted()))
 
 /// This proc generates a list of overlays that the eye displays on the given head
 /obj/item/organ/eyes/proc/generate_body_overlay(obj/item/bodypart/head/my_head)
@@ -320,9 +320,9 @@
 	if(my_head.owner && !(my_head.owner.obscured_slots & HIDEEYES))
 		overlays += get_emissive_overlays(eye_left, eye_right, my_head)
 
-	if(my_head.head_flags & HEAD_EYECOLOR)
-		eye_right.color = eye_color_right || my_head.owner?.get_right_eye_color()
-		eye_left.color = eye_color_left || my_head.owner?.get_left_eye_color()
+	if((my_head.head_flags & HEAD_EYECOLOR) && my_head.is_husked != HUSKED_ZOMBIE)
+		eye_right.color = my_head.owner?.get_right_eye_color() || eye_color_right
+		eye_left.color = my_head.owner?.get_left_eye_color() || eye_color_left
 		var/list/eyelids = get_eyelid_overlays(eye_left, eye_right, my_head)
 		if (LAZYLEN(eyelids))
 			overlays += eyelids
@@ -475,7 +475,7 @@
 	base_color[3] *= 0.85
 	var/eyelid_color = rgb(base_color[1], base_color[2], base_color[3], (length(base_color) >= 4 ? base_color[4] : null), COLORSPACE_HSL)
 	// If we're knocked out, just color the eyes
-	if (!parent.appears_alive() || HAS_TRAIT(parent, TRAIT_KNOCKEDOUT))
+	if (IS_DEAD_OR_FAKING(parent) || IS_UNCONSCIOUS(parent))
 		eye_right.color = eyelid_color
 		eye_left.color = eyelid_color
 		return
@@ -526,7 +526,9 @@
 		. += wait_time
 		if (anim_times && !sync_blinking)
 			// Make sure that we're somewhat in sync with the other eye
-			animate(time = anim_times[i + 1] - wait_time)
+			var/offset_time = anim_times[i + 1] - wait_time
+			if(offset_time) // For some reason having time == 0 in this case breaks animate
+				animate(time = offset_time)
 		animate(alpha = 255, time = 0)
 		animate(time = BLINK_DURATION)
 		if (i != cycles)
@@ -534,6 +536,8 @@
 			animate(time = wait_time)
 
 /obj/item/organ/eyes/proc/blink(duration = BLINK_DURATION, restart_animation = TRUE)
+	if(!blink_animation)
+		return
 	var/left_delayed = prob(50)
 	// Storing blink delay so mistimed blinks of lizards don't get cut short
 	var/sync_blinking = synchronized_blinking && (owner.get_organ_loss(ORGAN_SLOT_BRAIN) < BRAIN_DAMAGE_ASYNC_BLINKING)
@@ -608,7 +612,6 @@
 	light_level = NIGHTVISION_LIGHT_LOW
 
 /obj/item/organ/eyes/night_vision/ui_action_click()
-	sight_flags = initial(sight_flags)
 	switch(light_level)
 		if (NIGHTVISION_LIGHT_OFF)
 			color_cutoffs = low_light_cutoff.Copy()
