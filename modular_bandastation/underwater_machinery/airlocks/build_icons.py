@@ -214,6 +214,8 @@ def make_states(size):
 
 
 def directions(image):
+    if image.width == 32:
+        return (image,)
     # Square DMI cells hold 64x32 / 32x64 art without any tile overhang.
     size = image.width
     horizontal = Image.new('RGBA', (size, size))
@@ -227,7 +229,7 @@ def write_dmi(size, states, path):
     metadata = ['# BEGIN DMI', 'version = 4.0', '\twidth = {}'.format(size), '\theight = {}'.format(size)]
     tiles = []
     for name, (frames, loop) in states.items():
-        metadata += ['state = "{}"'.format(name), '\tdirs = 4', '\tframes = {}'.format(len(frames))]
+        metadata += ['state = "{}"'.format(name), '\tdirs = {}'.format(1 if size == 32 else 4), '\tframes = {}'.format(len(frames))]
         if len(frames) > 1:
             metadata += ['\tdelay = ' + ','.join(['1']*len(frames))]
             if not loop:
@@ -243,6 +245,7 @@ def write_dmi(size, states, path):
     atlas.save(path, format='PNG', pnginfo=info)
     saved = Image.open(path)
     assert len(re.findall('state = ', saved.info['Description'])) == len(states)
+    assert set(re.findall(r'dirs = (\d+)', saved.info['Description'])) == {str(1 if size == 32 else 4)}
     assert saved.size == atlas.size and saved.convert('RGBA').tobytes() == atlas.tobytes()
     assert states['fill_closed'][0][0].getpixel(((size-4)//2, 16))[3] == 255
     assert states['open'][0][0].getpixel(((size-4)//2, 16))[3] == 0
@@ -254,10 +257,13 @@ def write_dmi(size, states, path):
     assert closed.getchannel('A').getextrema() == (255, 255), 'Closed door must fill every pixel, including corners'
     for frames, _ in states.values():
         for frame in frames:
-            south, north, east, west = directions(frame)
             if size > 32:
+                south, north, east, west = directions(frame)
+                assert south.tobytes() == north.tobytes() and east.tobytes() == west.tobytes()
                 assert south.crop((0, 0, size, size-32)).getbbox() is None
                 assert east.crop((32, 0, size, size)).getbbox() is None
+            else:
+                assert directions(frame) == (frame,)
     for frame in states['fill_opening'][0] + states['wheel_locking'][0]:
         assert ImageChops.subtract(frame.getchannel('A'), aperture(size)).getbbox() is None, 'Moving machinery escaped the frame aperture'
     print('PASS: {} — {} states, {} directional frames'.format(path.name, len(states), len(tiles)))

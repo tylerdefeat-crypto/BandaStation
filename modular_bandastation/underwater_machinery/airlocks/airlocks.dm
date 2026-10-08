@@ -15,6 +15,13 @@
 	var/handwheel_locked = FALSE
 	var/handwheel_turning = FALSE
 
+/obj/machinery/door/airlock/highsecurity/underwater/Initialize(mapload)
+	setDir(dir)
+	return ..()
+
+/obj/machinery/door/airlock/highsecurity/underwater/setDir(newdir)
+	return ..(multi_tile ? newdir : SOUTH)
+
 /obj/machinery/door/airlock/highsecurity/underwater/examine(mob/user)
 	. = ..()
 	. += span_notice("Вентиль [handwheel_locked ? "закручен: механические запоры закрыты" : "откручен: механические запоры открыты"]. Alt+ЛКМ — повернуть вентиль, даже без питания.")
@@ -71,7 +78,7 @@
 	multi_tile = TRUE
 
 /obj/machinery/door/airlock/highsecurity/underwater/multi_tile/setDir(newdir)
-	. = ..()
+	. = ..((newdir in list(NORTH, SOUTH)) ? SOUTH : EAST)
 	set_bounds()
 	if(filler)
 		set_filler()
@@ -85,6 +92,7 @@
 
 /obj/structure/door_assembly/multi_tile/underwater
 	base_name = "большая гермодверь"
+	dir = SOUTH
 	icon = 'modular_bandastation/underwater_machinery/airlocks/icons/airlock_large.dmi'
 	overlays_file = 'modular_bandastation/underwater_machinery/airlocks/icons/airlock_large.dmi'
 	airlock_type = /obj/machinery/door/airlock/highsecurity/underwater/multi_tile
