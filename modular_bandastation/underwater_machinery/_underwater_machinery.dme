@@ -1,0 +1,6 @@
+#include "_underwater_machinery.dm"
+#include "airlocks/airlocks.dm"
+
+#ifdef UNIT_TESTS
+#include "airlocks/tests.dm"
+#endif

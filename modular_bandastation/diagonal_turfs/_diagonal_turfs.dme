@@ -1,0 +1,7 @@
+#include "_diagonal_turfs.dm"
+#include "turf_decal_diagonal/_turf_decal_diagonal.dm"
+
+#include "code/opsglass.dm"
+#include "turf_decal_diagonal/siding.dm"
+#include "turf_decal_diagonal/thinplating.dm"
+#include "turf_decal_diagonal/trimline.dm"

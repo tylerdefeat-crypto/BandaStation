@@ -1,0 +1,30 @@
+/datum/unit_test/caustics_masks/Run()
+	if(caustics_falloff(0, 5) != 1 || caustics_falloff(5, 5) != 0 || caustics_falloff(6, 5) != 0)
+		Fail("Caustics must fade from one at the source to zero at or beyond their range.")
+	var/icon/center = caustics_gradient_mask(5)
+	var/icon/outside = caustics_gradient_mask(5, 6, 0)
+	if(!center.GetPixel(16, 16) || outside.GetPixel(16, 16))
+		Fail("Point caustics must have an opaque center and transparent exterior.")
+	var/icon/neighbor = caustics_gradient_mask(5, 1, 0)
+	var/left_alpha = text2num(copytext(center.GetPixel(32, 16), 8), 16)
+	var/right_alpha = text2num(copytext(neighbor.GetPixel(1, 16), 8), 16)
+	if(abs(left_alpha - right_alpha) > 2)
+		Fail("Point gradient is discontinuous across tile boundaries.")
+	// Combining/clipping a returned mask must not corrupt the shared cached segment.
+	center.DrawBox(rgb(0, 0, 0, 0), 1, 1, 32, 32)
+	var/icon/fresh_center = caustics_gradient_mask(5)
+	if(!fresh_center.GetPixel(16, 16))
+		Fail("Cached gradients were modified by a caller.")
+	for(var/direction in list(NORTHEAST, NORTHWEST, SOUTHEAST, SOUTHWEST))
+		var/icon/floor_mask = caustics_floor_mask(direction)
+		var/corner_x = (direction & EAST) ? 32 : 1
+		var/corner_y = (direction & NORTH) ? 32 : 1
+		if(!floor_mask.GetPixel(corner_x, corner_y) || floor_mask.GetPixel(33 - corner_x, 33 - corner_y))
+			Fail("Diagonal mask must expose the floor and exclude the opposite wall corner: [direction].")
+		var/pixels = 0
+		for(var/px in 1 to 32)
+			for(var/py in 1 to 32)
+				pixels += !!floor_mask.GetPixel(px, py)
+		if(pixels != 496)
+			Fail("A diagonal floor mask must contain exactly the 496 pixels outside the wall triangle.")
+

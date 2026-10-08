@@ -1,0 +1,7 @@
+#include "_diagonal_doors.dm"
+
+#include "code/shutters.dm"
+
+#ifdef UNIT_TESTS
+#include "tests/shutters.dm"
+#endif

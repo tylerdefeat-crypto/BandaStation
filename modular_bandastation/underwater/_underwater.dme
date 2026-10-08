@@ -1,0 +1,9 @@
+#include "_underwater.dm"
+#include "code/water.dm"
+#include "code/flooding.dm"
+#include "code/swimming.dm"
+#include "code/parallax.dm"
+
+#ifdef UNIT_TESTS
+#include "tests/water.dm"
+#endif
