@@ -20,7 +20,7 @@
 "eL" = (
 /obj/machinery/power/rtg{
 	power_gen = 5000;
-	 affected_by_parts = 0
+	affected_by_parts = 0
 	},
 /obj/structure/cable,
 /turf/open/floor/iron/stationtrauma_hull,
@@ -36,6 +36,13 @@
 /obj/structure/cable,
 /turf/open/floor/iron/stationtrauma_hull,
 /area/shuttle/stationtrauma)
+"gp" = (
+/obj/machinery/stationtrauma_water_device{
+	initial_water = 100;
+	initial_temperature = 277.15
+	},
+/turf/open/floor/iron/stationtrauma_hull,
+/area/shuttle/stationtrauma)
 "gB" = (
 /obj/structure/flora/underwater/long,
 /turf/open/space/ocean,
@@ -45,6 +52,17 @@
 	dir = 9
 	},
 /turf/closed/wall/stationtrauma_hull,
+/area/shuttle/stationtrauma)
+"ho" = (
+/obj/machinery/duct,
+/turf/open/floor/iron/stationtrauma_hull,
+/area/shuttle/stationtrauma)
+"iO" = (
+/obj/item/paper{
+	name = "Вода при переходах";
+	default_raw_text = "Два резервуара и клапан — замкнутый контур внутри подлодки. Пока клапан закрыт, слева 500 л при 40 C, справа 100 л при 4 C. Проверьте объём и температуру после перехода. Откройте клапан: при полном переносе справа будет 600 л при 34 C. Наружные стыковочные шланги ещё не поддерживаются."
+	},
+/turf/open/floor/iron/stationtrauma_hull,
 /area/shuttle/stationtrauma)
 "mV" = (
 /obj/item/stack/sheet/iron,
@@ -58,6 +76,13 @@
 	baseturfs = /turf/open/space/ocean
 	},
 /area/stationtrauma_test)
+"og" = (
+/obj/machinery/stationtrauma_water_device{
+	initial_water = 500;
+	initial_temperature = 313.15
+	},
+/turf/open/floor/iron/stationtrauma_hull,
+/area/shuttle/stationtrauma)
 "os" = (
 /obj/machinery/atmospherics/pipe/smart/simple{
 	dir = 1
@@ -110,7 +135,7 @@
 "xO" = (
 /obj/machinery/atmospherics/components/binary/stationtrauma_coolant_pump/precharged{
 	dir = 1;
-	 on = 1
+	on = 1
 	},
 /turf/open/floor/iron/stationtrauma_hull,
 /area/shuttle/stationtrauma)
@@ -143,6 +168,10 @@
 /obj/item/flashlight,
 /turf/open/floor/iron/stationtrauma_hull,
 /area/shuttle/stationtrauma)
+"AC" = (
+/obj/machinery/stationtrauma_water_device/valve,
+/turf/open/floor/iron/stationtrauma_hull,
+/area/shuttle/stationtrauma)
 "CG" = (
 /obj/machinery/light{
 	dir = 1
@@ -156,7 +185,7 @@
 "EZ" = (
 /obj/item/paper{
 	name = "Маршрут StationTrauma";
-	 default_raw_text = "Навигационная консоль: база — затонувший пост — база. Переход: 20 секунд. Вода, экипаж, вещи, реактор и повреждения перемещаются с интерьером. Реактор запускается после загрузки кассеты. Сначала проверьте работающий насос охлаждения и трубопровод. SCRAM сохраняет остаточное тепло. Наружный теплообменник находится справа за обшивкой. Перед выходом в океан наденьте защитный костюм, шлем и маску, включите баллон."
+	default_raw_text = "Навигационная консоль: база — затонувший пост — база. Переход: 20 секунд. Вода, экипаж, вещи, реактор и повреждения перемещаются с интерьером. Реактор запускается после загрузки кассеты. Сначала проверьте работающий насос охлаждения и трубопровод. SCRAM сохраняет остаточное тепло. Наружный теплообменник находится справа за обшивкой. Перед выходом в океан наденьте защитный костюм, шлем и маску, включите баллон."
 	},
 /turf/open/floor/iron/stationtrauma_hull,
 /area/shuttle/stationtrauma)
@@ -184,9 +213,9 @@
 /obj/machinery/power/apc{
 	dir = 1;
 	pixel_y = 25;
-	 start_charge = 100;
-	 cell_type = /obj/item/stock_parts/power_store/battery/hyper;
-	 unlocked = 1
+	start_charge = 100;
+	cell_type = /obj/item/stock_parts/power_store/battery/hyper;
+	unlocked = 1
 	},
 /obj/structure/cable,
 /turf/open/floor/iron/stationtrauma_hull,
@@ -398,7 +427,7 @@ sD
 GH
 zJ
 rl
-GH
+og
 JQ
 ss
 ss
@@ -428,7 +457,7 @@ GH
 GH
 GH
 mV
-GH
+ho
 JQ
 ss
 ss
@@ -458,7 +487,7 @@ Et
 GH
 GH
 GH
-GH
+AC
 JQ
 ss
 ss
@@ -487,8 +516,8 @@ GH
 GH
 GH
 GH
-GH
-GH
+iO
+ho
 JQ
 ss
 ss
@@ -518,7 +547,7 @@ GH
 GH
 GH
 GH
-GH
+gp
 JQ
 ss
 ss

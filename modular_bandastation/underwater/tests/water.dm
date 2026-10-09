@@ -99,6 +99,11 @@
 	cold_water.tick(2)
 	WATER_TEST(diver.bodytemperature < body_temperature_before, "Cold floodwater must cool an unprotected occupant")
 	WATER_TEST(first.air.temperature == room_temperature_before, "Water cooling must not overwrite the room's gas temperature")
+	var/cold_body_temperature = diver.bodytemperature
+	cold_water.current_water().temperature = T0C + 40
+	cold_water.tick(2)
+	WATER_TEST(diver.bodytemperature > cold_body_temperature, "Warm floodwater must use its own measured temperature for heat transfer")
+	cold_water.current_water().temperature = FLOOD_WATER_TEMPERATURE
 	diver.breathe()
 	WATER_TEST(diver.failed_last_breath, "Submerged humans must not inhale the room's air")
 	var/obj/item/tank/internals/tank = equip_labrat_internals(diver, /obj/item/tank/internals/emergency_oxygen)
@@ -178,6 +183,7 @@
 	var/turf/open/repaired = ocean.ChangeTurf(/turf/open/floor/plating)
 	var/datum/component/floodwater/remaining_water = repaired.GetComponent(/datum/component/floodwater)
 	WATER_TEST(remaining_water && remaining_water.depth == FLOOD_WATER_MAX_DEPTH && !remaining_water.infinite_source, "Floor replacement must preserve finite floodwater without creating a new ocean")
+	WATER_TEST(remaining_water.temperature == FLOOD_WATER_TEMPERATURE, "Replacing an ocean turf must retain the water temperature")
 	WATER_TEST(remaining_water.water_overlay.alpha > exterior_water_alpha, "Flooded floors must show denser water than the transparent exterior")
 	WATER_TEST(GLOB.ocean_parallax_levels[parallax_level_key] == original_parallax_setting, "Replacing turfs must not change a map's parallax")
 	diver.forceMove(second)

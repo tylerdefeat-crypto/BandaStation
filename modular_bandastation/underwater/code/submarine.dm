@@ -32,11 +32,12 @@
 		var/datum/component/floodwater/water = source.GetComponent(/datum/component/floodwater)
 		var/depth = water?.depth || 0
 		var/infinite = water?.infinite_source || FALSE
+		var/water_temperature = water?.temperature
 		var/turf/open/intake = destination
 		// CopyOnTop may retain destination-ocean water; replace it with the vessel's exact state.
 		intake.set_water_depth(0)
 		if(depth)
-			intake.set_water_depth(depth, infinite)
+			intake.set_water_depth(depth, infinite, water_temperature)
 	destination.AddElement(/datum/element/stationtrauma_hull)
 	source.RemoveElement(/datum/element/stationtrauma_hull)
 

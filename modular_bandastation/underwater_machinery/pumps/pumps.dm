@@ -10,6 +10,15 @@
 	/// Centimetres removed from the intake tile each second.
 	var/drain_rate = 20
 	var/on = FALSE
+	/// Optional TG plumbing buffer; ordinary bilges retain their overboard discharge.
+	var/plumbed = FALSE
+
+/obj/machinery/bilge_pump/Initialize(mapload)
+	. = ..()
+	if(plumbed)
+		create_reagents(200, NO_REACT)
+		AddComponent(/datum/component/plumbing/stationtrauma_water/supply)
+		AddElement(/datum/element/simple_rotation)
 
 /obj/machinery/bilge_pump/attack_hand(mob/living/user, list/modifiers)
 	if(..())
@@ -25,6 +34,8 @@
 /obj/machinery/bilge_pump/examine(mob/user)
 	. = ..()
 	. += span_notice("Помпа [on ? "включена" : "выключена"]. Скорость осушения у заборника: [drain_rate] см/с.")
+	if(plumbed)
+		. += span_notice("Буфер: [round(reagents.total_volume, 0.1)] / [reagents.maximum_volume] л; [round(reagents.chem_temp - T0C, 0.1)] °C. Выход подключается к трубам plumbing TG.")
 
 /obj/machinery/bilge_pump/proc/draw_pump_energy(seconds_per_tick)
 	if(!is_operational)
@@ -39,9 +50,13 @@
 		return
 	var/turf/open/intake = loc
 	var/datum/component/floodwater/water = intake.GetComponent(/datum/component/floodwater)
-	if(!water || water.infinite_source || !draw_pump_energy(seconds_per_tick))
+	if(!water || water.infinite_source || reagents?.holder_full() || !draw_pump_energy(seconds_per_tick))
 		return
-	intake.set_water_depth(max(0, water.depth - drain_rate * seconds_per_tick))
+	water.remove_water(drain_rate * FLOOD_WATER_LITRES_PER_CM * seconds_per_tick, reagents)
+
+/obj/machinery/bilge_pump/plumbed
+	name = "трюмная помпа с трубным выходом"
+	plumbed = TRUE
 
 /obj/machinery/bilge_pump/wrench_act(mob/living/user, obj/item/tool)
 	return default_unfasten_wrench(user, tool)
@@ -67,6 +82,10 @@
 
 /obj/machinery/bilge_pump/portable/get_cell()
 	return cell
+
+/obj/machinery/bilge_pump/portable/plumbed
+	name = "аварийный насос с трубным выходом"
+	plumbed = TRUE
 
 /obj/machinery/bilge_pump/portable/draw_pump_energy(seconds_per_tick)
 	if(!is_operational || panel_open)

@@ -48,8 +48,7 @@ SUBSYSTEM_DEF(floodwater)
 		var/amount = min(FLOOD_WATER_FLOW, round((depth - next_depth) / 2))
 		if(amount <= 0)
 			continue
-		next_tile.set_water_depth(next_depth + amount)
-		if(!infinite_source)
-			set_depth(depth - amount)
-		else
+		var/accepted = next_tile.add_water(amount * FLOOD_WATER_LITRES_PER_CM, temperature)
+		remove_water(accepted, allow_ocean = TRUE)
+		if(infinite_source)
 			wake()

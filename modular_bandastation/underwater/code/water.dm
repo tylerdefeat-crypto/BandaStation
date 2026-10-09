@@ -1,10 +1,4 @@
-// Depth is measured in centimetres; one unit is also one unit of volume on equal-sized tiles.
-#define FLOOD_WATER_WAIST 40
-#define FLOOD_WATER_DEEP 100
-#define FLOOD_WATER_SUBMERGED 200
-#define FLOOD_WATER_MAX_DEPTH 220
-#define FLOOD_WATER_FLOW 10
-#define FLOOD_WATER_TEMPERATURE (T0C + 4)
+#include "../_defines.dm"
 
 /area/space/ocean
 	name = "Deep ocean"
@@ -92,19 +86,23 @@
 	water_depth = 150
 
 /// Add water without replacing the floor, its contents, area, or atmosphere. Zero drains it.
-/turf/open/proc/set_water_depth(new_depth, infinite_source = null)
-	if(!isnum(new_depth) || istype(src, /turf/open/water))
+/turf/open/proc/set_water_depth(new_depth, infinite_source = null, water_temperature = null)
+	if(!isnum(new_depth) || !IS_FINITE(new_depth) || istype(src, /turf/open/water))
+		return null
+	if(!isnull(water_temperature) && (!isnum(water_temperature) || !IS_FINITE(water_temperature) || water_temperature < 0))
 		return null
 	var/datum/component/floodwater/water = GetComponent(/datum/component/floodwater)
-	new_depth = clamp(round(new_depth), 0, FLOOD_WATER_MAX_DEPTH)
+	new_depth = clamp(new_depth, 0, FLOOD_WATER_MAX_DEPTH)
 	if(!new_depth)
 		if(water)
 			qdel(water)
 		return null
 	if(!water)
-		return AddComponent(/datum/component/floodwater, new_depth, !!infinite_source)
+		return AddComponent(/datum/component/floodwater, new_depth, !!infinite_source, isnull(water_temperature) ? FLOOD_WATER_TEMPERATURE : water_temperature)
 	if(!isnull(infinite_source))
 		water.infinite_source = infinite_source
+	if(!isnull(water_temperature))
+		water.temperature = water_temperature
 	water.set_depth(new_depth)
 	return water
 
@@ -112,21 +110,47 @@
 	var/datum/component/floodwater/water = GetComponent(/datum/component/floodwater)
 	return water?.depth || 0
 
+/// Returns litres actually accepted; floor water and TG plumbing use the same volume conversion.
+/turf/open/proc/add_water(volume, water_temperature)
+	if(!isnum(volume) || !IS_FINITE(volume) || volume <= 0 || !isnum(water_temperature) || !IS_FINITE(water_temperature) || water_temperature < 0 || istype(src, /turf/open/water))
+		return 0
+	var/datum/component/floodwater/water = GetComponent(/datum/component/floodwater)
+	if(water?.infinite_source)
+		return 0
+	var/old_volume = get_water_depth() * FLOOD_WATER_LITRES_PER_CM
+	var/accepted = FLOOR(min(volume, FLOOD_WATER_MAX_DEPTH * FLOOD_WATER_LITRES_PER_CM - old_volume), CHEMICAL_QUANTISATION_LEVEL)
+	if(accepted <= 0)
+		return 0
+	var/mixed_temperature = water ? (old_volume * water.temperature + accepted * water_temperature) / (old_volume + accepted) : water_temperature
+	set_water_depth((old_volume + accepted) / FLOOD_WATER_LITRES_PER_CM, FALSE, mixed_temperature)
+	return accepted
+
+/// Only water crosses the floor boundary; other reagents remain in their native holder.
+/turf/open/proc/receive_water(datum/reagents/source, volume)
+	if(QDELETED(source) || !isnum(volume) || !IS_FINITE(volume) || volume <= 0)
+		return 0
+	var/accepted = add_water(min(volume, source.get_reagent_amount(/datum/reagent/water)), source.chem_temp)
+	if(accepted)
+		source.remove_reagent(/datum/reagent/water, accepted)
+	return accepted
+
 /// One component per wet turf; only unequal, connected neighbours enter SSfloodwater's work queue.
 /datum/component/floodwater
 	dupe_mode = COMPONENT_DUPE_UNIQUE
 	var/depth = 0
 	var/infinite_source = FALSE
+	var/temperature = FLOOD_WATER_TEMPERATURE
 	var/stage = 0
 	var/mask_state
 	var/mutable_appearance/water_overlay
 
-/datum/component/floodwater/Initialize(initial_depth, is_source = FALSE)
+/datum/component/floodwater/Initialize(initial_depth, is_source = FALSE, initial_temperature = FLOOD_WATER_TEMPERATURE)
 	// Existing static water already owns immersion/wetness elements.
 	if(!isopenturf(parent) || istype(parent, /turf/open/water))
 		return COMPONENT_INCOMPATIBLE
-	depth = clamp(round(initial_depth), 0, FLOOD_WATER_MAX_DEPTH)
+	depth = clamp(initial_depth, 0, FLOOD_WATER_MAX_DEPTH)
 	infinite_source = is_source
+	temperature = initial_temperature
 
 /datum/component/floodwater/RegisterWithParent()
 	RegisterSignal(parent, COMSIG_TURF_CALCULATED_ADJACENT_ATMOS, PROC_REF(wake))
@@ -157,13 +181,28 @@
 	wake_neighbours()
 
 /datum/component/floodwater/proc/set_depth(new_depth)
-	depth = clamp(round(new_depth), 0, FLOOD_WATER_MAX_DEPTH)
+	depth = clamp(new_depth, 0, FLOOD_WATER_MAX_DEPTH)
 	if(!depth)
 		qdel(src)
 		return
 	update_depth()
 	wake()
 	wake_neighbours()
+
+/// A null receiver represents the existing overboard bilge discharge. Pumps cannot drain an ocean.
+/datum/component/floodwater/proc/remove_water(volume, datum/reagents/receiver = null, allow_ocean = FALSE)
+	if(!isnum(volume) || !IS_FINITE(volume) || volume <= 0 || (infinite_source && !allow_ocean))
+		return 0
+	var/removed = FLOOR(min(volume, depth * FLOOD_WATER_LITRES_PER_CM), CHEMICAL_QUANTISATION_LEVEL)
+	if(receiver)
+		if(QDELETED(receiver))
+			return 0
+		removed = receiver.add_reagent(/datum/reagent/water, removed, reagtemp = temperature, no_react = TRUE)
+	if(removed <= 0)
+		return 0
+	if(!infinite_source)
+		set_depth(max(0, depth - removed / FLOOD_WATER_LITRES_PER_CM))
+	return removed
 
 /// Visual/behaviour changes only happen when crossing a depth threshold.
 /datum/component/floodwater/proc/update_depth()
@@ -211,7 +250,7 @@
 
 /datum/component/floodwater/proc/examine_depth(atom/source, mob/user, list/examine_list)
 	SIGNAL_HANDLER
-	examine_list += span_notice("Глубина воды: [depth] см[ infinite_source ? " (океан)" : ""].")
+	examine_list += span_notice("Глубина воды: [round(depth, 0.1)] см[ infinite_source ? " (океан)" : ""]. Температура: [round(temperature - T0C, 0.1)] °C.")
 
 /datum/component/floodwater/proc/affects(mob/living/swimmer)
 	return depth >= FLOOD_WATER_SUBMERGED || (!(swimmer.movement_type & MOVETYPES_NOT_TOUCHING_GROUND) && !HAS_TRAIT(swimmer, TRAIT_MOB_ELEVATED))
@@ -221,14 +260,14 @@
 
 /datum/component/floodwater/proc/on_turf_change(turf/source, path, list/new_baseturfs, flags, list/post_change_callbacks)
 	SIGNAL_HANDLER
-	post_change_callbacks += CALLBACK(GLOBAL_PROC, GLOBAL_PROC_REF(restore_floodwater), depth)
+	post_change_callbacks += CALLBACK(GLOBAL_PROC, GLOBAL_PROC_REF(restore_floodwater), depth, temperature)
 
 /// The old component is deleted with its turf, so the callback must not depend on its fields.
-/proc/restore_floodwater(old_depth, turf/new_tile)
+/proc/restore_floodwater(old_depth, old_temperature, turf/new_tile)
 	if(isopenturf(new_tile) && !istype(new_tile, /turf/open/water))
 		var/turf/open/open_tile = new_tile
 		if(!open_tile.GetComponent(/datum/component/floodwater))
-			open_tile.set_water_depth(old_depth)
+			open_tile.set_water_depth(old_depth, FALSE, old_temperature)
 
 /// Extend the native immersion element only for completely submerged sprites.
 /datum/element/immerse/floodwater/generate_immerse_mask(width, height, is_below_water)

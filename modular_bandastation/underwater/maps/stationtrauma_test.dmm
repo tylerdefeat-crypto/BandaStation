@@ -65,6 +65,16 @@
 	baseturfs = /turf/open/space/ocean
 	},
 /area/stationtrauma_test)
+"iH" = (
+/obj/machinery/stationtrauma_water_device{
+	initial_water = 500;
+	initial_temperature = 313.15
+	},
+/obj/item/stack/sheet/iron,
+/turf/open/floor/iron{
+	baseturfs = /turf/open/space/ocean
+	},
+/area/stationtrauma_test)
 "jq" = (
 /obj/item/weldingtool,
 /turf/open/floor/iron{
@@ -77,11 +87,18 @@
 	baseturfs = /turf/open/space/ocean
 	},
 /area/stationtrauma_test)
+"jE" = (
+/obj/machinery/duct,
+/obj/item/stock_parts/power_store/cell/high,
+/turf/open/floor/iron{
+	baseturfs = /turf/open/space/ocean
+	},
+/area/stationtrauma_test)
 "kh" = (
 /obj/structure/cable,
 /obj/machinery/atmospherics/components/binary/stationtrauma_coolant_pump/precharged{
 	dir = 1;
-	 on = 1
+	on = 1
 	},
 /turf/open/floor/iron{
 	baseturfs = /turf/open/space/ocean
@@ -110,15 +127,52 @@
 	baseturfs = /turf/open/space/ocean
 	},
 /area/stationtrauma_test)
+"pf" = (
+/obj/machinery/duct,
+/obj/item/stack/rods,
+/turf/open/floor/iron{
+	baseturfs = /turf/open/space/ocean
+	},
+/area/stationtrauma_test)
+"so" = (
+/obj/machinery/duct,
+/obj/item/flashlight,
+/turf/open/floor/iron{
+	baseturfs = /turf/open/space/ocean
+	},
+/area/stationtrauma_test)
 "uR" = (
 /turf/open/space/ocean,
 /area/space/ocean)
+"vk" = (
+/obj/machinery/bilge_pump/portable/plumbed{
+	dir = 4
+	},
+/turf/open/floor/iron{
+	baseturfs = /turf/open/space/ocean
+	},
+/area/stationtrauma_test)
+"vN" = (
+/obj/machinery/stationtrauma_water_device/outlet,
+/turf/open/floor/iron{
+	baseturfs = /turf/open/space/ocean
+	},
+/area/stationtrauma_test)
 "wn" = (
 /obj/machinery/power/rtg{
 	power_gen = 5000;
-	 affected_by_parts = 0
+	affected_by_parts = 0
 	},
 /obj/structure/cable,
+/turf/open/floor/iron{
+	baseturfs = /turf/open/space/ocean
+	},
+/area/stationtrauma_test)
+"ye" = (
+/obj/item/paper{
+	name = "Водяной контур";
+	default_raw_text = "Резервуар содержит 500 л воды при 40 C. Откройте клапан и включите выпуск ЛКМ: вода появится на полу выпуска. Трубная помпа на западе собирает воду с пола в буфер. Полный буфер и закрытый клапан останавливают поток. Осмотр пола и оборудования показывает температуру. Ключ разбирает обычную трубу TG; запас труб рядом. В этом контуре 1u соответствует 1 л, 1 см глубины — 10 л на клетке. Газовое охлаждение реактора — отдельный контур."
+	},
 /turf/open/floor/iron{
 	baseturfs = /turf/open/space/ocean
 	},
@@ -131,8 +185,21 @@
 	baseturfs = /turf/open/space/ocean
 	},
 /area/stationtrauma_test)
+"Am" = (
+/obj/machinery/stationtrauma_water_device/valve,
+/obj/item/stack/tile/iron,
+/turf/open/floor/iron{
+	baseturfs = /turf/open/space/ocean
+	},
+/area/stationtrauma_test)
 "AS" = (
 /obj/item/stack/sheet/iron,
+/turf/open/floor/iron{
+	baseturfs = /turf/open/space/ocean
+	},
+/area/stationtrauma_test)
+"AT" = (
+/obj/machinery/duct,
 /turf/open/floor/iron{
 	baseturfs = /turf/open/space/ocean
 	},
@@ -145,7 +212,7 @@
 /obj/structure/table,
 /obj/item/paper{
 	name = "Испытания StationTrauma";
-	 default_raw_text = "Глубина океана: 600 м. Вода: 4 C. Предел затопления: 2,2 м. Восточная гермодверь — управляемая течь: откройте, затем закройте. Изолируйте отсек внутренними дверями. Включите помпу. Alt+ЛКМ на закрытой двери — механический запор. Для выхода в океан наденьте защитный костюм, шлем и маску; включите дыхание от баллона. Насосная находится на юго-западе. На северо-востоке — АПЦ, резервный РИТЭГ и реактор. Вставьте топливную кассету, проверьте включённый насос охлаждения, затем выберите мощность ЛКМ на реакторе. SCRAM не убирает остаточное тепло."
+	default_raw_text = "Глубина океана: 600 м. Вода: 4 C. Предел затопления: 2,2 м. Восточная гермодверь — управляемая течь: откройте, затем закройте. Изолируйте отсек внутренними дверями. Включите помпу. Alt+ЛКМ на закрытой двери — механический запор. Для выхода в океан наденьте защитный костюм, шлем и маску; включите дыхание от баллона. Насосная находится на юго-западе. На северо-востоке — АПЦ, резервный РИТЭГ и реактор. Вставьте топливную кассету, проверьте включённый насос охлаждения, затем выберите мощность ЛКМ на реакторе. SCRAM не убирает остаточное тепло."
 	},
 /turf/open/floor/iron{
 	baseturfs = /turf/open/space/ocean
@@ -183,6 +250,14 @@
 /area/stationtrauma_test)
 "Gj" = (
 /obj/structure/cable,
+/turf/open/floor/iron{
+	baseturfs = /turf/open/space/ocean
+	},
+/area/stationtrauma_test)
+"GW" = (
+/obj/item/stack/ducts{
+	amount = 10
+	},
 /turf/open/floor/iron{
 	baseturfs = /turf/open/space/ocean
 	},
@@ -232,6 +307,15 @@
 	baseturfs = /turf/open/space/ocean
 	},
 /area/stationtrauma_test)
+"Pu" = (
+/obj/machinery/duct,
+/obj/item/stack/ducts{
+	amount = 10
+	},
+/turf/open/floor/iron{
+	baseturfs = /turf/open/space/ocean
+	},
+/area/stationtrauma_test)
 "QB" = (
 /obj/structure/table{
 	name = "инженерный стол"
@@ -263,9 +347,9 @@
 /obj/machinery/power/apc{
 	dir = 1;
 	pixel_y = 25;
-	 start_charge = 100;
-	 cell_type = /obj/item/stock_parts/power_store/battery/hyper;
-	 unlocked = 1
+	start_charge = 100;
+	cell_type = /obj/item/stock_parts/power_store/battery/hyper;
+	unlocked = 1
 	},
 /obj/structure/cable,
 /turf/open/floor/iron{
@@ -288,6 +372,12 @@
 /obj/structure/flora/underwater/long,
 /turf/open/space/ocean,
 /area/space/ocean)
+"Yg" = (
+/obj/machinery/bilge_pump/plumbed,
+/turf/open/floor/iron{
+	baseturfs = /turf/open/space/ocean
+	},
+/area/stationtrauma_test)
 "Yq" = (
 /obj/machinery/atmospherics/pipe/smart/simple{
 	dir = 10
@@ -528,8 +618,8 @@ ie
 ie
 ie
 ZX
-RQ
-fD
+Yg
+so
 ie
 lR
 uR
@@ -555,7 +645,7 @@ ie
 ie
 DW
 ie
-aQ
+jE
 EN
 lR
 uR
@@ -580,8 +670,8 @@ ie
 ie
 ie
 nk
-jC
-AS
+vk
+iH
 ie
 lR
 uR
@@ -606,8 +696,8 @@ ie
 ie
 ie
 jq
-ie
-al
+Pu
+pf
 ie
 lR
 uR
@@ -632,8 +722,8 @@ ie
 ie
 ie
 kW
-ie
-mN
+ye
+Am
 ie
 lR
 uR
@@ -659,7 +749,7 @@ ie
 ie
 ie
 ie
-ie
+AT
 ie
 lR
 uR
@@ -685,7 +775,7 @@ ie
 ie
 ie
 ie
-ie
+vN
 ie
 lR
 uR

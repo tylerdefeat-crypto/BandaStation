@@ -1,0 +1,13 @@
+#ifndef STATIONTRAUMA_WATER_DEFINES
+#define STATIONTRAUMA_WATER_DEFINES
+
+#define FLOOD_WATER_WAIST 40
+#define FLOOD_WATER_DEEP 100
+#define FLOOD_WATER_SUBMERGED 200
+#define FLOOD_WATER_MAX_DEPTH 220
+#define FLOOD_WATER_FLOW 10
+#define FLOOD_WATER_TEMPERATURE (T0C + 4)
+// One-square-metre water footprint: a centimetre is ten litres.
+#define FLOOD_WATER_LITRES_PER_CM 10
+
+#endif

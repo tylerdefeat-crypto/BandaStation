@@ -14,6 +14,9 @@
 	var/obj/machinery/power/stationtrauma_reactor/reactor
 	var/obj/machinery/atmospherics/components/binary/stationtrauma_coolant_pump/cooling
 	var/obj/machinery/atmospherics/components/unary/stationtrauma_ocean_exchanger/exchanger
+	var/obj/machinery/stationtrauma_water_device/reservoir
+	var/obj/machinery/stationtrauma_water_device/valve/valve
+	var/obj/machinery/stationtrauma_water_device/outlet/outlet
 	for(var/turf/tile as anything in loaded_turfs)
 		if(istype(tile, /turf/open/space/ocean))
 			ocean_tiles++
@@ -27,10 +30,37 @@
 			cooling = found
 		for(var/obj/machinery/atmospherics/components/unary/stationtrauma_ocean_exchanger/found in tile)
 			exchanger = found
+		for(var/obj/machinery/stationtrauma_water_device/found in tile)
+			if(found.type == /obj/machinery/stationtrauma_water_device)
+				reservoir = found
+			else if(istype(found, /obj/machinery/stationtrauma_water_device/valve))
+				valve = found
+			else if(istype(found, /obj/machinery/stationtrauma_water_device/outlet))
+				outlet = found
 	MAP_TEST(pumps == 3, "The test map must provide two stationary pumps and one portable pump")
 	MAP_TEST(doors == 6, "The test map must provide compartment doors, a two-door exit, and a controlled breach")
 	MAP_TEST(ocean_tiles > 200, "The test template must include an external ocean")
 	MAP_TEST(reactor && cooling && exchanger, "The rig must contain a reactor and a real gas cooling loop")
+	MAP_TEST(reservoir && valve && outlet, "The rig must also contain a water reservoir, valve and outlet")
+	MAP_TEST(reservoir.reagents.total_volume == 500 && reservoir.reagents.chem_temp == T0C + 40, "The manual water fixture must start with 500 litres at 40 C")
+	var/list/valve_connections = valve.GetComponents(/datum/component/plumbing/stationtrauma_water)
+	var/list/outlet_connections = outlet.GetComponents(/datum/component/plumbing/stationtrauma_water/outlet)
+	MAP_TEST(length(valve_connections) == 1 && length(outlet_connections) == 1, "Each liquid fixture must register one plumbing component")
+	var/datum/component/plumbing/stationtrauma_water/valve_connection = valve_connections[1]
+	var/datum/component/plumbing/stationtrauma_water/outlet/outlet_connection = outlet_connections[1]
+	MAP_TEST(valve_connection.ducts["8"] && outlet_connection.ducts["8"], "The map's real liquid ducts must connect after loading")
+	valve_connection.process()
+	MAP_TEST(valve.reagents.total_volume == 0, "The mapped closed valve must retain the warm test charge")
+	valve.valve_open = TRUE
+	outlet.on = TRUE
+	outlet.set_machine_stat(outlet.machine_stat & ~NOPOWER)
+	for(var/tick in 1 to 5)
+		valve_connection.process()
+		outlet_connection.process()
+		outlet.process(1)
+	var/turf/open/discharge_floor = outlet.loc
+	var/datum/component/floodwater/discharged_water = discharge_floor.GetComponent(/datum/component/floodwater)
+	MAP_TEST(discharged_water && discharged_water.depth == 50 && discharged_water.temperature == T0C + 40, "The loaded rig must release the complete 500-litre charge at its original temperature")
 	MAP_TEST(reactor.powernet && cooling.nodes[1] && cooling.nodes[2] && exchanger.nodes[1], "Power and coolant fixtures must really connect after loading")
 	reactor.core_temperature = T0C + 300
 	cooling.on = TRUE
