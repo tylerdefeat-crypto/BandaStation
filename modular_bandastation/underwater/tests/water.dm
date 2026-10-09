@@ -15,9 +15,9 @@
 		tile.set_water_depth(0)
 		tile.initial_gas_mix = OPENTURF_DEFAULT_ATMOS
 	if(changed_tile)
-		changed_tile.ChangeTurf(original_tile_type, original_baseturfs)
 		if(original_area)
 			set_turf_to_area(changed_tile, original_area)
+		changed_tile.ChangeTurf(original_tile_type, original_baseturfs)
 	if(parallax_level_key)
 		if(isnull(original_parallax_setting))
 			GLOB.ocean_parallax_levels -= parallax_level_key
@@ -286,7 +286,7 @@
 	torch.set_light_on(FALSE)
 	WATER_TEST(!torch_light.currently_displaying && !dark_ocean.get_dynamic_lumcount(), "Switching the flashlight off must restore the ocean's darkness")
 
-	var/datum/parsed_map/mission = new(file("_maps/map_files/syndie_underwater/syndie_underwater_furnished.dmm"))
+	var/datum/parsed_map/mission = new(file("_maps/map_files/syndie_underwater/syndie_underwater_base.dmm"))
 	WATER_TEST(mission.bounds && !mission.check_for_errors(), "The furnished away map and its parallax landmark must pass the native map loader's validation")
 	var/list/mission_models = mission.build_cache(FALSE)
 	var/ocean_models = 0

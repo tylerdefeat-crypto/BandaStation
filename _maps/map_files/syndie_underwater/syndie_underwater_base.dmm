@@ -4145,9 +4145,6 @@
 /obj/machinery/door/poddoor/shutters/diagonal/preopen{
 	dir = 10
 	},
-/obj/machinery/door/poddoor/shutters/diagonal/preopen{
-	dir = 10
-	},
 /turf/closed/indestructible/opsglass/diagonal,
 /area/centcom/syndicate_base/infteam)
 "AQ" = (
@@ -5375,7 +5372,6 @@
 /area/space/ocean)
 "Ji" = (
 /obj/structure/table/wood,
-/obj/structure/table/wood,
 /obj/item/modular_computer/laptop/preset/mafia{
 	pixel_x = 0;
 	pixel_y = 5
@@ -6088,9 +6084,6 @@
 /turf/open/floor/iron/dark,
 /area/space/ocean)
 "Os" = (
-/obj/structure/lattice/catwalk/siding{
-	color = "#A1662F"
-	},
 /obj/structure/lattice/catwalk/siding{
 	color = "#A1662F"
 	},

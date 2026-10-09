@@ -42,5 +42,6 @@
 	beam_range = clamp(beam_range, 0.5, 12)
 	beam_width = clamp(beam_width, 0.5, 12)
 	icon_state = show_particles ? "beam_dust" : "beam"
-	transform = matrix().Scale(beam_width / 3, beam_range / 6).Turn(dir2angle(dir))
+	var/matrix/beam_transform = matrix().Scale(beam_width / 3, beam_range / 6)
+	transform = beam_transform.Turn(dir2angle(dir))
 	set_light(l_range = beam_range, l_color = color, l_angle = 2 * arctan(beam_width / (2 * beam_range)), l_dir = dir, l_on = light_on)

@@ -3,10 +3,10 @@
 	dir = NORTHEAST
 
 /obj/effect/turf_decal/siding/thinplating_new/diagonal/Initialize(mapload)
+	SHOULD_CALL_PARENT(FALSE)
 	var/turf/closed/support = loc
 	if(!istype(support) || !(support.smoothing_flags & SMOOTH_DIAGONAL_CORNERS))
 		return ..()
-	SHOULD_CALL_PARENT(FALSE)
 	flags_1 |= INITIALIZED_1
 	// The decal element follows subsequent smoothing, including mapload and shuttle moves.
 	support.AddElement(/datum/element/decal, icon, icon_state, SOUTH, null, layer, alpha, color, support.smoothing_junction || 0, FALSE, null)

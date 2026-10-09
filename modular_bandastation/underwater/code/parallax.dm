@@ -93,6 +93,7 @@ GLOBAL_LIST_EMPTY(ocean_parallax_levels)
 	color = "#303E46"
 
 /atom/movable/screen/parallax_layer/ocean/seafloor/update_overlays()
+	SHOULD_CALL_PARENT(FALSE)
 	return list()
 
 /atom/movable/screen/parallax_layer/ocean/seafloor/update_o(new_view)

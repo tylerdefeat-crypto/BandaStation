@@ -4,10 +4,10 @@
 	dir = NORTHEAST
 
 /obj/effect/turf_decal/trimline/diagonal/Initialize(mapload)
+	SHOULD_CALL_PARENT(FALSE)
 	var/turf/closed/support = loc
 	if(!istype(support) || !(support.smoothing_flags & SMOOTH_DIAGONAL_CORNERS))
 		return ..()
-	SHOULD_CALL_PARENT(FALSE)
 	flags_1 |= INITIALIZED_1
 #ifndef MAP_TEST
 	if(use_holiday_colors)
