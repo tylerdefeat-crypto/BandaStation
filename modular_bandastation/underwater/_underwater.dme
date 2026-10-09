@@ -4,9 +4,11 @@
 #include "code/swimming.dm"
 #include "code/parallax.dm"
 #include "code/environment.dm"
+#include "code/submarine.dm"
 
 #ifdef UNIT_TESTS
 #include "tests/water.dm"
 #include "tests/environment.dm"
 #include "tests/map.dm"
+#include "tests/submarine.dm"
 #endif
