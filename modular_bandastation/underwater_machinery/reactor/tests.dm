@@ -4,6 +4,9 @@
 	var/turf/floor = run_loc_floor_bottom_left
 	var/mob/living/carbon/human/consistent/engineer = allocate(/mob/living/carbon/human/consistent, floor)
 	var/obj/machinery/power/stationtrauma_reactor/reactor = allocate(/obj/machinery/power/stationtrauma_reactor, floor)
+	REACTOR_TEST(reactor.icon_state == "reactor_off", "A cold stopped reactor must show the donor's inactive sprite")
+	REACTOR_TEST(reactor.pixel_x == -32 && reactor.pixel_y == -32, "The original 96-pixel sprite must remain centred on the machine")
+	REACTOR_TEST(reactor.control_rod.icon_state in icon_states(reactor.control_rod.icon), "The physical control rod must have its donor sprite")
 	REACTOR_TEST(!reactor.set_output(1), "A reactor without fuel must not start")
 	var/obj/item/stationtrauma_fuel_rod/rod = allocate(/obj/item/stationtrauma_fuel_rod)
 	engineer.put_in_active_hand(rod, forced = TRUE)
@@ -12,6 +15,7 @@
 	var/datum/powernet/grid = allocate(/datum/powernet)
 	reactor.powernet = grid
 	REACTOR_TEST(reactor.set_output(0.5), "An intact fuelled reactor must accept half power")
+	REACTOR_TEST(reactor.icon_state == "reactor_on", "A running cold reactor must show the donor's active sprite")
 	var/fuel_before = rod.fuel_remaining
 	reactor.process(2)
 	REACTOR_TEST(reactor.generated_power == 15000 && grid.newavail == 30000, "Output must enter the native powernet as energy")
@@ -36,6 +40,7 @@
 	reactor.running = TRUE
 	reactor.process(1)
 	REACTOR_TEST(!reactor.running && reactor.generated_power == 0, "Overheat must trigger automatic SCRAM")
+	REACTOR_TEST(reactor.icon_state == "reactor_overheat", "A hot stopped reactor must retain a visible overheat indication")
 	reactor.core_temperature = T0C + 510
 	var/integrity_before = reactor.get_integrity()
 	reactor.process(1)

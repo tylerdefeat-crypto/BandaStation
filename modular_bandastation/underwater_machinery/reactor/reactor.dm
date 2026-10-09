@@ -7,8 +7,8 @@
 /obj/item/stationtrauma_fuel_rod
 	name = "топливная кассета AGCNR"
 	desc = "Сменная кассета упрощённого газоохлаждаемого реактора."
-	icon = 'icons/obj/stack_objects.dmi'
-	icon_state = "sheet-uranium"
+	icon = 'modular_bandastation/underwater_machinery/reactor/icons/control_rod.dmi'
+	icon_state = "irradiated"
 	w_class = WEIGHT_CLASS_NORMAL
 	/// Full-power operating seconds remaining; retained when the cartridge is removed.
 	var/fuel_remaining = 1800
@@ -20,14 +20,17 @@
 /obj/item/stationtrauma_control_rod
 	name = "управляющий стержень AGCNR"
 	desc = "Поглотитель, необходимый для управления реакцией и аварийной остановки."
-	icon = 'icons/obj/stack_objects.dmi'
-	icon_state = "rods"
+	icon = 'modular_bandastation/underwater_machinery/reactor/icons/control_rod.dmi'
+	icon_state = "normal"
 	w_class = WEIGHT_CLASS_NORMAL
 
 /obj/machinery/power/stationtrauma_reactor
 	name = "газоохлаждаемый реактор AGCNR"
 	desc = "ЛКМ — мощность или SCRAM. Лом извлекает кассету, затем управляющий стержень из остановленного холодного реактора. Охлаждающий насос должен стоять рядом."
-	icon_state = "rtg"
+	icon = 'modular_bandastation/underwater_machinery/reactor/icons/rbmk.dmi'
+	icon_state = MAP_SWITCH("reactor_off", "reactor_map")
+	pixel_x = -32
+	pixel_y = -32
 	density = TRUE
 	max_integrity = 400
 	integrity_failure = 0.5
@@ -92,6 +95,20 @@
 	if(core_temperature >= ST_REACTOR_DAMAGE)
 		scram()
 		take_damage(20 * seconds_per_tick, BURN, FIRE)
+	update_appearance(UPDATE_ICON_STATE)
+
+/obj/machinery/power/stationtrauma_reactor/update_icon_state()
+	. = ..()
+	if(machine_stat & BROKEN)
+		icon_state = "reactor_slagged"
+	else if(core_temperature >= ST_REACTOR_SCRAM)
+		icon_state = "reactor_overheat"
+	else if(core_temperature >= ST_REACTOR_WARNING)
+		icon_state = "reactor_veryhot"
+	else if(core_temperature >= T0C + 200)
+		icon_state = "reactor_hot"
+	else
+		icon_state = running ? "reactor_on" : "reactor_off"
 
 /obj/machinery/power/stationtrauma_reactor/proc/exchange_heat(datum/gas_mixture/coolant)
 	var/gas_capacity = coolant.heat_capacity()
@@ -100,6 +117,7 @@
 	var/energy = (core_temperature - coolant.temperature) / (1 / 5000 + 1 / gas_capacity)
 	core_temperature -= energy / 5000
 	coolant.temperature += energy / gas_capacity
+	update_appearance(UPDATE_ICON_STATE)
 	return energy
 
 /obj/machinery/power/stationtrauma_reactor/examine(mob/user)
