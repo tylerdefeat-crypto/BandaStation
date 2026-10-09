@@ -24,6 +24,9 @@
 			return FALSE
 	return ..(amount, /datum/reagent/water, net)
 
+/datum/component/plumbing/stationtrauma_water/transfer_to(datum/component/plumbing/target, amount, reagent, datum/ductnet/net, round_robin = TRUE)
+	return transfer_stationtrauma_water(reagents, target.recipient_reagents_holder(), amount)
+
 /datum/component/plumbing/stationtrauma_water/supply
 	demand_connects = NONE
 	supply_connects = SOUTH
@@ -54,6 +57,10 @@
 		reagents.add_reagent(/datum/reagent/water, initial_water, reagtemp = initial_temperature, no_react = TRUE)
 	AddComponent(plumbing_type)
 	AddElement(/datum/element/simple_rotation)
+
+/obj/machinery/stationtrauma_water_device/Destroy()
+	release_stationtrauma_water(src)
+	return ..()
 
 /obj/machinery/stationtrauma_water_device/examine(mob/user)
 	. = ..()
@@ -119,3 +126,53 @@
 /obj/machinery/stationtrauma_water_device/outlet/examine(mob/user)
 	. = ..()
 	. += span_notice("Выпуск [on ? "включён" : "выключен"].")
+
+/proc/drain_stationtrauma_water(atom/movable/source, turf/open/target)
+	if(!source)
+		return 0
+	var/turf/open/origin = get_turf(source)
+	if(!isopenturf(origin) || !isopenturf(target) || QDELETED(source.reagents))
+		return 0
+	origin.immediate_calculate_adjacent_turfs()
+	if(target != origin && (!(target in origin.atmos_adjacent_turfs) || get_dist(origin, target) != 1 || !(get_dir(origin, target) in GLOB.cardinals)))
+		return 0
+	return target.receive_water(source.reagents, source.reagents.get_reagent_amount(/datum/reagent/water))
+
+/proc/prompt_stationtrauma_water_drain(atom/movable/source, mob/living/user)
+	var/list/directions = list("Под собой" = NONE, "Север" = NORTH, "Юг" = SOUTH, "Запад" = WEST, "Восток" = EAST)
+	var/choice = tgui_input_list(user, "Куда слить воду? Переполнение останется в баке.", "Слив воды", directions)
+	if(QDELETED(source) || !choice || !user.can_perform_action(source, NEED_DEXTERITY | NEED_HANDS | FORBID_TELEKINESIS_REACH))
+		return
+	var/turf/open/origin = get_turf(source)
+	var/turf/open/target = directions[choice] ? get_step(origin, directions[choice]) : origin
+	var/volume = drain_stationtrauma_water(source, target)
+	source.balloon_alert(user, volume ? "слито [round(volume, 0.1)] л" : "слив невозможен")
+
+/proc/release_stationtrauma_water(atom/movable/source)
+	if(!source.reagents?.total_volume)
+		return
+	var/turf/open/origin = get_turf(source)
+	if(isopenturf(origin))
+		drain_stationtrauma_water(source, origin)
+		for(var/turf/open/target as anything in origin.atmos_adjacent_turfs)
+			drain_stationtrauma_water(source, target)
+	if(source.reagents.total_volume)
+		var/obj/item/stationtrauma_water_canister/remainder = new(source.drop_location())
+		var/volume = source.reagents.get_reagent_amount(/datum/reagent/water)
+		remainder.create_reagents(max(volume, CHEMICAL_VOLUME_ROUNDING), NO_REACT)
+		transfer_stationtrauma_water(source.reagents, remainder.reagents, volume)
+
+/obj/item/stationtrauma_water_canister
+	name = "ёмкость с остатком воды"
+	desc = "Вода из разобранного или разрушенного прибора. Используйте в руке, чтобы слить её на доступный пол."
+	icon = 'icons/obj/pipes_n_cables/hydrochem/plumbers.dmi'
+	icon_state = "tank"
+	w_class = WEIGHT_CLASS_BULKY
+
+/obj/item/stationtrauma_water_canister/examine(mob/user)
+	. = ..()
+	. += span_notice("Вода: [round(reagents?.total_volume, 0.1)] л; [round((reagents?.chem_temp || FLOOD_WATER_TEMPERATURE) - T0C, 0.1)] °C.")
+
+/obj/item/stationtrauma_water_canister/attack_self(mob/user)
+	if(isliving(user))
+		prompt_stationtrauma_water_drain(src, user)

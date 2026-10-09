@@ -35,7 +35,7 @@ SUBSYSTEM_DEF(floodwater)
 
 /datum/component/floodwater/proc/spread()
 	var/turf/open/tile = parent
-	// ponytail: equal-height, single-z tiles; add elevation/head pressure only if maps need them.
+	// shortcut: equal-height, single-z tiles; add elevation/head pressure only if maps need them.
 	for(var/turf/open/next_tile as anything in tile.atmos_adjacent_turfs)
 		if(next_tile.z != tile.z || get_dist(tile, next_tile) != 1 || !(get_dir(tile, next_tile) in GLOB.cardinals))
 			continue
@@ -45,9 +45,10 @@ SUBSYSTEM_DEF(floodwater)
 		if(next_water?.infinite_source)
 			continue
 		var/next_depth = next_water?.depth || 0
-		var/amount = min(FLOOD_WATER_FLOW, round((depth - next_depth) / 2))
-		if(amount <= 0)
+		var/difference = depth - next_depth
+		if(difference <= FLOOD_WATER_FLOW_EPSILON)
 			continue
+		var/amount = min(FLOOD_WATER_FLOW, difference / 2)
 		var/accepted = next_tile.add_water(amount * FLOOD_WATER_LITRES_PER_CM, temperature)
 		remove_water(accepted, allow_ocean = TRUE)
 		if(infinite_source)

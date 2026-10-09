@@ -118,7 +118,7 @@
 	if(water?.infinite_source)
 		return 0
 	var/old_volume = get_water_depth() * FLOOD_WATER_LITRES_PER_CM
-	var/accepted = FLOOR(min(volume, FLOOD_WATER_MAX_DEPTH * FLOOD_WATER_LITRES_PER_CM - old_volume), CHEMICAL_QUANTISATION_LEVEL)
+	var/accepted = min(volume, FLOOD_WATER_MAX_DEPTH * FLOOD_WATER_LITRES_PER_CM - old_volume)
 	if(accepted <= 0)
 		return 0
 	var/mixed_temperature = water ? (old_volume * water.temperature + accepted * water_temperature) / (old_volume + accepted) : water_temperature
@@ -129,7 +129,35 @@
 /turf/open/proc/receive_water(datum/reagents/source, volume)
 	if(QDELETED(source) || !isnum(volume) || !IS_FINITE(volume) || volume <= 0)
 		return 0
-	var/accepted = add_water(min(volume, source.get_reagent_amount(/datum/reagent/water)), source.chem_temp)
+	var/free_space = (FLOOD_WATER_MAX_DEPTH - get_water_depth()) * FLOOD_WATER_LITRES_PER_CM
+	var/accepted = add_water(stationtrauma_water_transfer_amount(source, volume, free_space), source.chem_temp)
+	if(accepted)
+		source.remove_reagent(/datum/reagent/water, accepted)
+	return accepted
+
+// TG rounds holder totals to centilitres and deletes smaller tails; retain those tails until a complete transfer fits.
+/proc/stationtrauma_water_transfer_amount(datum/reagents/source, volume, free_space)
+	if(QDELETED(source) || !isnum(volume) || !IS_FINITE(volume) || volume <= 0 || free_space <= 0)
+		return 0
+	var/available = source.get_reagent_amount(/datum/reagent/water)
+	var/amount = min(volume, available, free_space)
+	if(amount >= available)
+		return available
+	amount = FLOOR(amount, CHEMICAL_QUANTISATION_LEVEL)
+	if(available - amount < CHEMICAL_VOLUME_ROUNDING)
+		amount = max(0, FLOOR(available - CHEMICAL_VOLUME_ROUNDING, CHEMICAL_QUANTISATION_LEVEL))
+	return amount
+
+/proc/transfer_stationtrauma_water(datum/reagents/source, datum/reagents/receiver, volume)
+	if(QDELETED(receiver) || receiver == source)
+		return 0
+	var/free_space = receiver.maximum_volume
+	for(var/datum/reagent/reagent as anything in receiver.reagent_list)
+		free_space -= reagent.volume
+	var/amount = stationtrauma_water_transfer_amount(source, volume, free_space)
+	if(amount <= 0)
+		return 0
+	var/accepted = receiver.add_reagent(/datum/reagent/water, amount, reagtemp = source.chem_temp, no_react = TRUE)
 	if(accepted)
 		source.remove_reagent(/datum/reagent/water, accepted)
 	return accepted
@@ -189,14 +217,15 @@
 	wake()
 	wake_neighbours()
 
-/// A null receiver represents the existing overboard bilge discharge. Pumps cannot drain an ocean.
+/// Remove only an accepted transfer; a null receiver is used for floor-to-floor flow. Pumps cannot drain an ocean.
 /datum/component/floodwater/proc/remove_water(volume, datum/reagents/receiver = null, allow_ocean = FALSE)
 	if(!isnum(volume) || !IS_FINITE(volume) || volume <= 0 || (infinite_source && !allow_ocean))
 		return 0
-	var/removed = FLOOR(min(volume, depth * FLOOD_WATER_LITRES_PER_CM), CHEMICAL_QUANTISATION_LEVEL)
+	var/removed = min(volume, depth * FLOOD_WATER_LITRES_PER_CM)
 	if(receiver)
 		if(QDELETED(receiver))
 			return 0
+		removed = FLOOR(removed, CHEMICAL_QUANTISATION_LEVEL)
 		removed = receiver.add_reagent(/datum/reagent/water, removed, reagtemp = temperature, no_react = TRUE)
 	if(removed <= 0)
 		return 0

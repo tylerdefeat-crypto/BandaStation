@@ -15,6 +15,7 @@
 	var/obj/machinery/atmospherics/components/binary/stationtrauma_coolant_pump/cooling
 	var/obj/machinery/atmospherics/components/unary/stationtrauma_ocean_exchanger/exchanger
 	var/obj/machinery/stationtrauma_water_device/reservoir
+	var/obj/machinery/stationtrauma_water_device/drain_receiver
 	var/obj/machinery/stationtrauma_water_device/valve/valve
 	var/obj/machinery/stationtrauma_water_device/outlet/outlet
 	for(var/turf/tile as anything in loaded_turfs)
@@ -31,13 +32,20 @@
 		for(var/obj/machinery/atmospherics/components/unary/stationtrauma_ocean_exchanger/found in tile)
 			exchanger = found
 		for(var/obj/machinery/stationtrauma_water_device/found in tile)
-			if(found.type == /obj/machinery/stationtrauma_water_device)
+			if(found.capacity == 50000)
+				drain_receiver = found
+			else if(found.type == /obj/machinery/stationtrauma_water_device)
 				reservoir = found
 			else if(istype(found, /obj/machinery/stationtrauma_water_device/valve))
 				valve = found
 			else if(istype(found, /obj/machinery/stationtrauma_water_device/outlet))
 				outlet = found
 	MAP_TEST(pumps == 3, "The test map must provide two stationary pumps and one portable pump")
+	MAP_TEST(drain_receiver && drain_receiver.reagents.maximum_volume == 50000, "The drainage room must have its mapped receiver capacity")
+	var/list/drain_connections = drain_receiver.GetComponents(/datum/component/plumbing/stationtrauma_water)
+	MAP_TEST(length(drain_connections) == 1, "The drainage receiver must have one plumbing component")
+	var/datum/component/plumbing/stationtrauma_water/drain_connection = drain_connections[1]
+	MAP_TEST(drain_connection.ducts["8"], "The room pump must connect to its receiver through a real duct")
 	MAP_TEST(doors == 6, "The test map must provide compartment doors, a two-door exit, and a controlled breach")
 	MAP_TEST(ocean_tiles > 200, "The test template must include an external ocean")
 	MAP_TEST(reactor && cooling && exchanger, "The rig must contain a reactor and a real gas cooling loop")

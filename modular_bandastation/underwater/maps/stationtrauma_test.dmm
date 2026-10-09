@@ -115,6 +115,15 @@
 	baseturfs = /turf/open/space/ocean
 	},
 /area/stationtrauma_test)
+"lX" = (
+/obj/machinery/stationtrauma_water_device{
+	name = "испытательный приёмник 50 000 л";
+	capacity = 50000
+	},
+/turf/open/floor/iron{
+	baseturfs = /turf/open/space/ocean
+	},
+/area/stationtrauma_test)
 "mN" = (
 /obj/item/stack/tile/iron,
 /turf/open/floor/iron{
@@ -137,6 +146,14 @@
 "so" = (
 /obj/machinery/duct,
 /obj/item/flashlight,
+/turf/open/floor/iron{
+	baseturfs = /turf/open/space/ocean
+	},
+/area/stationtrauma_test)
+"tP" = (
+/obj/machinery/bilge_pump{
+	dir = 4
+	},
 /turf/open/floor/iron{
 	baseturfs = /turf/open/space/ocean
 	},
@@ -364,6 +381,15 @@
 /area/stationtrauma_test)
 "Xn" = (
 /obj/structure/chair,
+/turf/open/floor/iron{
+	baseturfs = /turf/open/space/ocean
+	},
+/area/stationtrauma_test)
+"XB" = (
+/obj/item/paper{
+	name = "Осушение отсека";
+	default_raw_text = "Закройте восточную течь, включите помпу рядом. Вода стекает к заборнику только через открытые проходы; закрытая гермодверь изолирует соседний отсек. Приёмник испытательного стенда вмещает 50 000 л; обычный резервуар — 1000 л. Стационарная помпа оставляет 0,5 см. Переносной насос с баком 200 л собирает остаток: закрепите его и откройте меню ЛКМ. Слив — в доступную соседнюю клетку; переполнение остаётся в баке. Разрыв трубы останавливает передачу, после заполнения буфера сбор прекращается."
+	},
 /turf/open/floor/iron{
 	baseturfs = /turf/open/space/ocean
 	},
@@ -1008,7 +1034,7 @@ ie
 ie
 ie
 ie
-RQ
+tP
 ie
 ie
 lR
@@ -1034,7 +1060,7 @@ ie
 ie
 ie
 ie
-ie
+AT
 ie
 EN
 lR
@@ -1059,8 +1085,8 @@ lR
 ie
 ie
 ie
-ie
-ie
+XB
+lX
 ie
 ie
 lR

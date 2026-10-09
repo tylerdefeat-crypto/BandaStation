@@ -75,7 +75,7 @@
 		for(var/turf/open/tile as anything in row)
 			var/datum/component/floodwater/water = tile.GetComponent(/datum/component/floodwater)
 			water?.spread()
-	WATER_TEST(first.get_water_depth() + second.get_water_depth() + third.get_water_depth() == 100, "Finite water must conserve volume")
+	WATER_TEST(abs(first.get_water_depth() + second.get_water_depth() + third.get_water_depth() - 100) < 0.001, "Finite fractional water must conserve volume within floating-point precision")
 	for(var/turf/open/tile as anything in row)
 		tile.set_water_depth(0)
 
