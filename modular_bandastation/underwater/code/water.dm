@@ -2,8 +2,9 @@
 #define FLOOD_WATER_WAIST 40
 #define FLOOD_WATER_DEEP 100
 #define FLOOD_WATER_SUBMERGED 200
-#define FLOOD_WATER_MAX_DEPTH 300
+#define FLOOD_WATER_MAX_DEPTH 220
 #define FLOOD_WATER_FLOW 10
+#define FLOOD_WATER_TEMPERATURE (T0C + 4)
 
 /area/space/ocean
 	name = "Deep ocean"
@@ -34,7 +35,8 @@
 	baseturfs = /turf/open/space/ocean
 	space_lit = FALSE
 	light_range = 0
-	temperature = T20C
+	temperature = FLOOD_WATER_TEMPERATURE
+	initial_gas_mix = GAS_O2 + "=22;" + GAS_N2 + "=82;TEMP=277.15"
 	/// The reservoir maintains this depth. Shallower subtypes represent a surface shoreline.
 	var/water_depth = FLOOD_WATER_MAX_DEPTH
 
@@ -47,12 +49,12 @@
 	var/area/ocean_area = loc
 	if(SSlighting.initialized && !lighting_object && ocean_area.static_lighting)
 		lighting_build_overlay()
-	// Use a temperate environment instead of inherited vacuum/cold. Breathing is gated by head immersion.
-	if(!SSair.planetary[OPENTURF_DEFAULT_ATMOS])
+	// The ocean gets its own cold environment; never change the shared room-air mixture.
+	if(!SSair.planetary[initial_gas_mix])
 		var/datum/gas_mixture/immutable/planetary/environment = new
-		environment.parse_string_immutable(OPENTURF_DEFAULT_ATMOS)
-		SSair.planetary[OPENTURF_DEFAULT_ATMOS] = environment
-	air = SSair.planetary[OPENTURF_DEFAULT_ATMOS]
+		environment.parse_string_immutable(initial_gas_mix)
+		SSair.planetary[initial_gas_mix] = environment
+	air = SSair.planetary[initial_gas_mix]
 	set_water_depth(water_depth, TRUE)
 
 /turf/open/space/ocean/remove_air(amount)

@@ -52,6 +52,11 @@
 	update_water()
 	if(owner.stat == DEAD || !water.affects(owner))
 		return
+	// Exterior cooling is already handled by TG; flooded room air remains independent of water.
+	if(iscarbon(owner) && !isspaceturf(owner.loc))
+		var/mob/living/carbon/swimmer = owner
+		var/cooling = get_temp_change_amount(FLOOD_WATER_TEMPERATURE - swimmer.bodytemperature, 0.1 * seconds_between_ticks * water.depth / FLOOD_WATER_MAX_DEPTH)
+		swimmer.adjust_bodytemperature(cooling, use_insulation = TRUE)
 	if(water.depth >= FLOOD_WATER_DEEP && !HAS_TRAIT(owner, TRAIT_SWIMMER))
 		var/skill = owner.mind?.get_skill_level(/datum/skill/athletics) || 0
 		var/cost = max(0.5, 2 - skill * 0.25) * seconds_between_ticks
