@@ -1,8 +1,11 @@
 #include "_underwater_machinery.dm"
 #include "airlocks/airlocks.dm"
 #include "pumps/pumps.dm"
+#include "reactor/reactor.dm"
+#include "reactor/cooling.dm"
 
 #ifdef UNIT_TESTS
 #include "airlocks/tests.dm"
 #include "pumps/tests.dm"
+#include "reactor/tests.dm"
 #endif

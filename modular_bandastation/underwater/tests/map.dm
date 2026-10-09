@@ -11,6 +11,9 @@
 	var/pumps = 0
 	var/doors = 0
 	var/ocean_tiles = 0
+	var/obj/machinery/power/stationtrauma_reactor/reactor
+	var/obj/machinery/atmospherics/components/binary/stationtrauma_coolant_pump/cooling
+	var/obj/machinery/atmospherics/components/unary/stationtrauma_ocean_exchanger/exchanger
 	for(var/turf/tile as anything in loaded_turfs)
 		if(istype(tile, /turf/open/space/ocean))
 			ocean_tiles++
@@ -18,9 +21,52 @@
 			pumps++
 		for(var/obj/machinery/door/airlock/highsecurity/underwater/door in tile)
 			doors++
+		for(var/obj/machinery/power/stationtrauma_reactor/found in tile)
+			reactor = found
+		for(var/obj/machinery/atmospherics/components/binary/stationtrauma_coolant_pump/found in tile)
+			cooling = found
+		for(var/obj/machinery/atmospherics/components/unary/stationtrauma_ocean_exchanger/found in tile)
+			exchanger = found
 	MAP_TEST(pumps == 3, "The test map must provide two stationary pumps and one portable pump")
 	MAP_TEST(doors == 6, "The test map must provide compartment doors, a two-door exit, and a controlled breach")
 	MAP_TEST(ocean_tiles > 200, "The test template must include an external ocean")
+	MAP_TEST(reactor && cooling && exchanger, "The rig must contain a reactor and a real gas cooling loop")
+	MAP_TEST(reactor.powernet && cooling.nodes[1] && cooling.nodes[2] && exchanger.nodes[1], "Power and coolant fixtures must really connect after loading")
+	reactor.core_temperature = T0C + 300
+	cooling.on = TRUE
+	cooling.set_machine_stat(cooling.machine_stat & ~NOPOWER)
+	cooling.process_atmos(1)
+	MAP_TEST(reactor.core_temperature < T0C + 300, "The powered map's gas loop must cool the core")
+	var/cooled_temperature = reactor.core_temperature
+	cooling.set_machine_stat(cooling.machine_stat | NOPOWER)
+	cooling.process_atmos(1)
+	MAP_TEST(reactor.core_temperature == cooled_temperature, "Loss of pump power must stop core cooling")
+	cooling.set_machine_stat(cooling.machine_stat & ~NOPOWER)
+	cooling.on = FALSE
+	cooling.process_atmos(1)
+	MAP_TEST(reactor.core_temperature == cooled_temperature, "A switched-off coolant pump must not transfer heat")
+	cooling.on = TRUE
+	var/datum/pipeline/loop = cooling.parents[1]
+	loop.reconcile_air()
+	reactor.fuel_rod = allocate(/obj/item/stationtrauma_fuel_rod, reactor)
+	reactor.core_temperature = T20C
+	MAP_TEST(reactor.set_output(1), "The test rig must start at full output")
+	for(var/tick in 1 to 300)
+		reactor.process(1)
+		cooling.process_atmos(1)
+		loop.reconcile_air()
+		exchanger.process_atmos(1)
+		loop.reconcile_air()
+	MAP_TEST(reactor.running && reactor.core_temperature < T0C + 450, "The supplied cooling loop must sustain five minutes of full output without auto-SCRAM")
+	reactor.scram()
+	var/datum/gas_mixture/radiator_air = exchanger.airs[1]
+	radiator_air.temperature = T0C + 200
+	exchanger.process_atmos(1)
+	MAP_TEST(radiator_air.temperature < T0C + 200, "The external radiator must cool gas against the ocean")
+	cooled_temperature = reactor.core_temperature
+	qdel(cooling.nodes[1])
+	cooling.process_atmos(1)
+	MAP_TEST(!cooling.nodes[1] && reactor.core_temperature == cooled_temperature, "A real broken intake pipe must stop cooling")
 	qdel(template)
 
 #ifdef FLOODWATER_TEST_ONLY

@@ -1,4 +1,12 @@
 //MAP CONVERTED BY dmm2tgm.py THIS HEADER COMMENT PREVENTS RECONVERSION, DO NOT REMOVE
+"ag" = (
+/obj/machinery/atmospherics/pipe/smart/simple{
+	dir = 6
+	},
+/turf/open/floor/iron{
+	baseturfs = /turf/open/space/ocean
+	},
+/area/stationtrauma_test)
 "al" = (
 /obj/item/stack/rods,
 /turf/open/floor/iron{
@@ -11,12 +19,29 @@
 	baseturfs = /turf/open/space/ocean
 	},
 /area/stationtrauma_test)
-"du" = (
-/obj/structure/flora/underwater/coral,
+"bR" = (
+/obj/machinery/atmospherics/components/unary/stationtrauma_ocean_exchanger{
+	dir = 8
+	},
 /turf/open/space/ocean,
 /area/space/ocean)
+"du" = (
+/obj/item/stationtrauma_control_rod,
+/turf/open/floor/iron{
+	baseturfs = /turf/open/space/ocean
+	},
+/area/stationtrauma_test)
 "eO" = (
 /obj/item/clothing/head/helmet/space,
+/turf/open/floor/iron{
+	baseturfs = /turf/open/space/ocean
+	},
+/area/stationtrauma_test)
+"fg" = (
+/obj/structure/cable,
+/obj/machinery/atmospherics/pipe/smart/simple{
+	dir = 4
+	},
 /turf/open/floor/iron{
 	baseturfs = /turf/open/space/ocean
 	},
@@ -29,6 +54,14 @@
 /area/stationtrauma_test)
 "ie" = (
 /turf/open/floor/iron{
+	baseturfs = /turf/open/space/ocean
+	},
+/area/stationtrauma_test)
+"iE" = (
+/obj/machinery/atmospherics/pipe/smart/simple{
+	dir = 1
+	},
+/turf/closed/wall{
 	baseturfs = /turf/open/space/ocean
 	},
 /area/stationtrauma_test)
@@ -45,13 +78,11 @@
 	},
 /area/stationtrauma_test)
 "kh" = (
-/obj/machinery/power/apc{
-	dir = 1;
-	 start_charge = 100;
-	 cell_type = /obj/item/stock_parts/power_store/battery/hyper;
-	 unlocked = 1
-	},
 /obj/structure/cable,
+/obj/machinery/atmospherics/components/binary/stationtrauma_coolant_pump/precharged{
+	dir = 1;
+	 on = 1
+	},
 /turf/open/floor/iron{
 	baseturfs = /turf/open/space/ocean
 	},
@@ -82,6 +113,24 @@
 "uR" = (
 /turf/open/space/ocean,
 /area/space/ocean)
+"wn" = (
+/obj/machinery/power/rtg{
+	power_gen = 5000;
+	 affected_by_parts = 0
+	},
+/obj/structure/cable,
+/turf/open/floor/iron{
+	baseturfs = /turf/open/space/ocean
+	},
+/area/stationtrauma_test)
+"zx" = (
+/obj/machinery/atmospherics/pipe/smart/simple{
+	dir = 9
+	},
+/turf/closed/wall{
+	baseturfs = /turf/open/space/ocean
+	},
+/area/stationtrauma_test)
 "AS" = (
 /obj/item/stack/sheet/iron,
 /turf/open/floor/iron{
@@ -96,7 +145,7 @@
 /obj/structure/table,
 /obj/item/paper{
 	name = "Испытания StationTrauma";
-	 default_raw_text = "Глубина океана: 600 м. Вода: 4 C. Предел затопления: 2,2 м. Восточная гермодверь — управляемая течь: откройте, затем закройте. Изолируйте отсек внутренними дверями. Включите помпу. Alt+ЛКМ на закрытой двери — механический запор. Для выхода в океан наденьте защитный костюм, шлем и маску; включите дыхание от баллона. Насосная находится на юго-западе. На северо-востоке — АПЦ, РИТЭГ и резерв под реактор."
+	 default_raw_text = "Глубина океана: 600 м. Вода: 4 C. Предел затопления: 2,2 м. Восточная гермодверь — управляемая течь: откройте, затем закройте. Изолируйте отсек внутренними дверями. Включите помпу. Alt+ЛКМ на закрытой двери — механический запор. Для выхода в океан наденьте защитный костюм, шлем и маску; включите дыхание от баллона. Насосная находится на юго-западе. На северо-востоке — АПЦ, резервный РИТЭГ и реактор. Вставьте топливную кассету, проверьте включённый насос охлаждения, затем выберите мощность ЛКМ на реакторе. SCRAM не убирает остаточное тепло."
 	},
 /turf/open/floor/iron{
 	baseturfs = /turf/open/space/ocean
@@ -109,9 +158,7 @@
 	},
 /area/stationtrauma_test)
 "EM" = (
-/obj/structure/table{
-	name = "место для будущего реакторного пульта"
-	},
+/obj/item/stationtrauma_fuel_rod,
 /turf/open/floor/iron{
 	baseturfs = /turf/open/space/ocean
 	},
@@ -124,8 +171,18 @@
 	baseturfs = /turf/open/space/ocean
 	},
 /area/stationtrauma_test)
+"FI" = (
+/obj/structure/flora/underwater/glowing,
+/turf/open/space/ocean,
+/area/space/ocean)
 "FM" = (
 /obj/item/clothing/mask/breath,
+/turf/open/floor/iron{
+	baseturfs = /turf/open/space/ocean
+	},
+/area/stationtrauma_test)
+"Gj" = (
+/obj/structure/cable,
 /turf/open/floor/iron{
 	baseturfs = /turf/open/space/ocean
 	},
@@ -136,6 +193,10 @@
 	baseturfs = /turf/open/space/ocean
 	},
 /area/stationtrauma_test)
+"HZ" = (
+/obj/structure/flora/underwater/coral,
+/turf/open/space/ocean,
+/area/space/ocean)
 "IG" = (
 /obj/structure/underwater_scrap,
 /turf/open/space/ocean,
@@ -147,20 +208,40 @@
 	},
 /area/stationtrauma_test)
 "KG" = (
-/obj/structure/flora/underwater/glowing,
-/turf/open/space/ocean,
-/area/space/ocean)
+/obj/structure/chair,
+/obj/machinery/atmospherics/pipe/smart/simple{
+	dir = 1
+	},
+/turf/open/floor/iron{
+	baseturfs = /turf/open/space/ocean
+	},
+/area/stationtrauma_test)
+"Ny" = (
+/obj/machinery/atmospherics/pipe/smart/simple{
+	dir = 4
+	},
+/turf/open/floor/iron{
+	baseturfs = /turf/open/space/ocean
+	},
+/area/stationtrauma_test)
 "Oe" = (
-/obj/structure/cable,
+/obj/machinery/atmospherics/pipe/smart/simple{
+	dir = 5
+	},
+/turf/open/floor/iron{
+	baseturfs = /turf/open/space/ocean
+	},
+/area/stationtrauma_test)
+"QB" = (
+/obj/structure/table{
+	name = "инженерный стол"
+	},
 /turf/open/floor/iron{
 	baseturfs = /turf/open/space/ocean
 	},
 /area/stationtrauma_test)
 "RO" = (
-/obj/machinery/power/rtg{
-	power_gen = 5000;
-	 affected_by_parts = 0
-	},
+/obj/machinery/power/stationtrauma_reactor,
 /obj/structure/cable,
 /turf/open/floor/iron{
 	baseturfs = /turf/open/space/ocean
@@ -168,6 +249,25 @@
 /area/stationtrauma_test)
 "RQ" = (
 /obj/machinery/bilge_pump,
+/turf/open/floor/iron{
+	baseturfs = /turf/open/space/ocean
+	},
+/area/stationtrauma_test)
+"Sa" = (
+/obj/machinery/atmospherics/pipe/smart/manifold4w,
+/turf/closed/wall{
+	baseturfs = /turf/open/space/ocean
+	},
+/area/stationtrauma_test)
+"Vy" = (
+/obj/machinery/power/apc{
+	dir = 1;
+	pixel_y = 25;
+	 start_charge = 100;
+	 cell_type = /obj/item/stock_parts/power_store/battery/hyper;
+	 unlocked = 1
+	},
+/obj/structure/cable,
 /turf/open/floor/iron{
 	baseturfs = /turf/open/space/ocean
 	},
@@ -188,6 +288,14 @@
 /obj/structure/flora/underwater/long,
 /turf/open/space/ocean,
 /area/space/ocean)
+"Yq" = (
+/obj/machinery/atmospherics/pipe/smart/simple{
+	dir = 10
+	},
+/turf/closed/wall{
+	baseturfs = /turf/open/space/ocean
+	},
+/area/stationtrauma_test)
 "ZX" = (
 /obj/item/wrench,
 /turf/open/floor/iron{
@@ -671,7 +779,7 @@ uR
 lR
 ie
 ie
-ie
+du
 ie
 ie
 ie
@@ -697,7 +805,7 @@ uR
 lR
 ie
 ie
-ie
+EM
 ie
 ie
 ie
@@ -724,7 +832,7 @@ lR
 ie
 ie
 ie
-ie
+RO
 ie
 ie
 lR
@@ -748,10 +856,10 @@ uR
 uR
 lR
 ie
-ie
-Xn
-ie
-ie
+ag
+KG
+kh
+Oe
 ie
 lR
 ie
@@ -774,10 +882,10 @@ uR
 uR
 lR
 ie
+Ny
 ie
-ie
-ie
-ie
+Gj
+Ny
 ie
 VA
 ie
@@ -790,7 +898,7 @@ ie
 lR
 uR
 uR
-du
+HZ
 uR
 "}
 (24,1,1) = {"
@@ -800,10 +908,10 @@ uR
 uR
 lR
 EN
-ie
-EM
-ie
-ie
+Ny
+QB
+Gj
+Ny
 ie
 lR
 ie
@@ -826,10 +934,10 @@ uR
 uR
 lR
 ie
+Ny
 ie
-ie
-ie
-ie
+Gj
+Ny
 ie
 lR
 ie
@@ -852,10 +960,10 @@ uR
 uR
 lR
 ie
+Ny
 ie
-ie
-ie
-ie
+Gj
+Ny
 ie
 lR
 ie
@@ -877,11 +985,11 @@ uR
 uR
 uR
 lR
-kh
-Oe
-Oe
-RO
-ie
+Vy
+fg
+Gj
+wn
+Ny
 ie
 lR
 ie
@@ -904,10 +1012,10 @@ uR
 uR
 lR
 ie
+Ny
 ie
 ie
-ie
-ie
+Ny
 ie
 lR
 ie
@@ -930,10 +1038,10 @@ uR
 uR
 lR
 lR
-lR
-lR
-lR
-lR
+Yq
+Sa
+iE
+zx
 lR
 lR
 lR
@@ -957,7 +1065,7 @@ uR
 uR
 uR
 uR
-uR
+bR
 uR
 uR
 uR
@@ -1009,7 +1117,7 @@ uR
 uR
 uR
 uR
-KG
+FI
 uR
 uR
 uR
@@ -1019,7 +1127,7 @@ uR
 uR
 uR
 uR
-du
+HZ
 uR
 uR
 uR
