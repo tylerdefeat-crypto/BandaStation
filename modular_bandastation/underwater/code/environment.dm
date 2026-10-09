@@ -1,4 +1,9 @@
 // Flora artwork and salvage concept: CeladonSS13/Nodalec; see ATTRIBUTION.md.
+/area/stationtrauma_test
+	name = "StationTrauma: испытательный полигон"
+	requires_power = TRUE
+	static_lighting = TRUE
+
 /obj/structure/flora/underwater
 	name = "водоросли"
 	desc = "Морская растительность, колышущаяся в темноте."

@@ -1,0 +1,1081 @@
+//MAP CONVERTED BY dmm2tgm.py THIS HEADER COMMENT PREVENTS RECONVERSION, DO NOT REMOVE
+"al" = (
+/obj/item/stack/rods,
+/turf/open/floor/iron{
+	baseturfs = /turf/open/space/ocean
+	},
+/area/stationtrauma_test)
+"aQ" = (
+/obj/item/stock_parts/power_store/cell/high,
+/turf/open/floor/iron{
+	baseturfs = /turf/open/space/ocean
+	},
+/area/stationtrauma_test)
+"du" = (
+/obj/structure/flora/underwater/coral,
+/turf/open/space/ocean,
+/area/space/ocean)
+"eO" = (
+/obj/item/clothing/head/helmet/space,
+/turf/open/floor/iron{
+	baseturfs = /turf/open/space/ocean
+	},
+/area/stationtrauma_test)
+"fD" = (
+/obj/item/flashlight,
+/turf/open/floor/iron{
+	baseturfs = /turf/open/space/ocean
+	},
+/area/stationtrauma_test)
+"ie" = (
+/turf/open/floor/iron{
+	baseturfs = /turf/open/space/ocean
+	},
+/area/stationtrauma_test)
+"jq" = (
+/obj/item/weldingtool,
+/turf/open/floor/iron{
+	baseturfs = /turf/open/space/ocean
+	},
+/area/stationtrauma_test)
+"jC" = (
+/obj/machinery/bilge_pump/portable,
+/turf/open/floor/iron{
+	baseturfs = /turf/open/space/ocean
+	},
+/area/stationtrauma_test)
+"kh" = (
+/obj/machinery/power/apc{
+	dir = 1;
+	 start_charge = 100;
+	 cell_type = /obj/item/stock_parts/power_store/battery/hyper;
+	 unlocked = 1
+	},
+/obj/structure/cable,
+/turf/open/floor/iron{
+	baseturfs = /turf/open/space/ocean
+	},
+/area/stationtrauma_test)
+"kW" = (
+/obj/item/wirecutters,
+/turf/open/floor/iron{
+	baseturfs = /turf/open/space/ocean
+	},
+/area/stationtrauma_test)
+"lR" = (
+/turf/closed/wall{
+	baseturfs = /turf/open/space/ocean
+	},
+/area/stationtrauma_test)
+"mN" = (
+/obj/item/stack/tile/iron,
+/turf/open/floor/iron{
+	baseturfs = /turf/open/space/ocean
+	},
+/area/stationtrauma_test)
+"nk" = (
+/obj/item/crowbar,
+/turf/open/floor/iron{
+	baseturfs = /turf/open/space/ocean
+	},
+/area/stationtrauma_test)
+"uR" = (
+/turf/open/space/ocean,
+/area/space/ocean)
+"AS" = (
+/obj/item/stack/sheet/iron,
+/turf/open/floor/iron{
+	baseturfs = /turf/open/space/ocean
+	},
+/area/stationtrauma_test)
+"Bf" = (
+/obj/structure/flora/underwater,
+/turf/open/space/ocean,
+/area/space/ocean)
+"Dn" = (
+/obj/structure/table,
+/obj/item/paper{
+	name = "Испытания StationTrauma";
+	 default_raw_text = "Глубина океана: 600 м. Вода: 4 C. Предел затопления: 2,2 м. Восточная гермодверь — управляемая течь: откройте, затем закройте. Изолируйте отсек внутренними дверями. Включите помпу. Alt+ЛКМ на закрытой двери — механический запор. Для выхода в океан наденьте защитный костюм, шлем и маску; включите дыхание от баллона. Насосная находится на юго-западе. На северо-востоке — АПЦ, РИТЭГ и резерв под реактор."
+	},
+/turf/open/floor/iron{
+	baseturfs = /turf/open/space/ocean
+	},
+/area/stationtrauma_test)
+"DW" = (
+/obj/item/screwdriver,
+/turf/open/floor/iron{
+	baseturfs = /turf/open/space/ocean
+	},
+/area/stationtrauma_test)
+"EM" = (
+/obj/structure/table{
+	name = "место для будущего реакторного пульта"
+	},
+/turf/open/floor/iron{
+	baseturfs = /turf/open/space/ocean
+	},
+/area/stationtrauma_test)
+"EN" = (
+/obj/machinery/light{
+	dir = 1
+	},
+/turf/open/floor/iron{
+	baseturfs = /turf/open/space/ocean
+	},
+/area/stationtrauma_test)
+"FM" = (
+/obj/item/clothing/mask/breath,
+/turf/open/floor/iron{
+	baseturfs = /turf/open/space/ocean
+	},
+/area/stationtrauma_test)
+"HL" = (
+/obj/item/clothing/suit/space,
+/turf/open/floor/iron{
+	baseturfs = /turf/open/space/ocean
+	},
+/area/stationtrauma_test)
+"IG" = (
+/obj/structure/underwater_scrap,
+/turf/open/space/ocean,
+/area/space/ocean)
+"IX" = (
+/obj/item/tank/internals/oxygen,
+/turf/open/floor/iron{
+	baseturfs = /turf/open/space/ocean
+	},
+/area/stationtrauma_test)
+"KG" = (
+/obj/structure/flora/underwater/glowing,
+/turf/open/space/ocean,
+/area/space/ocean)
+"Oe" = (
+/obj/structure/cable,
+/turf/open/floor/iron{
+	baseturfs = /turf/open/space/ocean
+	},
+/area/stationtrauma_test)
+"RO" = (
+/obj/machinery/power/rtg{
+	power_gen = 5000;
+	 affected_by_parts = 0
+	},
+/obj/structure/cable,
+/turf/open/floor/iron{
+	baseturfs = /turf/open/space/ocean
+	},
+/area/stationtrauma_test)
+"RQ" = (
+/obj/machinery/bilge_pump,
+/turf/open/floor/iron{
+	baseturfs = /turf/open/space/ocean
+	},
+/area/stationtrauma_test)
+"VA" = (
+/obj/machinery/door/airlock/highsecurity/underwater,
+/turf/open/floor/iron{
+	baseturfs = /turf/open/space/ocean
+	},
+/area/stationtrauma_test)
+"Xn" = (
+/obj/structure/chair,
+/turf/open/floor/iron{
+	baseturfs = /turf/open/space/ocean
+	},
+/area/stationtrauma_test)
+"XQ" = (
+/obj/structure/flora/underwater/long,
+/turf/open/space/ocean,
+/area/space/ocean)
+"ZX" = (
+/obj/item/wrench,
+/turf/open/floor/iron{
+	baseturfs = /turf/open/space/ocean
+	},
+/area/stationtrauma_test)
+
+(1,1,1) = {"
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+"}
+(2,1,1) = {"
+uR
+uR
+uR
+uR
+uR
+uR
+IG
+uR
+uR
+uR
+XQ
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+Bf
+uR
+uR
+uR
+uR
+uR
+"}
+(3,1,1) = {"
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+"}
+(4,1,1) = {"
+uR
+uR
+uR
+uR
+lR
+lR
+lR
+lR
+lR
+lR
+lR
+lR
+lR
+lR
+VA
+lR
+lR
+lR
+lR
+lR
+uR
+uR
+uR
+uR
+"}
+(5,1,1) = {"
+uR
+uR
+uR
+uR
+lR
+ie
+ie
+ie
+ie
+ie
+ie
+lR
+ie
+EN
+ie
+ie
+ie
+ie
+ie
+lR
+uR
+uR
+uR
+uR
+"}
+(6,1,1) = {"
+uR
+uR
+uR
+uR
+lR
+ie
+eO
+HL
+IX
+FM
+ie
+lR
+ie
+ie
+ie
+ie
+ie
+ie
+ie
+lR
+uR
+uR
+uR
+uR
+"}
+(7,1,1) = {"
+uR
+uR
+uR
+uR
+lR
+ie
+ie
+ie
+ie
+ie
+ie
+lR
+lR
+lR
+VA
+lR
+lR
+lR
+lR
+lR
+uR
+uR
+uR
+uR
+"}
+(8,1,1) = {"
+uR
+uR
+uR
+uR
+lR
+ie
+ie
+ie
+ie
+ie
+ie
+lR
+ie
+ie
+ie
+ie
+ie
+ie
+ie
+lR
+uR
+uR
+uR
+uR
+"}
+(9,1,1) = {"
+uR
+uR
+uR
+uR
+lR
+ie
+ie
+ie
+ie
+ie
+ie
+lR
+ie
+ie
+ie
+ZX
+RQ
+fD
+ie
+lR
+uR
+uR
+uR
+uR
+"}
+(10,1,1) = {"
+uR
+uR
+uR
+uR
+lR
+EN
+ie
+Dn
+Xn
+ie
+ie
+VA
+ie
+ie
+ie
+DW
+ie
+aQ
+EN
+lR
+uR
+uR
+uR
+uR
+"}
+(11,1,1) = {"
+uR
+uR
+uR
+uR
+lR
+ie
+ie
+ie
+ie
+ie
+ie
+lR
+ie
+ie
+ie
+nk
+jC
+AS
+ie
+lR
+uR
+uR
+uR
+uR
+"}
+(12,1,1) = {"
+uR
+XQ
+uR
+uR
+lR
+ie
+ie
+ie
+ie
+ie
+ie
+lR
+ie
+ie
+ie
+jq
+ie
+al
+ie
+lR
+uR
+uR
+uR
+uR
+"}
+(13,1,1) = {"
+uR
+uR
+uR
+uR
+lR
+ie
+ie
+ie
+ie
+ie
+ie
+lR
+ie
+ie
+ie
+kW
+ie
+mN
+ie
+lR
+uR
+uR
+uR
+uR
+"}
+(14,1,1) = {"
+uR
+uR
+uR
+uR
+lR
+ie
+ie
+ie
+ie
+ie
+ie
+lR
+ie
+ie
+ie
+ie
+ie
+ie
+ie
+lR
+uR
+uR
+uR
+uR
+"}
+(15,1,1) = {"
+uR
+uR
+uR
+uR
+lR
+ie
+ie
+ie
+ie
+ie
+ie
+lR
+ie
+ie
+ie
+ie
+ie
+ie
+ie
+lR
+uR
+uR
+uR
+uR
+"}
+(16,1,1) = {"
+uR
+uR
+uR
+uR
+lR
+lR
+lR
+lR
+lR
+lR
+lR
+lR
+lR
+lR
+VA
+lR
+lR
+lR
+lR
+lR
+uR
+uR
+uR
+uR
+"}
+(17,1,1) = {"
+uR
+uR
+uR
+uR
+lR
+ie
+ie
+ie
+ie
+ie
+ie
+lR
+ie
+ie
+ie
+ie
+ie
+ie
+ie
+lR
+uR
+uR
+uR
+uR
+"}
+(18,1,1) = {"
+uR
+uR
+uR
+uR
+lR
+ie
+ie
+ie
+ie
+ie
+ie
+lR
+ie
+ie
+ie
+ie
+ie
+ie
+ie
+lR
+uR
+uR
+uR
+uR
+"}
+(19,1,1) = {"
+uR
+uR
+uR
+uR
+lR
+ie
+ie
+ie
+ie
+ie
+ie
+lR
+ie
+ie
+ie
+ie
+ie
+ie
+ie
+lR
+uR
+uR
+uR
+uR
+"}
+(20,1,1) = {"
+uR
+uR
+uR
+uR
+lR
+ie
+ie
+ie
+ie
+ie
+ie
+lR
+ie
+ie
+ie
+ie
+ie
+ie
+ie
+lR
+uR
+uR
+uR
+uR
+"}
+(21,1,1) = {"
+uR
+uR
+uR
+uR
+lR
+ie
+ie
+ie
+ie
+ie
+ie
+lR
+ie
+ie
+ie
+ie
+ie
+ie
+ie
+lR
+uR
+uR
+uR
+uR
+"}
+(22,1,1) = {"
+uR
+uR
+uR
+uR
+lR
+ie
+ie
+Xn
+ie
+ie
+ie
+lR
+ie
+ie
+ie
+ie
+ie
+ie
+ie
+lR
+uR
+uR
+uR
+uR
+"}
+(23,1,1) = {"
+uR
+uR
+uR
+uR
+lR
+ie
+ie
+ie
+ie
+ie
+ie
+VA
+ie
+ie
+ie
+ie
+ie
+ie
+ie
+lR
+uR
+uR
+du
+uR
+"}
+(24,1,1) = {"
+uR
+uR
+uR
+uR
+lR
+EN
+ie
+EM
+ie
+ie
+ie
+lR
+ie
+ie
+ie
+ie
+RQ
+ie
+ie
+lR
+uR
+uR
+uR
+uR
+"}
+(25,1,1) = {"
+uR
+uR
+uR
+uR
+lR
+ie
+ie
+ie
+ie
+ie
+ie
+lR
+ie
+ie
+ie
+ie
+ie
+ie
+EN
+lR
+uR
+uR
+uR
+uR
+"}
+(26,1,1) = {"
+uR
+uR
+uR
+uR
+lR
+ie
+ie
+ie
+ie
+ie
+ie
+lR
+ie
+ie
+ie
+ie
+ie
+ie
+ie
+lR
+uR
+uR
+uR
+uR
+"}
+(27,1,1) = {"
+uR
+uR
+uR
+uR
+lR
+kh
+Oe
+Oe
+RO
+ie
+ie
+lR
+ie
+ie
+ie
+ie
+ie
+ie
+ie
+lR
+uR
+uR
+uR
+uR
+"}
+(28,1,1) = {"
+uR
+uR
+uR
+uR
+lR
+ie
+ie
+ie
+ie
+ie
+ie
+lR
+ie
+ie
+ie
+ie
+ie
+ie
+ie
+lR
+uR
+uR
+uR
+uR
+"}
+(29,1,1) = {"
+uR
+uR
+uR
+uR
+lR
+lR
+lR
+lR
+lR
+lR
+lR
+lR
+lR
+lR
+VA
+lR
+lR
+lR
+lR
+lR
+uR
+uR
+uR
+uR
+"}
+(30,1,1) = {"
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+"}
+(31,1,1) = {"
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+IG
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+"}
+(32,1,1) = {"
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+KG
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+du
+uR
+uR
+uR
+uR
+uR
+uR
+"}
+(33,1,1) = {"
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+"}
+(34,1,1) = {"
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+uR
+"}

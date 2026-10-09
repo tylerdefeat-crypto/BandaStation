@@ -8,4 +8,5 @@
 #ifdef UNIT_TESTS
 #include "tests/water.dm"
 #include "tests/environment.dm"
+#include "tests/map.dm"
 #endif
