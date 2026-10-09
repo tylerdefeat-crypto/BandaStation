@@ -1,8 +1,10 @@
 /// Water-only adapters over TG's duct networks; one holder unit represents one litre here.
 // shortcut: use a sealed vessel circuit, rebuild boundary duct networks before supporting dock-side hoses.
 /datum/component/plumbing/stationtrauma_water
+	dupe_mode = COMPONENT_DUPE_UNIQUE
 	demand_connects = WEST
 	supply_connects = EAST
+	ducting_layer = STATIONTRAUMA_WATER_LAYER
 
 /datum/component/plumbing/stationtrauma_water/send_request(dir)
 	var/obj/machinery/machine = parent
@@ -12,7 +14,11 @@
 		var/obj/machinery/stationtrauma_water_device/valve/valve = machine
 		if(!valve.valve_open)
 			return
-	process_request(200 * SSFLUIDS_DT, /datum/reagent/water, dir)
+	var/rate = 5000
+	if(istype(machine, /obj/machinery/stationtrauma_water_device/outlet/overboard))
+		var/obj/machinery/stationtrauma_water_device/outlet/overboard/outlet = machine
+		rate = outlet.flow_rate
+	process_request(rate * SSFLUIDS_DT, /datum/reagent/water, dir)
 
 /datum/component/plumbing/stationtrauma_water/can_give(amount, reagent, datum/ductnet/net)
 	var/obj/machinery/machine = parent
@@ -55,8 +61,9 @@
 	reagents.set_temperature(initial_temperature)
 	if(initial_water > 0)
 		reagents.add_reagent(/datum/reagent/water, initial_water, reagtemp = initial_temperature, no_react = TRUE)
-	AddComponent(plumbing_type)
-	AddElement(/datum/element/simple_rotation)
+	if(plumbing_type)
+		AddComponent(plumbing_type)
+		AddElement(/datum/element/simple_rotation)
 
 /obj/machinery/stationtrauma_water_device/Destroy()
 	release_stationtrauma_water(src)
@@ -74,7 +81,7 @@
 	desc = "ЛКМ — открыть или закрыть. Закрытый клапан не принимает и не отдаёт воду. Вход — с запада, выход — с востока."
 	icon_state = "filter"
 	density = FALSE
-	capacity = 400
+	capacity = 10000
 	var/valve_open = FALSE
 
 /obj/machinery/stationtrauma_water_device/valve/attack_hand(mob/living/user, list/modifiers)
@@ -102,6 +109,9 @@
 /obj/machinery/stationtrauma_water_device/outlet/attack_hand(mob/living/user, list/modifiers)
 	if(..())
 		return
+	control_outlet(user)
+
+/obj/machinery/stationtrauma_water_device/outlet/proc/control_outlet(mob/living/user)
 	on = !on
 	if(on)
 		begin_processing()

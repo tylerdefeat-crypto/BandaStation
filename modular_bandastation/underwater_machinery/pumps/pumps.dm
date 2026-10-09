@@ -1,20 +1,22 @@
 /// Water reaches the intake through the existing floodwater flow, never through sealed walls.
 /obj/machinery/bilge_pump
 	name = "трюмная помпа"
-	desc = "Собирает воду, стекающую к заборнику, в трубный буфер. ЛКМ — питание. Требует АПЦ; оставляет слой 0,5 см. Выход plumbing — на юге."
+	desc = "Собирает воду в трубный буфер. Включается контроллером помп; ЛКМ открывает ближайший контроллер своей группы. Требует АПЦ; оставляет слой 0,5 см. Выход водяной трубы — на юге."
 	icon = 'modular_bandastation/underwater_machinery/pumps/icons/drains.dmi'
 	icon_state = "active_input"
 	density = FALSE
 	idle_power_usage = 5
 	processing_flags = NONE
 	/// Centimetres removed from the intake tile each second.
-	var/drain_rate = 20
+	var/drain_rate = 100
 	var/on = FALSE
 	var/residual_depth = 0.5
+	var/buffer_capacity = 10000
+	var/control_group = "water"
 
 /obj/machinery/bilge_pump/Initialize(mapload)
 	. = ..()
-	create_reagents(200, NO_REACT)
+	create_reagents(buffer_capacity, NO_REACT)
 	AddComponent(/datum/component/plumbing/stationtrauma_water/supply)
 	AddElement(/datum/element/simple_rotation)
 
@@ -28,7 +30,11 @@
 	control_pump(user)
 
 /obj/machinery/bilge_pump/proc/control_pump(mob/living/user)
-	toggle_pump(user)
+	for(var/obj/machinery/stationtrauma_pump_controller/controller in range(7, src))
+		if(get_area(controller) == get_area(src) && controller.control_group == control_group)
+			controller.ui_interact(user)
+			return
+	balloon_alert(user, "нужен контроллер")
 
 /obj/machinery/bilge_pump/proc/toggle_pump(mob/living/user)
 	on = !on
@@ -42,7 +48,7 @@
 /obj/machinery/bilge_pump/examine(mob/user)
 	. = ..()
 	. += span_notice("Помпа [on ? "включена" : "выключена"]. Скорость осушения у заборника: [drain_rate] см/с.")
-	. += span_notice("Буфер: [round(reagents.total_volume, 0.1)] / [reagents.maximum_volume] л; [round(reagents.chem_temp - T0C, 0.1)] °C. Выход подключается к трубам plumbing TG.")
+	. += span_notice("Буфер: [round(reagents.total_volume, 0.1)] / [reagents.maximum_volume] л; [round(reagents.chem_temp - T0C, 0.1)] °C. Выход подключается к водяным трубам.")
 
 /obj/machinery/bilge_pump/proc/draw_pump_energy(seconds_per_tick)
 	if(!is_operational)
@@ -69,7 +75,7 @@
 
 /obj/machinery/bilge_pump/portable
 	name = "аварийный насос"
-	desc = "Переносной насос с баком 200 л и аккумулятором. Ключ — крепление, ЛКМ — меню сбора и слива. Выход plumbing — на юге. Отвёртка открывает отсек батареи, лом извлекает её."
+	desc = "Переносной насос с баком 200 л и аккумулятором. Ключ — крепление, ЛКМ — меню сбора и слива. Выход водяной трубы — на юге. Отвёртка открывает отсек батареи, лом извлекает её."
 	icon = 'modular_bandastation/underwater_machinery/pumps/icons/liquid_pump.dmi'
 	icon_state = "liquid_pump"
 	density = TRUE
@@ -77,6 +83,8 @@
 	use_power = NO_POWER_USE
 	drain_rate = 8
 	residual_depth = 0
+	buffer_capacity = 200
+	control_group = "portable"
 	var/obj/item/stock_parts/power_store/cell/cell
 
 /obj/machinery/bilge_pump/portable/Initialize(mapload)

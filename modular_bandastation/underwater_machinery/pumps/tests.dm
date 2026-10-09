@@ -4,6 +4,7 @@
 	var/turf/open/intake = run_loc_floor_bottom_left
 	var/turf/open/neighbour = get_step(intake, EAST)
 	var/obj/machinery/bilge_pump/pump = allocate(/obj/machinery/bilge_pump, intake)
+	pump.drain_rate = 20
 	intake.set_water_depth(100)
 	pump.process(1)
 	PUMP_TEST(intake.get_water_depth() == 100, "A switched-off pump must not drain water")

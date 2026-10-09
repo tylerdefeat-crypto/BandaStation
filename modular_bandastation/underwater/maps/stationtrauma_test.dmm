@@ -1,21 +1,31 @@
 //MAP CONVERTED BY dmm2tgm.py THIS HEADER COMMENT PREVENTS RECONVERSION, DO NOT REMOVE
-"ag" = (
-/obj/machinery/atmospherics/pipe/smart/simple{
-	dir = 6
-	},
-/turf/open/floor/iron{
+"ae" = (
+/obj/machinery/power/stationtrauma_reactor,
+/obj/structure/cable,
+/turf/open/floor/plating{
 	baseturfs = /turf/open/space/ocean
 	},
 /area/stationtrauma_test)
 "al" = (
-/obj/item/stack/rods,
-/turf/open/floor/iron{
+/obj/structure/table{
+	name = "инженерный стол"
+	},
+/turf/open/floor/plating{
 	baseturfs = /turf/open/space/ocean
 	},
 /area/stationtrauma_test)
-"aQ" = (
-/obj/item/stock_parts/power_store/cell/high,
-/turf/open/floor/iron{
+"as" = (
+/obj/machinery/duct/stationtrauma,
+/obj/item/stack/rods,
+/turf/open/floor/plating{
+	baseturfs = /turf/open/space/ocean
+	},
+/area/stationtrauma_test)
+"aM" = (
+/obj/machinery/duct/stationtrauma/elbow{
+	dir = 1
+	},
+/turf/closed/wall{
 	baseturfs = /turf/open/space/ocean
 	},
 /area/stationtrauma_test)
@@ -25,35 +35,71 @@
 	},
 /turf/open/space/ocean,
 /area/space/ocean)
-"du" = (
+"cP" = (
+/obj/item/tank/internals/oxygen,
+/turf/open/floor/plating{
+	baseturfs = /turf/open/space/ocean
+	},
+/area/stationtrauma_test)
+"dq" = (
 /obj/item/stationtrauma_control_rod,
-/turf/open/floor/iron{
+/turf/open/floor/plating{
 	baseturfs = /turf/open/space/ocean
 	},
 /area/stationtrauma_test)
-"eO" = (
-/obj/item/clothing/head/helmet/space,
-/turf/open/floor/iron{
+"dA" = (
+/obj/item/clothing/suit/space,
+/turf/open/floor/plating{
 	baseturfs = /turf/open/space/ocean
 	},
 /area/stationtrauma_test)
-"fg" = (
+"dK" = (
+/obj/machinery/stationtrauma_pump_controller{
+	control_group = "airlock"
+	},
+/turf/open/floor/plating{
+	baseturfs = /turf/open/space/ocean
+	},
+/area/stationtrauma_test)
+"dR" = (
+/obj/machinery/duct/stationtrauma,
+/turf/open/floor/plating{
+	baseturfs = /turf/open/space/ocean
+	},
+/area/stationtrauma_test)
+"eB" = (
 /obj/structure/cable,
-/obj/machinery/atmospherics/pipe/smart/simple{
-	dir = 4
-	},
-/turf/open/floor/iron{
+/obj/machinery/stationtrauma_water_device/inline_pump,
+/turf/open/floor/plating{
 	baseturfs = /turf/open/space/ocean
 	},
 /area/stationtrauma_test)
-"fD" = (
-/obj/item/flashlight,
-/turf/open/floor/iron{
+"eM" = (
+/obj/structure/cable,
+/obj/machinery/atmospherics/components/binary/stationtrauma_coolant_pump/precharged{
+	dir = 1;
+	on = 1
+	},
+/turf/open/floor/plating{
 	baseturfs = /turf/open/space/ocean
 	},
 /area/stationtrauma_test)
-"ie" = (
-/turf/open/floor/iron{
+"fM" = (
+/obj/machinery/stationtrauma_water_device/connector,
+/obj/machinery/stationtrauma_water_device/barrel{
+	initial_water = 500;
+	initial_temperature = 313.15;
+	start_connected = 1;
+	valve_open = 1
+	},
+/obj/item/stack/sheet/iron,
+/turf/open/floor/plating{
+	baseturfs = /turf/open/space/ocean
+	},
+/area/stationtrauma_test)
+"ik" = (
+/obj/item/crowbar,
+/turf/open/floor/plating{
 	baseturfs = /turf/open/space/ocean
 	},
 /area/stationtrauma_test)
@@ -65,48 +111,15 @@
 	baseturfs = /turf/open/space/ocean
 	},
 /area/stationtrauma_test)
-"iH" = (
-/obj/machinery/stationtrauma_water_device{
-	initial_water = 500;
-	initial_temperature = 313.15
-	},
-/obj/item/stack/sheet/iron,
-/turf/open/floor/iron{
+"kf" = (
+/obj/machinery/stationtrauma_water_device/valve,
+/turf/open/floor/plating{
 	baseturfs = /turf/open/space/ocean
 	},
 /area/stationtrauma_test)
-"jq" = (
-/obj/item/weldingtool,
-/turf/open/floor/iron{
-	baseturfs = /turf/open/space/ocean
-	},
-/area/stationtrauma_test)
-"jC" = (
-/obj/machinery/bilge_pump/portable,
-/turf/open/floor/iron{
-	baseturfs = /turf/open/space/ocean
-	},
-/area/stationtrauma_test)
-"jE" = (
-/obj/machinery/duct,
-/obj/item/stock_parts/power_store/cell/high,
-/turf/open/floor/iron{
-	baseturfs = /turf/open/space/ocean
-	},
-/area/stationtrauma_test)
-"kh" = (
-/obj/structure/cable,
-/obj/machinery/atmospherics/components/binary/stationtrauma_coolant_pump/precharged{
-	dir = 1;
-	on = 1
-	},
-/turf/open/floor/iron{
-	baseturfs = /turf/open/space/ocean
-	},
-/area/stationtrauma_test)
-"kW" = (
-/obj/item/wirecutters,
-/turf/open/floor/iron{
+"kv" = (
+/obj/machinery/stationtrauma_water_device/outlet/overboard,
+/turf/closed/wall{
 	baseturfs = /turf/open/space/ocean
 	},
 /area/stationtrauma_test)
@@ -115,82 +128,134 @@
 	baseturfs = /turf/open/space/ocean
 	},
 /area/stationtrauma_test)
-"lX" = (
-/obj/machinery/stationtrauma_water_device{
-	name = "испытательный приёмник 50 000 л";
-	capacity = 50000
+"lZ" = (
+/obj/item/paper{
+	name = "Осушение отсека";
+	default_raw_text = "Закройте восточную течь. Контроллер помпы — (25,9), расход 1000 л/с. Бочка 50 000 л на порту — (26,8), клапан открыт. Откройте трубный вентиль (28,8), включите забортный выпуск (29,8) для сброса в океан. Стационарная помпа оставляет 0,5 см; переносной насос с баком 200 л собирает остаток и позволяет слить его рядом. Двери должны быть закрыты, иначе океан продолжит поступать. Водяной RPD находится в насосной. Все трубы и кабели открыты на plating."
 	},
-/turf/open/floor/iron{
+/turf/open/floor/plating{
 	baseturfs = /turf/open/space/ocean
 	},
 /area/stationtrauma_test)
-"mN" = (
-/obj/item/stack/tile/iron,
-/turf/open/floor/iron{
-	baseturfs = /turf/open/space/ocean
-	},
-/area/stationtrauma_test)
-"nk" = (
-/obj/item/crowbar,
-/turf/open/floor/iron{
-	baseturfs = /turf/open/space/ocean
-	},
-/area/stationtrauma_test)
-"pf" = (
-/obj/machinery/duct,
-/obj/item/stack/rods,
-/turf/open/floor/iron{
-	baseturfs = /turf/open/space/ocean
-	},
-/area/stationtrauma_test)
-"so" = (
-/obj/machinery/duct,
-/obj/item/flashlight,
-/turf/open/floor/iron{
-	baseturfs = /turf/open/space/ocean
-	},
-/area/stationtrauma_test)
-"tP" = (
-/obj/machinery/bilge_pump{
+"oF" = (
+/obj/machinery/atmospherics/pipe/smart/simple{
 	dir = 4
 	},
-/turf/open/floor/iron{
+/turf/open/floor/plating{
+	baseturfs = /turf/open/space/ocean
+	},
+/area/stationtrauma_test)
+"oU" = (
+/obj/item/clothing/mask/breath,
+/turf/open/floor/plating{
+	baseturfs = /turf/open/space/ocean
+	},
+/area/stationtrauma_test)
+"pD" = (
+/obj/structure/cable,
+/turf/open/floor/plating{
+	baseturfs = /turf/open/space/ocean
+	},
+/area/stationtrauma_test)
+"qr" = (
+/obj/machinery/stationtrauma_water_device/outlet/overboard{
+	dir = 1
+	},
+/turf/closed/wall{
+	baseturfs = /turf/open/space/ocean
+	},
+/area/stationtrauma_test)
+"qu" = (
+/obj/machinery/stationtrauma_water_device/outlet,
+/turf/open/floor/plating{
+	baseturfs = /turf/open/space/ocean
+	},
+/area/stationtrauma_test)
+"sd" = (
+/obj/machinery/bilge_pump/plumbed,
+/turf/open/floor/plating{
+	baseturfs = /turf/open/space/ocean
+	},
+/area/stationtrauma_test)
+"tn" = (
+/obj/structure/table,
+/obj/item/paper{
+	name = "Испытания StationTrauma";
+	default_raw_text = "Глубина океана: 600 м. Вода: 4 C. Предел затопления: 2,2 м. Восточная гермодверь — управляемая течь: откройте, затем закройте. Изолируйте отсек внутренними дверями. Включите помпу. Alt+ЛКМ на закрытой двери — механический запор. Для выхода в океан наденьте защитный костюм, шлем и маску; включите дыхание от баллона. Насосная находится на юго-западе. На северо-востоке — АПЦ, резервный РИТЭГ и реактор. Вставьте топливную кассету, проверьте включённый насос охлаждения, затем выберите мощность ЛКМ на реакторе. SCRAM не убирает остаточное тепло."
+	},
+/turf/open/floor/plating{
 	baseturfs = /turf/open/space/ocean
 	},
 /area/stationtrauma_test)
 "uR" = (
 /turf/open/space/ocean,
 /area/space/ocean)
-"vk" = (
-/obj/machinery/bilge_pump/portable/plumbed{
-	dir = 4
-	},
-/turf/open/floor/iron{
+"uV" = (
+/obj/item/stationtrauma_fuel_rod,
+/turf/open/floor/plating{
 	baseturfs = /turf/open/space/ocean
 	},
 /area/stationtrauma_test)
-"vN" = (
-/obj/machinery/stationtrauma_water_device/outlet,
-/turf/open/floor/iron{
+"vK" = (
+/obj/machinery/door/airlock/highsecurity/underwater,
+/turf/open/floor/plating{
 	baseturfs = /turf/open/space/ocean
 	},
 /area/stationtrauma_test)
-"wn" = (
-/obj/machinery/power/rtg{
-	power_gen = 5000;
-	affected_by_parts = 0
+"wA" = (
+/turf/open/floor/plating{
+	baseturfs = /turf/open/space/ocean
+	},
+/area/stationtrauma_test)
+"wD" = (
+/obj/machinery/power/apc{
+	dir = 1;
+	pixel_y = 25;
+	start_charge = 100;
+	cell_type = /obj/item/stock_parts/power_store/battery/hyper;
+	unlocked = 1
 	},
 /obj/structure/cable,
-/turf/open/floor/iron{
+/obj/machinery/duct/stationtrauma/straight{
+	dir = 4
+	},
+/turf/open/floor/plating{
 	baseturfs = /turf/open/space/ocean
 	},
 /area/stationtrauma_test)
-"ye" = (
-/obj/item/paper{
-	name = "Водяной контур";
-	default_raw_text = "Резервуар содержит 500 л воды при 40 C. Откройте клапан и включите выпуск ЛКМ: вода появится на полу выпуска. Трубная помпа на западе собирает воду с пола в буфер. Полный буфер и закрытый клапан останавливают поток. Осмотр пола и оборудования показывает температуру. Ключ разбирает обычную трубу TG; запас труб рядом. В этом контуре 1u соответствует 1 л, 1 см глубины — 10 л на клетке. Газовое охлаждение реактора — отдельный контур."
+"xj" = (
+/obj/structure/cable,
+/obj/machinery/atmospherics/pipe/smart/simple{
+	dir = 4
 	},
-/turf/open/floor/iron{
+/turf/open/floor/plating{
+	baseturfs = /turf/open/space/ocean
+	},
+/area/stationtrauma_test)
+"xV" = (
+/obj/structure/chair,
+/turf/open/floor/plating{
+	baseturfs = /turf/open/space/ocean
+	},
+/area/stationtrauma_test)
+"yv" = (
+/obj/machinery/stationtrauma_water_device/connector,
+/obj/machinery/stationtrauma_water_device/barrel{
+	name = "стенд охлаждения 500 л";
+	initial_water = 500;
+	initial_temperature = 353.15;
+	start_connected = 1;
+	valve_open = 1
+	},
+/turf/open/floor/plating{
+	baseturfs = /turf/open/space/ocean
+	},
+/area/stationtrauma_test)
+"yL" = (
+/obj/machinery/light{
+	dir = 1
+	},
+/turf/open/floor/plating{
 	baseturfs = /turf/open/space/ocean
 	},
 /area/stationtrauma_test)
@@ -202,22 +267,25 @@
 	baseturfs = /turf/open/space/ocean
 	},
 /area/stationtrauma_test)
-"Am" = (
+"zA" = (
 /obj/machinery/stationtrauma_water_device/valve,
 /obj/item/stack/tile/iron,
-/turf/open/floor/iron{
+/turf/open/floor/plating{
 	baseturfs = /turf/open/space/ocean
 	},
 /area/stationtrauma_test)
-"AS" = (
-/obj/item/stack/sheet/iron,
-/turf/open/floor/iron{
+"Ab" = (
+/obj/item/paper{
+	name = "Водяной контур";
+	default_raw_text = "Бочка (11,7) содержит 500 л воды при 40 C. Откройте вентиль (13,7) и включите выпуск (15,7): вода появится на полу. Бочки прикручиваются ключом к напольному порту, клапан и подключение проверяются ЛКМ. RPD (10,10), Atmospherics → Вода строит синие водяные трубы, насосы, вентили и выпуски. Газовые трубы и химические duct не подключаются. Для замкнутого охлаждения включите насос (27,17): 500 л при 80 C из бочки (25,17) проходят теплообменник (29,18) и возвращаются холоднее. Осмотр показывает литры и температуру. 1 см глубины соответствует 10 л на клетке. Газовое охлаждение реактора — отдельный контур."
+	},
+/turf/open/floor/plating{
 	baseturfs = /turf/open/space/ocean
 	},
 /area/stationtrauma_test)
-"AT" = (
-/obj/machinery/duct,
-/turf/open/floor/iron{
+"AM" = (
+/obj/item/pipe_dispenser/stationtrauma,
+/turf/open/floor/plating{
 	baseturfs = /turf/open/space/ocean
 	},
 /area/stationtrauma_test)
@@ -225,33 +293,37 @@
 /obj/structure/flora/underwater,
 /turf/open/space/ocean,
 /area/space/ocean)
-"Dn" = (
-/obj/structure/table,
-/obj/item/paper{
-	name = "Испытания StationTrauma";
-	default_raw_text = "Глубина океана: 600 м. Вода: 4 C. Предел затопления: 2,2 м. Восточная гермодверь — управляемая течь: откройте, затем закройте. Изолируйте отсек внутренними дверями. Включите помпу. Alt+ЛКМ на закрытой двери — механический запор. Для выхода в океан наденьте защитный костюм, шлем и маску; включите дыхание от баллона. Насосная находится на юго-западе. На северо-востоке — АПЦ, резервный РИТЭГ и реактор. Вставьте топливную кассету, проверьте включённый насос охлаждения, затем выберите мощность ЛКМ на реакторе. SCRAM не убирает остаточное тепло."
-	},
-/turf/open/floor/iron{
+"CL" = (
+/obj/machinery/duct/stationtrauma,
+/obj/item/stationtrauma_water_pipe_fitting,
+/turf/open/floor/plating{
 	baseturfs = /turf/open/space/ocean
 	},
 /area/stationtrauma_test)
-"DW" = (
-/obj/item/screwdriver,
-/turf/open/floor/iron{
+"DC" = (
+/obj/item/weldingtool,
+/turf/open/floor/plating{
 	baseturfs = /turf/open/space/ocean
 	},
 /area/stationtrauma_test)
-"EM" = (
-/obj/item/stationtrauma_fuel_rod,
-/turf/open/floor/iron{
+"DI" = (
+/obj/machinery/stationtrauma_pump_controller,
+/turf/open/floor/plating{
 	baseturfs = /turf/open/space/ocean
 	},
 /area/stationtrauma_test)
-"EN" = (
-/obj/machinery/light{
+"DY" = (
+/obj/machinery/duct/stationtrauma,
+/obj/item/stock_parts/power_store/cell/high,
+/turf/open/floor/plating{
+	baseturfs = /turf/open/space/ocean
+	},
+/area/stationtrauma_test)
+"Fy" = (
+/obj/machinery/atmospherics/pipe/smart/simple{
 	dir = 1
 	},
-/turf/open/floor/iron{
+/turf/open/floor/plating{
 	baseturfs = /turf/open/space/ocean
 	},
 /area/stationtrauma_test)
@@ -259,29 +331,11 @@
 /obj/structure/flora/underwater/glowing,
 /turf/open/space/ocean,
 /area/space/ocean)
-"FM" = (
-/obj/item/clothing/mask/breath,
-/turf/open/floor/iron{
-	baseturfs = /turf/open/space/ocean
+"Hp" = (
+/obj/machinery/bilge_pump{
+	dir = 4
 	},
-/area/stationtrauma_test)
-"Gj" = (
-/obj/structure/cable,
-/turf/open/floor/iron{
-	baseturfs = /turf/open/space/ocean
-	},
-/area/stationtrauma_test)
-"GW" = (
-/obj/item/stack/ducts{
-	amount = 10
-	},
-/turf/open/floor/iron{
-	baseturfs = /turf/open/space/ocean
-	},
-/area/stationtrauma_test)
-"HL" = (
-/obj/item/clothing/suit/space,
-/turf/open/floor/iron{
+/turf/open/floor/plating{
 	baseturfs = /turf/open/space/ocean
 	},
 /area/stationtrauma_test)
@@ -289,108 +343,122 @@
 /obj/structure/flora/underwater/coral,
 /turf/open/space/ocean,
 /area/space/ocean)
-"IG" = (
-/obj/structure/underwater_scrap,
-/turf/open/space/ocean,
-/area/space/ocean)
-"IX" = (
-/obj/item/tank/internals/oxygen,
-/turf/open/floor/iron{
-	baseturfs = /turf/open/space/ocean
-	},
-/area/stationtrauma_test)
-"KG" = (
-/obj/structure/chair,
-/obj/machinery/atmospherics/pipe/smart/simple{
-	dir = 1
-	},
-/turf/open/floor/iron{
-	baseturfs = /turf/open/space/ocean
-	},
-/area/stationtrauma_test)
-"Ny" = (
-/obj/machinery/atmospherics/pipe/smart/simple{
+"Ig" = (
+/obj/machinery/atmospherics/pipe/smart/manifold4w,
+/obj/machinery/duct/stationtrauma/elbow{
 	dir = 4
 	},
-/turf/open/floor/iron{
-	baseturfs = /turf/open/space/ocean
-	},
-/area/stationtrauma_test)
-"Oe" = (
-/obj/machinery/atmospherics/pipe/smart/simple{
-	dir = 5
-	},
-/turf/open/floor/iron{
-	baseturfs = /turf/open/space/ocean
-	},
-/area/stationtrauma_test)
-"Pu" = (
-/obj/machinery/duct,
-/obj/item/stack/ducts{
-	amount = 10
-	},
-/turf/open/floor/iron{
-	baseturfs = /turf/open/space/ocean
-	},
-/area/stationtrauma_test)
-"QB" = (
-/obj/structure/table{
-	name = "инженерный стол"
-	},
-/turf/open/floor/iron{
-	baseturfs = /turf/open/space/ocean
-	},
-/area/stationtrauma_test)
-"RO" = (
-/obj/machinery/power/stationtrauma_reactor,
-/obj/structure/cable,
-/turf/open/floor/iron{
-	baseturfs = /turf/open/space/ocean
-	},
-/area/stationtrauma_test)
-"RQ" = (
-/obj/machinery/bilge_pump,
-/turf/open/floor/iron{
-	baseturfs = /turf/open/space/ocean
-	},
-/area/stationtrauma_test)
-"Sa" = (
-/obj/machinery/atmospherics/pipe/smart/manifold4w,
 /turf/closed/wall{
 	baseturfs = /turf/open/space/ocean
 	},
 /area/stationtrauma_test)
-"Vy" = (
-/obj/machinery/power/apc{
-	dir = 1;
-	pixel_y = 25;
-	start_charge = 100;
-	cell_type = /obj/item/stock_parts/power_store/battery/hyper;
-	unlocked = 1
-	},
-/obj/structure/cable,
-/turf/open/floor/iron{
+"IG" = (
+/obj/structure/underwater_scrap,
+/turf/open/space/ocean,
+/area/space/ocean)
+"JG" = (
+/obj/machinery/duct/stationtrauma,
+/obj/item/flashlight,
+/turf/open/floor/plating{
 	baseturfs = /turf/open/space/ocean
 	},
 /area/stationtrauma_test)
-"VA" = (
-/obj/machinery/door/airlock/highsecurity/underwater,
-/turf/open/floor/iron{
+"KT" = (
+/obj/machinery/bilge_pump{
+	dir = 8;
+	control_group = "airlock"
+	},
+/turf/open/floor/plating{
 	baseturfs = /turf/open/space/ocean
 	},
 /area/stationtrauma_test)
-"Xn" = (
-/obj/structure/chair,
-/turf/open/floor/iron{
+"LO" = (
+/obj/machinery/atmospherics/pipe/smart/simple{
+	dir = 6
+	},
+/turf/open/floor/plating{
 	baseturfs = /turf/open/space/ocean
 	},
 /area/stationtrauma_test)
-"XB" = (
-/obj/item/paper{
-	name = "Осушение отсека";
-	default_raw_text = "Закройте восточную течь, включите помпу рядом. Вода стекает к заборнику только через открытые проходы; закрытая гермодверь изолирует соседний отсек. Приёмник испытательного стенда вмещает 50 000 л; обычный резервуар — 1000 л. Стационарная помпа оставляет 0,5 см. Переносной насос с баком 200 л собирает остаток: закрепите его и откройте меню ЛКМ. Слив — в доступную соседнюю клетку; переполнение остаётся в баке. Разрыв трубы останавливает передачу, после заполнения буфера сбор прекращается."
+"Mm" = (
+/obj/machinery/atmospherics/pipe/smart/simple{
+	dir = 5
 	},
-/turf/open/floor/iron{
+/turf/open/floor/plating{
+	baseturfs = /turf/open/space/ocean
+	},
+/area/stationtrauma_test)
+"MZ" = (
+/obj/machinery/bilge_pump/portable/plumbed{
+	dir = 4
+	},
+/turf/open/floor/plating{
+	baseturfs = /turf/open/space/ocean
+	},
+/area/stationtrauma_test)
+"OL" = (
+/obj/machinery/duct/stationtrauma/straight{
+	dir = 4
+	},
+/turf/open/floor/plating{
+	baseturfs = /turf/open/space/ocean
+	},
+/area/stationtrauma_test)
+"Pm" = (
+/obj/item/clothing/head/helmet/space,
+/turf/open/floor/plating{
+	baseturfs = /turf/open/space/ocean
+	},
+/area/stationtrauma_test)
+"QH" = (
+/obj/machinery/duct/stationtrauma/elbow{
+	dir = 8
+	},
+/turf/open/floor/plating{
+	baseturfs = /turf/open/space/ocean
+	},
+/area/stationtrauma_test)
+"Ro" = (
+/obj/item/wirecutters,
+/turf/open/floor/plating{
+	baseturfs = /turf/open/space/ocean
+	},
+/area/stationtrauma_test)
+"TD" = (
+/obj/machinery/atmospherics/pipe/smart/simple{
+	dir = 4
+	},
+/obj/machinery/duct/stationtrauma/straight,
+/turf/open/floor/plating{
+	baseturfs = /turf/open/space/ocean
+	},
+/area/stationtrauma_test)
+"TX" = (
+/obj/item/wrench,
+/turf/open/floor/plating{
+	baseturfs = /turf/open/space/ocean
+	},
+/area/stationtrauma_test)
+"Vn" = (
+/obj/machinery/stationtrauma_water_device/connector,
+/obj/machinery/stationtrauma_water_device/barrel{
+	name = "испытательный приёмник 50 000 л";
+	capacity = 50000;
+	start_connected = 1;
+	valve_open = 1
+	},
+/turf/open/floor/plating{
+	baseturfs = /turf/open/space/ocean
+	},
+/area/stationtrauma_test)
+"Xp" = (
+/obj/machinery/atmospherics/pipe/smart/simple{
+	dir = 10
+	},
+/obj/machinery/stationtrauma_water_device/ocean_exchanger{
+	dir = 4
+	},
+/turf/closed/wall{
 	baseturfs = /turf/open/space/ocean
 	},
 /area/stationtrauma_test)
@@ -398,23 +466,20 @@
 /obj/structure/flora/underwater/long,
 /turf/open/space/ocean,
 /area/space/ocean)
-"Yg" = (
-/obj/machinery/bilge_pump/plumbed,
-/turf/open/floor/iron{
+"YU" = (
+/obj/item/screwdriver,
+/obj/machinery/stationtrauma_pump_controller,
+/turf/open/floor/plating{
 	baseturfs = /turf/open/space/ocean
 	},
 /area/stationtrauma_test)
-"Yq" = (
-/obj/machinery/atmospherics/pipe/smart/simple{
-	dir = 10
+"Zy" = (
+/obj/machinery/power/rtg{
+	power_gen = 5000;
+	affected_by_parts = 0
 	},
-/turf/closed/wall{
-	baseturfs = /turf/open/space/ocean
-	},
-/area/stationtrauma_test)
-"ZX" = (
-/obj/item/wrench,
-/turf/open/floor/iron{
+/obj/structure/cable,
+/turf/open/floor/plating{
 	baseturfs = /turf/open/space/ocean
 	},
 /area/stationtrauma_test)
@@ -512,8 +577,8 @@ lR
 lR
 lR
 lR
-VA
-lR
+vK
+qr
 lR
 lR
 lR
@@ -529,20 +594,20 @@ uR
 uR
 uR
 lR
-ie
-ie
-ie
-ie
-ie
-ie
+wA
+wA
+wA
+wA
+wA
+wA
 lR
-ie
-EN
-ie
-ie
-ie
-ie
-ie
+wA
+yL
+wA
+KT
+wA
+wA
+wA
 lR
 uR
 uR
@@ -555,20 +620,20 @@ uR
 uR
 uR
 lR
-ie
-eO
-HL
-IX
-FM
-ie
+wA
+Pm
+dA
+cP
+oU
+wA
 lR
-ie
-ie
-ie
-ie
-ie
-ie
-ie
+wA
+dK
+wA
+wA
+wA
+wA
+wA
 lR
 uR
 uR
@@ -581,16 +646,16 @@ uR
 uR
 uR
 lR
-ie
-ie
-ie
-ie
-ie
-ie
+wA
+wA
+wA
+wA
+wA
+wA
 lR
 lR
 lR
-VA
+vK
 lR
 lR
 lR
@@ -607,20 +672,20 @@ uR
 uR
 uR
 lR
-ie
-ie
-ie
-ie
-ie
-ie
+wA
+wA
+wA
+wA
+wA
+wA
 lR
-ie
-ie
-ie
-ie
-ie
-ie
-ie
+wA
+wA
+wA
+wA
+wA
+wA
+wA
 lR
 uR
 uR
@@ -633,20 +698,20 @@ uR
 uR
 uR
 lR
-ie
-ie
-ie
-ie
-ie
-ie
+wA
+wA
+wA
+wA
+wA
+wA
 lR
-ie
-ie
-ie
-ZX
-Yg
-so
-ie
+wA
+wA
+wA
+TX
+sd
+JG
+wA
 lR
 uR
 uR
@@ -659,20 +724,20 @@ uR
 uR
 uR
 lR
-EN
-ie
-Dn
-Xn
-ie
-ie
-VA
-ie
-ie
-ie
-DW
-ie
-jE
-EN
+yL
+wA
+tn
+xV
+wA
+wA
+vK
+wA
+wA
+AM
+YU
+wA
+DY
+yL
 lR
 uR
 uR
@@ -685,20 +750,20 @@ uR
 uR
 uR
 lR
-ie
-ie
-ie
-ie
-ie
-ie
+wA
+wA
+wA
+wA
+wA
+wA
 lR
-ie
-ie
-ie
-nk
-vk
-iH
-ie
+wA
+wA
+wA
+ik
+MZ
+fM
+wA
 lR
 uR
 uR
@@ -711,20 +776,20 @@ XQ
 uR
 uR
 lR
-ie
-ie
-ie
-ie
-ie
-ie
+wA
+wA
+wA
+wA
+wA
+wA
 lR
-ie
-ie
-ie
-jq
-Pu
-pf
-ie
+wA
+wA
+wA
+DC
+CL
+as
+wA
 lR
 uR
 uR
@@ -737,20 +802,20 @@ uR
 uR
 uR
 lR
-ie
-ie
-ie
-ie
-ie
-ie
+wA
+wA
+wA
+wA
+wA
+wA
 lR
-ie
-ie
-ie
-kW
-ye
-Am
-ie
+wA
+wA
+wA
+Ro
+Ab
+zA
+wA
 lR
 uR
 uR
@@ -763,20 +828,20 @@ uR
 uR
 uR
 lR
-ie
-ie
-ie
-ie
-ie
-ie
+wA
+wA
+wA
+wA
+wA
+wA
 lR
-ie
-ie
-ie
-ie
-ie
-AT
-ie
+wA
+wA
+wA
+wA
+wA
+dR
+wA
 lR
 uR
 uR
@@ -789,20 +854,20 @@ uR
 uR
 uR
 lR
-ie
-ie
-ie
-ie
-ie
-ie
+wA
+wA
+wA
+wA
+wA
+wA
 lR
-ie
-ie
-ie
-ie
-ie
-vN
-ie
+wA
+wA
+wA
+wA
+wA
+qu
+wA
 lR
 uR
 uR
@@ -824,7 +889,7 @@ lR
 lR
 lR
 lR
-VA
+vK
 lR
 lR
 lR
@@ -841,20 +906,20 @@ uR
 uR
 uR
 lR
-ie
-ie
-ie
-ie
-ie
-ie
+wA
+wA
+wA
+wA
+wA
+wA
 lR
-ie
-ie
-ie
-ie
-ie
-ie
-ie
+wA
+wA
+wA
+wA
+wA
+wA
+wA
 lR
 uR
 uR
@@ -867,20 +932,20 @@ uR
 uR
 uR
 lR
-ie
-ie
-ie
-ie
-ie
-ie
+wA
+wA
+wA
+wA
+wA
+wA
 lR
-ie
-ie
-ie
-ie
-ie
-ie
-ie
+wA
+wA
+wA
+wA
+wA
+wA
+wA
 lR
 uR
 uR
@@ -893,20 +958,20 @@ uR
 uR
 uR
 lR
-ie
-ie
-du
-ie
-ie
-ie
+wA
+wA
+dq
+wA
+wA
+wA
 lR
-ie
-ie
-ie
-ie
-ie
-ie
-ie
+wA
+wA
+wA
+wA
+wA
+wA
+wA
 lR
 uR
 uR
@@ -919,20 +984,20 @@ uR
 uR
 uR
 lR
-ie
-ie
-EM
-ie
-ie
-ie
+wA
+wA
+uV
+wA
+wA
+wA
 lR
-ie
-ie
-ie
-ie
-ie
-ie
-ie
+wA
+wA
+wA
+wA
+wA
+wA
+wA
 lR
 uR
 uR
@@ -945,20 +1010,20 @@ uR
 uR
 uR
 lR
-ie
-ie
-ie
-RO
-ie
-ie
+wA
+wA
+wA
+ae
+wA
+wA
 lR
-ie
-ie
-ie
-ie
-ie
-ie
-ie
+wA
+wA
+wA
+wA
+wA
+wA
+wA
 lR
 uR
 uR
@@ -971,20 +1036,20 @@ uR
 uR
 uR
 lR
-ie
-ag
-KG
-kh
-Oe
-ie
+wA
+LO
+Fy
+eM
+Mm
+wA
 lR
-ie
-ie
-ie
-ie
-ie
-ie
-ie
+wA
+wA
+wA
+wA
+wA
+wA
+wA
 lR
 uR
 uR
@@ -997,20 +1062,20 @@ uR
 uR
 uR
 lR
-ie
-Ny
-ie
-Gj
-Ny
-ie
-VA
-ie
-ie
-ie
-ie
-ie
-ie
-ie
+wA
+oF
+wA
+pD
+oF
+wA
+vK
+wA
+wA
+wA
+wA
+wA
+wA
+wA
 lR
 uR
 uR
@@ -1023,20 +1088,20 @@ uR
 uR
 uR
 lR
-EN
-Ny
-QB
-Gj
-Ny
-ie
+yL
+oF
+al
+pD
+oF
+wA
 lR
-ie
-ie
-ie
-ie
-tP
-ie
-ie
+wA
+wA
+wA
+wA
+Hp
+wA
+wA
 lR
 uR
 uR
@@ -1049,20 +1114,20 @@ uR
 uR
 uR
 lR
-ie
-Ny
-ie
-Gj
-Ny
-ie
+QH
+TD
+yv
+pD
+oF
+wA
 lR
-ie
-ie
-ie
-ie
-AT
-ie
-EN
+wA
+wA
+wA
+DI
+dR
+wA
+yL
 lR
 uR
 uR
@@ -1075,20 +1140,20 @@ uR
 uR
 uR
 lR
-ie
-Ny
-ie
-Gj
-Ny
-ie
+OL
+oF
+OL
+pD
+oF
+wA
 lR
-ie
-ie
-ie
-XB
-lX
-ie
-ie
+wA
+wA
+wA
+lZ
+Vn
+wA
+wA
 lR
 uR
 uR
@@ -1101,20 +1166,20 @@ uR
 uR
 uR
 lR
-Vy
-fg
-Gj
-wn
-Ny
-ie
+wD
+xj
+eB
+Zy
+oF
+wA
 lR
-ie
-ie
-ie
-ie
-ie
-ie
-ie
+wA
+wA
+wA
+wA
+OL
+wA
+wA
 lR
 uR
 uR
@@ -1127,20 +1192,20 @@ uR
 uR
 uR
 lR
-ie
-Ny
-ie
-ie
-Ny
-ie
+OL
+oF
+OL
+wA
+oF
+wA
 lR
-ie
-ie
-ie
-ie
-ie
-ie
-ie
+wA
+wA
+wA
+wA
+kf
+wA
+wA
 lR
 uR
 uR
@@ -1153,18 +1218,18 @@ uR
 uR
 uR
 lR
-lR
-Yq
-Sa
+aM
+Xp
+Ig
 iE
 zx
 lR
 lR
 lR
 lR
-VA
+vK
 lR
-lR
+kv
 lR
 lR
 lR

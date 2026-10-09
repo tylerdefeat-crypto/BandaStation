@@ -168,9 +168,10 @@
 	var/depth = 0
 	var/infinite_source = FALSE
 	var/temperature = FLOOD_WATER_TEMPERATURE
-	var/stage = 0
+	var/stage = -1
 	var/mask_state
 	var/mutable_appearance/water_overlay
+	var/show_puddle
 
 /datum/component/floodwater/Initialize(initial_depth, is_source = FALSE, initial_temperature = FLOOD_WATER_TEMPERATURE)
 	// Existing static water already owns immersion/wetness elements.
@@ -179,6 +180,7 @@
 	depth = clamp(initial_depth, 0, FLOOD_WATER_MAX_DEPTH)
 	infinite_source = is_source
 	temperature = initial_temperature
+	show_puddle = prob(30)
 
 /datum/component/floodwater/RegisterWithParent()
 	RegisterSignal(parent, COMSIG_TURF_CALCULATED_ADJACENT_ATMOS, PROC_REF(wake))
@@ -230,21 +232,33 @@
 	if(removed <= 0)
 		return 0
 	if(!infinite_source)
-		set_depth(max(0, depth - removed / FLOOD_WATER_LITRES_PER_CM))
+		var/remaining_depth = max(0, depth - removed / FLOOD_WATER_LITRES_PER_CM)
+		if(!remaining_depth && show_puddle && !isspaceturf(parent))
+			var/turf/open/tile = parent
+			tile.MakeSlippery(TURF_WET_WATER, 1 MINUTES, 0, 1 MINUTES)
+		set_depth(remaining_depth)
 	return removed
 
 /// Visual/behaviour changes only happen when crossing a depth threshold.
 /datum/component/floodwater/proc/update_depth()
-	var/new_stage = depth >= FLOOD_WATER_SUBMERGED ? 4 : depth >= FLOOD_WATER_DEEP ? 3 : depth >= FLOOD_WATER_WAIST ? 2 : 1
+	var/new_stage = depth <= 0.6 && !infinite_source ? 0 : depth >= FLOOD_WATER_SUBMERGED ? 4 : depth >= FLOOD_WATER_DEEP ? 3 : depth >= FLOOD_WATER_WAIST ? 2 : 1
 	if(stage == new_stage)
 		return
 	var/turf/open/tile = parent
 	if(mask_state)
 		tile.RemoveElement(/datum/element/immerse/floodwater, mask_state, 140)
 	stage = new_stage
-	mask_state = stage == 4 ? "submerged" : stage >= 2 ? "immerse_deep" : "immerse"
-	tile.AddElement(/datum/element/immerse/floodwater, mask_state, 140)
+	mask_state = !stage ? null : stage == 4 ? "submerged" : stage >= 2 ? "immerse_deep" : "immerse"
+	if(stage)
+		tile.AddElement(/datum/element/immerse/floodwater, mask_state, 140)
 	tile.cut_overlay(water_overlay)
+	water_overlay = null
+	if(!stage)
+		if(show_puddle)
+			water_overlay = mutable_appearance('icons/effects/water.dmi', "wet_floor_static")
+			water_overlay.plane = MUTATE_PLANE(FLOOR_PLANE, tile)
+			tile.add_overlay(water_overlay)
+		return
 	// Flooded floors need a stronger water column; the exterior must keep the seabed visible.
 	var/water_alpha = isspaceturf(tile) ? 16 + stage * 8 : 32 + stage * 24
 	water_overlay = mutable_appearance('modular_bandastation/underwater/icons/water.dmi', "volume", TOPDOWN_WATER_LEVEL_LAYER, alpha = water_alpha)

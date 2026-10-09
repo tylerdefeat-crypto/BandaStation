@@ -48,7 +48,7 @@ SUBSYSTEM_DEF(floodwater)
 		var/difference = depth - next_depth
 		if(difference <= FLOOD_WATER_FLOW_EPSILON)
 			continue
-		var/amount = min(FLOOD_WATER_FLOW, difference / 2)
+		var/amount = infinite_source ? min(FLOOD_WATER_OCEAN_FLOW, difference) : min(FLOOD_WATER_FLOW, difference / 2)
 		var/accepted = next_tile.add_water(amount * FLOOD_WATER_LITRES_PER_CM, temperature)
 		remove_water(accepted, allow_ocean = TRUE)
 		if(infinite_source)

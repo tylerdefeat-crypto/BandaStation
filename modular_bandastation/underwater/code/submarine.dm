@@ -5,6 +5,9 @@
 /turf/open/floor/iron/stationtrauma_hull
 	baseturfs = list(/turf/open/space/ocean, /turf/baseturf_skipover/shuttle, /turf/open/space/ocean)
 
+/turf/open/floor/plating/stationtrauma_hull
+	baseturfs = list(/turf/open/space/ocean, /turf/baseturf_skipover/shuttle, /turf/open/space/ocean)
+
 /turf/closed/wall/stationtrauma_hull
 	baseturfs = list(/turf/open/space/ocean, /turf/baseturf_skipover/shuttle, /turf/open/space/ocean)
 

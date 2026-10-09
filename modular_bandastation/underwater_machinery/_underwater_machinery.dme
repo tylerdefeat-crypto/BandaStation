@@ -3,6 +3,9 @@
 #include "airlocks/airlocks.dm"
 #include "pumps/pumps.dm"
 #include "pumps/water_pipes.dm"
+#include "pumps/water_network.dm"
+#include "pumps/water_controls.dm"
+#include "pumps/water_rpd.dm"
 #include "reactor/reactor.dm"
 #include "reactor/cooling.dm"
 

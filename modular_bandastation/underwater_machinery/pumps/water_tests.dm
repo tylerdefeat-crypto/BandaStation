@@ -54,7 +54,7 @@
 	water = floor.GetComponent(/datum/component/floodwater)
 	water.spread()
 	var/datum/component/floodwater/mixture = adjacent.GetComponent(/datum/component/floodwater)
-	LIQUID_TEST(floor.get_water_depth() + adjacent.get_water_depth() == 120 && abs(mixture.temperature - (T0C + 16)) < 0.01, "Natural flooding must preserve volume and carry its temperature")
+	LIQUID_TEST(floor.get_water_depth() + adjacent.get_water_depth() == 120 && abs(mixture.temperature - (T0C + 28)) < 0.01, "Natural flooding must preserve volume and carry its temperature")
 	floor.set_water_depth(0)
 	adjacent.set_water_depth(0)
 
@@ -67,6 +67,8 @@
 	var/turf/open/outlet_floor = locate(intake.x + 6, intake.y, intake.z)
 	wet_tiles += list(intake, outlet_floor)
 	var/obj/machinery/bilge_pump/plumbed/pump = allocate(/obj/machinery/bilge_pump/plumbed, intake)
+	pump.drain_rate = 20
+	pump.reagents.maximum_volume = 200
 	pump.setDir(EAST)
 	pump.on = TRUE
 	pump.set_machine_stat(pump.machine_stat & ~NOPOWER)
@@ -75,7 +77,7 @@
 	var/obj/machinery/stationtrauma_water_device/outlet/outlet = allocate(/obj/machinery/stationtrauma_water_device/outlet, outlet_floor)
 	var/list/ducts = list()
 	for(var/offset in list(1, 3, 5))
-		var/obj/machinery/duct/duct = allocate(/obj/machinery/duct, locate(intake.x + offset, intake.y, intake.z))
+		var/obj/machinery/duct/duct = allocate(/obj/machinery/duct/stationtrauma, locate(intake.x + offset, intake.y, intake.z))
 		if(!duct.net)
 			duct.post_machine_initialize()
 		ducts += duct
@@ -257,9 +259,111 @@
 	tank_floor.set_water_depth(0)
 	LIQUID_TEST(drain_stationtrauma_water(remainder, tank_floor) == 1000 && remainder.reagents.total_volume == 0, "Recoverable debris must return its stored water to the world")
 
+/datum/unit_test/stationtrauma_water_controls
+	var/list/wet_tiles = list()
+
+/datum/unit_test/stationtrauma_water_controls/Destroy()
+	for(var/obj/machinery/machine in allocated)
+		machine.reagents?.clear_reagents()
+	for(var/turf/open/tile as anything in wet_tiles)
+		tile.set_water_depth(0)
+	return ..()
+
+/datum/unit_test/stationtrauma_water_controls/Run()
+	var/turf/open/base = run_loc_floor_bottom_left
+	var/obj/item/pipe_dispenser/stationtrauma/rpd = allocate(/obj/item/pipe_dispenser/stationtrauma, base)
+	var/obj/machinery/stationtrauma_water_device/connector/port = rpd.build_water_fixture(base, rpd.water_recipes.Find("Порт бочки"), SOUTH)
+	var/obj/machinery/stationtrauma_water_device/barrel/barrel = rpd.build_water_fixture(base, rpd.water_recipes.Find("Бочка 1000 л"), EAST)
+	LIQUID_TEST(port && barrel && barrel.connect_port(), "RPD must build a same-tile port and barrel that connect without barrel orientation")
+	allocated += list(port, barrel)
+	barrel.reagents.add_reagent(/datum/reagent/water, 500, reagtemp = T0C + 40)
+	var/obj/machinery/stationtrauma_water_device/inline_pump/inline = rpd.build_water_fixture(get_step(base, EAST), rpd.water_recipes.Find("Трубный насос"), SOUTH)
+	var/obj/machinery/stationtrauma_water_device/outlet/overboard/outlet = rpd.build_water_fixture(get_step(get_step(base, EAST), EAST), rpd.water_recipes.Find("Забортный выпуск"), SOUTH)
+	LIQUID_TEST(inline && outlet, "RPD must build the directed pump and overboard outlet")
+	allocated += list(inline, outlet)
+	var/datum/component/plumbing/stationtrauma_water/inline_pump/pump_connection = inline.GetComponent(/datum/component/plumbing/stationtrauma_water/inline_pump)
+	var/datum/component/plumbing/stationtrauma_water/outlet/outlet_connection = outlet.GetComponent(/datum/component/plumbing/stationtrauma_water/outlet)
+	inline.on = TRUE
+	inline.flow_rate = 100
+	inline.set_machine_stat(inline.machine_stat & ~NOPOWER)
+	pump_connection.process()
+	LIQUID_TEST(barrel.reagents.total_volume == 500 && inline.reagents.total_volume == 0, "A closed barrel valve must retain its entire charge")
+	barrel.valve_open = TRUE
+	inline.on = FALSE
+	pump_connection.process()
+	LIQUID_TEST(inline.reagents.total_volume == 0, "A switched-off inline pump must not draw from the barrel")
+	inline.on = TRUE
+	pump_connection.process()
+	LIQUID_TEST(inline.reagents.total_volume == 100 * SSFLUIDS_DT, "Inline flow must obey its selected litres-per-second rate")
+	outlet_connection.process()
+	outlet.on = TRUE
+	outlet.set_machine_stat(outlet.machine_stat & ~NOPOWER)
+	var/buffered = outlet.reagents.total_volume
+	outlet.process(1)
+	LIQUID_TEST(buffered > 0 && outlet.reagents.total_volume == buffered && outlet.discharged_volume == 0, "An overboard outlet must retain water when no adjacent ocean exists")
+	var/turf/open/ocean = get_step(outlet, EAST)
+	wet_tiles += ocean
+	ocean.set_water_depth(220, TRUE, T0C + 4)
+	outlet.set_machine_stat(outlet.machine_stat | NOPOWER)
+	outlet.process(1)
+	LIQUID_TEST(outlet.reagents.total_volume == buffered, "Unpowered discharge against the ocean must stop")
+	outlet.set_machine_stat(outlet.machine_stat & ~NOPOWER)
+	outlet.process(1)
+	LIQUID_TEST(outlet.reagents.total_volume == 0 && outlet.discharged_volume == buffered && barrel.reagents.total_volume + buffered == 500, "Powered ocean discharge must account for every litre removed from the finite circuit")
+	barrel.disconnect_port()
+	LIQUID_TEST(!barrel.anchored && !port.barrel && barrel.reagents.total_volume == 500 - buffered, "Disconnecting a barrel must retain its stored charge")
+
+	var/turf/open/first_floor = locate(base.x + 1, base.y + 2, base.z)
+	var/turf/open/second_floor = get_step(first_floor, EAST)
+	var/obj/machinery/duct/stationtrauma/first_pipe = rpd.build_water_fixture(first_floor, rpd.water_recipes.Find("Прямая водяная труба"), SOUTH)
+	var/obj/machinery/duct/stationtrauma/second_pipe = rpd.build_water_fixture(second_floor, rpd.water_recipes.Find("Прямая водяная труба"), EAST)
+	LIQUID_TEST(first_pipe && second_pipe && first_pipe.net != second_pipe.net, "Pipes whose ends do not face each other must stay in separate networks")
+	allocated += list(first_pipe, second_pipe)
+	var/obj/machinery/duct/chemical = allocate(/obj/machinery/duct, get_step(second_floor, SOUTH))
+	LIQUID_TEST(!(chemical in second_pipe.neighbours), "Water pipes must not connect to ordinary chemical ducts")
+	LIQUID_TEST(!rpd.build_water_fixture(second_floor, 1, SOUTH), "RPD must reject overlapping water sections")
+
+	var/turf/open/intake = locate(base.x + 3, base.y + 3, base.z)
+	wet_tiles += intake
+	var/obj/machinery/bilge_pump/bilge = allocate(/obj/machinery/bilge_pump, intake)
+	var/obj/machinery/stationtrauma_pump_controller/controller = allocate(/obj/machinery/stationtrauma_pump_controller, get_step(intake, WEST))
+	controller.on = TRUE
+	controller.flow_rate = 1000
+	controller.apply_settings()
+	intake.set_water_depth(220)
+	bilge.set_machine_stat(bilge.machine_stat & ~NOPOWER)
+	bilge.process(2)
+	LIQUID_TEST(intake.get_water_depth() == 20 && bilge.reagents.total_volume == 2000, "The controller's 1000 L/s setting must work at the real two-second machinery interval")
+	controller.on = FALSE
+	controller.apply_settings()
+	bilge.process(2)
+	LIQUID_TEST(intake.get_water_depth() == 20 && !bilge.on, "The controller must switch its stationary group off")
+	LIQUID_TEST(isnull(stationtrauma_parse_flow("nonsense")) && stationtrauma_parse_flow(-20) == 0 && stationtrauma_parse_flow("max") == 5000, "Flow input must reject invalid values and enforce the supported range")
+	var/datum/component/floodwater/water = intake.GetComponent(/datum/component/floodwater)
+	water.show_puddle = TRUE
+	intake.set_water_depth(0.5)
+	LIQUID_TEST(water.stage == 0 && water.water_overlay?.icon_state == "wet_floor_static", "A residual puddle must replace the full flood overlay")
+	water.show_puddle = FALSE
+	intake.set_water_depth(1)
+	intake.set_water_depth(0.5)
+	LIQUID_TEST(!water.water_overlay && intake.get_water_depth() == 0.5, "A visually dry residual cell must still retain its measured water")
+	water.show_puddle = TRUE
+	water.remove_water(5)
+	LIQUID_TEST(intake.get_water_depth() == 0 && intake.GetComponent(/datum/component/wet_floor), "Complete drainage must leave occasional native wet-floor puddles without retaining a flood overlay")
+
+	var/turf/open/exchanger_floor = locate(base.x + 1, base.y + 4, base.z)
+	var/turf/open/cold_ocean = get_step(exchanger_floor, WEST)
+	wet_tiles += cold_ocean
+	cold_ocean.set_water_depth(220, TRUE, T0C + 4)
+	var/obj/machinery/stationtrauma_water_device/ocean_exchanger/exchanger = allocate(/obj/machinery/stationtrauma_water_device/ocean_exchanger, exchanger_floor)
+	exchanger.reagents.add_reagent(/datum/reagent/water, 1000, reagtemp = T0C + 40)
+	exchanger.process(1)
+	LIQUID_TEST(exchanger.reagents.total_volume == 1000 && exchanger.reagents.chem_temp < T0C + 40 && exchanger.reagents.chem_temp >= T0C + 4, "A water-loop exchanger must reject heat without deleting its finite charge")
+
 #ifdef FLOODWATER_TEST_ONLY
 TEST_FOCUS(/datum/unit_test/stationtrauma_water_pipes)
 TEST_FOCUS(/datum/unit_test/stationtrauma_room_drain)
+TEST_FOCUS(/datum/unit_test/stationtrauma_water_controls)
 #endif
 
 #undef LIQUID_TEST

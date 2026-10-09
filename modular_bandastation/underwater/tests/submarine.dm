@@ -11,6 +11,7 @@
 /datum/unit_test/stationtrauma_submarine/Run()
 	var/datum/map_template/template = allocate(/datum/map_template, "modular_bandastation/underwater/maps/stationtrauma_route.dmm")
 	var/turf/origin = locate(140, 80, run_loc_floor_bottom_left.z)
+	initialize_stationtrauma_test_boundary(template, origin)
 	SUBMARINE_TEST(template.load(origin), "The route template must load through the native loader")
 	var/obj/docking_port/mobile/stationtrauma/vessel
 	var/obj/docking_port/stationary/stationtrauma/base/base
@@ -37,11 +38,11 @@
 	SUBMARINE_TEST(vessel && base && wreck && console, "Both fixed points and the vessel's console must exist")
 	console.prepare_vessel()
 	SUBMARINE_TEST(vessel.registered && SSshuttle.getShuttle(console.shuttleId) == vessel, "Manual template loading must register and link the mobile port")
-	SUBMARINE_TEST(vessel.width == 14 && vessel.height == 10, "The whole interior must belong to the mobile port")
+	SUBMARINE_TEST(vessel.width == 16 && vessel.height == 10, "The rebuilt interior and its western airlock must belong to the mobile port")
 	SUBMARINE_TEST(vessel.get_docked() == base, "The vessel must start docked at the base")
 	SUBMARINE_TEST(reactor && reactor.powernet, "The vessel must carry a reactor connected to its real cable network")
-	var/obj/machinery/stationtrauma_water_device/water_tank = locate() in locate(base.x + 2, base.y + 1, base.z)
-	var/obj/machinery/stationtrauma_water_device/receiving_tank = locate() in locate(base.x + 6, base.y + 1, base.z)
+	var/obj/machinery/stationtrauma_water_device/barrel/water_tank = locate() in locate(base.x + 2, base.y + 1, base.z)
+	var/obj/machinery/stationtrauma_water_device/barrel/receiving_tank = locate() in locate(base.x + 6, base.y + 1, base.z)
 	var/obj/machinery/stationtrauma_water_device/valve/water_valve = locate() in locate(base.x + 4, base.y + 1, base.z)
 	var/obj/machinery/duct/water_pipe = locate() in locate(base.x + 3, base.y + 1, base.z)
 	SUBMARINE_TEST(water_tank && receiving_tank && water_valve && water_pipe && !water_valve.valve_open, "The route must provide a sealed charged water circuit")
@@ -107,7 +108,8 @@
 	SUBMARINE_TEST(returned_water.temperature == T0C + 35, "Returning must not reset the interior water's temperature")
 	SUBMARINE_TEST(water_tank.x == base.x + 2 && receiving_tank.x == base.x + 6 && water_pipe.x == base.x + 3, "The sealed liquid circuit must return with the vessel")
 	SUBMARINE_TEST(water_tank.reagents.total_volume == 500 && abs(water_tank.reagents.chem_temp - (T0C + 40)) < 0.01 && receiving_tank.reagents.total_volume == 100 && abs(receiving_tank.reagents.chem_temp - (T0C + 4)) < 0.01, "Stored charges must survive both docks: warm=[water_tank.reagents.total_volume]/[water_tank.reagents.chem_temp], cold=[receiving_tank.reagents.total_volume]/[receiving_tank.reagents.chem_temp], valve=[water_valve.valve_open]/[water_valve.reagents.total_volume]")
-	var/list/receiving_connections = receiving_tank.GetComponents(/datum/component/plumbing/stationtrauma_water)
+	var/obj/machinery/stationtrauma_water_device/connector/receiving_port = locate() in get_turf(receiving_tank)
+	var/list/receiving_connections = receiving_port.GetComponents(/datum/component/plumbing/stationtrauma_water)
 	var/list/valve_connections = water_valve.GetComponents(/datum/component/plumbing/stationtrauma_water)
 	SUBMARINE_TEST(length(receiving_connections) == 1 && length(valve_connections) == 1, "The returning circuit must retain its plumbing components")
 	var/datum/component/plumbing/stationtrauma_water/receiving_connection = receiving_connections[1]
@@ -123,6 +125,9 @@
 	vessel_cooling.on = TRUE
 	vessel_cooling.process_atmos(1)
 	SUBMARINE_TEST(reactor.core_temperature < T0C + 100, "The relocated powered gas pump must still cool the same reactor")
+	for(var/turf/open/tile as anything in template.get_affected_turfs(origin))
+		for(var/turf/open/neighbor as anything in tile.atmos_adjacent_turfs)
+			SUBMARINE_TEST(neighbor.air, "Atmos neighbor missing air after travel: [tile.type] ([tile.x],[tile.y]) -> [neighbor.type] ([neighbor.x],[neighbor.y])")
 
 #ifdef FLOODWATER_TEST_ONLY
 TEST_FOCUS(/datum/unit_test/stationtrauma_submarine)

@@ -1,47 +1,33 @@
 //MAP CONVERTED BY dmm2tgm.py THIS HEADER COMMENT PREVENTS RECONVERSION, DO NOT REMOVE
-"aD" = (
-/obj/machinery/atmospherics/pipe/smart/simple{
-	dir = 1
-	},
-/turf/open/floor/iron/stationtrauma_hull,
-/area/shuttle/stationtrauma)
 "bA" = (
 /obj/machinery/atmospherics/pipe/smart/manifold4w,
 /turf/closed/wall/stationtrauma_hull,
 /area/shuttle/stationtrauma)
-"bU" = (
-/obj/structure/table,
-/obj/item/stationtrauma_fuel_rod,
-/obj/item/stock_parts/power_store/cell/high,
-/turf/open/floor/iron{
-	baseturfs = /turf/open/space/ocean
+"dF" = (
+/obj/machinery/light{
+	dir = 1
 	},
-/area/stationtrauma_test)
-"eL" = (
-/obj/machinery/power/rtg{
-	power_gen = 5000;
-	affected_by_parts = 0
+/obj/machinery/stationtrauma_pump_controller{
+	control_group = "airlock"
 	},
-/obj/structure/cable,
-/turf/open/floor/iron/stationtrauma_hull,
+/turf/open/floor/plating/stationtrauma_hull,
 /area/shuttle/stationtrauma)
-"fJ" = (
-/obj/machinery/atmospherics/pipe/smart/simple{
-	dir = 4
-	},
-/turf/open/floor/iron/stationtrauma_hull,
+"dK" = (
+/obj/machinery/duct/stationtrauma,
+/turf/open/floor/plating/stationtrauma_hull,
 /area/shuttle/stationtrauma)
-"gd" = (
-/obj/item/stationtrauma_fuel_rod,
-/obj/structure/cable,
-/turf/open/floor/iron/stationtrauma_hull,
-/area/shuttle/stationtrauma)
-"gp" = (
-/obj/machinery/stationtrauma_water_device{
-	initial_water = 100;
-	initial_temperature = 277.15
+"eX" = (
+/obj/machinery/stationtrauma_water_device/outlet/overboard{
+	dir = 8
 	},
-/turf/open/floor/iron/stationtrauma_hull,
+/turf/closed/wall/stationtrauma_hull,
+/area/shuttle/stationtrauma)
+"fI" = (
+/obj/machinery/atmospherics/components/binary/stationtrauma_coolant_pump/precharged{
+	dir = 1;
+	on = 1
+	},
+/turf/open/floor/plating/stationtrauma_hull,
 /area/shuttle/stationtrauma)
 "gB" = (
 /obj/structure/flora/underwater/long,
@@ -53,35 +39,32 @@
 	},
 /turf/closed/wall/stationtrauma_hull,
 /area/shuttle/stationtrauma)
-"ho" = (
-/obj/machinery/duct,
-/turf/open/floor/iron/stationtrauma_hull,
-/area/shuttle/stationtrauma)
-"iO" = (
-/obj/item/paper{
-	name = "Вода при переходах";
-	default_raw_text = "Два резервуара и клапан — замкнутый контур внутри подлодки. Пока клапан закрыт, слева 500 л при 40 C, справа 100 л при 4 C. Проверьте объём и температуру после перехода. Откройте клапан: при полном переносе справа будет 600 л при 34 C. Наружные стыковочные шланги ещё не поддерживаются."
+"lt" = (
+/obj/machinery/stationtrauma_water_device/connector,
+/obj/machinery/stationtrauma_water_device/barrel{
+	initial_water = 500;
+	initial_temperature = 313.15;
+	start_connected = 1;
+	valve_open = 1
 	},
-/turf/open/floor/iron/stationtrauma_hull,
+/turf/open/floor/plating/stationtrauma_hull,
 /area/shuttle/stationtrauma)
-"mV" = (
-/obj/item/stack/sheet/iron,
-/obj/item/stack/rods,
-/obj/item/stack/tile/iron,
-/turf/open/floor/iron/stationtrauma_hull,
+"nd" = (
+/obj/machinery/duct/stationtrauma/straight,
+/turf/open/floor/plating/stationtrauma_hull,
 /area/shuttle/stationtrauma)
-"nv" = (
-/obj/structure/underwater_scrap,
-/turf/open/floor/iron{
+"nU" = (
+/obj/structure/table,
+/obj/item/stationtrauma_fuel_rod,
+/obj/item/stock_parts/power_store/cell/high,
+/turf/open/floor/plating{
 	baseturfs = /turf/open/space/ocean
 	},
 /area/stationtrauma_test)
-"og" = (
-/obj/machinery/stationtrauma_water_device{
-	initial_water = 500;
-	initial_temperature = 313.15
-	},
-/turf/open/floor/iron/stationtrauma_hull,
+"od" = (
+/obj/item/stationtrauma_fuel_rod,
+/obj/structure/cable,
+/turf/open/floor/plating/stationtrauma_hull,
 /area/shuttle/stationtrauma)
 "os" = (
 /obj/machinery/atmospherics/pipe/smart/simple{
@@ -93,22 +76,31 @@
 /obj/structure/flora/underwater/coral,
 /turf/open/space/ocean,
 /area/space/ocean)
-"pm" = (
-/obj/machinery/door/airlock/highsecurity/underwater,
-/turf/open/floor/iron{
-	baseturfs = /turf/open/space/ocean
+"pq" = (
+/obj/machinery/bilge_pump{
+	control_group = "airlock"
 	},
-/area/stationtrauma_test)
-"qo" = (
-/obj/structure/cable,
-/turf/open/floor/iron/stationtrauma_hull,
+/turf/open/floor/plating/stationtrauma_hull,
 /area/shuttle/stationtrauma)
-"rl" = (
-/obj/item/wrench,
-/obj/item/crowbar,
-/obj/item/screwdriver,
-/obj/item/weldingtool,
-/turf/open/floor/iron/stationtrauma_hull,
+"qK" = (
+/obj/structure/chair,
+/turf/open/floor/plating/stationtrauma_hull,
+/area/shuttle/stationtrauma)
+"qW" = (
+/obj/structure/cable,
+/turf/open/floor/plating/stationtrauma_hull,
+/area/shuttle/stationtrauma)
+"rJ" = (
+/obj/item/clothing/suit/space,
+/obj/item/clothing/head/helmet/space,
+/obj/item/clothing/mask/breath,
+/obj/item/tank/internals/oxygen,
+/obj/item/flashlight,
+/turf/open/floor/plating/stationtrauma_hull,
+/area/shuttle/stationtrauma)
+"rR" = (
+/obj/machinery/computer/shuttle/stationtrauma,
+/turf/open/floor/plating/stationtrauma_hull,
 /area/shuttle/stationtrauma)
 "sa" = (
 /obj/machinery/atmospherics/pipe/smart/simple{
@@ -116,40 +108,42 @@
 	},
 /turf/closed/wall/stationtrauma_hull,
 /area/shuttle/stationtrauma)
-"ss" = (
-/turf/open/space/ocean,
-/area/space/ocean)
-"sD" = (
-/obj/structure/chair,
-/turf/open/floor/iron/stationtrauma_hull,
-/area/shuttle/stationtrauma)
-"tJ" = (
-/obj/docking_port/mobile/stationtrauma,
-/obj/docking_port/stationary/stationtrauma/base,
-/turf/closed/wall/stationtrauma_hull,
-/area/shuttle/stationtrauma)
-"vN" = (
-/obj/machinery/door/airlock/highsecurity/underwater,
-/turf/open/floor/iron/stationtrauma_hull,
-/area/shuttle/stationtrauma)
-"xO" = (
-/obj/machinery/atmospherics/components/binary/stationtrauma_coolant_pump/precharged{
-	dir = 1;
-	on = 1
-	},
-/turf/open/floor/iron/stationtrauma_hull,
-/area/shuttle/stationtrauma)
-"yn" = (
+"si" = (
 /obj/machinery/atmospherics/pipe/smart/simple{
 	dir = 5
 	},
-/turf/open/floor/iron/stationtrauma_hull,
+/turf/open/floor/plating/stationtrauma_hull,
 /area/shuttle/stationtrauma)
-"za" = (
+"ss" = (
+/turf/open/space/ocean,
+/area/space/ocean)
+"tA" = (
+/obj/docking_port/mobile/stationtrauma,
+/obj/docking_port/stationary/stationtrauma/base{
+	width = 16;
+	dwidth = 2
+	},
+/turf/closed/wall/stationtrauma_hull,
+/area/shuttle/stationtrauma)
+"uy" = (
+/obj/machinery/stationtrauma_water_device/connector,
+/obj/machinery/stationtrauma_water_device/barrel{
+	initial_water = 100;
+	initial_temperature = 277.15;
+	start_connected = 1;
+	valve_open = 1
+	},
+/turf/open/floor/plating/stationtrauma_hull,
+/area/shuttle/stationtrauma)
+"wC" = (
 /obj/machinery/atmospherics/pipe/smart/simple{
 	dir = 6
 	},
-/turf/open/floor/iron/stationtrauma_hull,
+/turf/open/floor/plating/stationtrauma_hull,
+/area/shuttle/stationtrauma)
+"yL" = (
+/obj/machinery/light/directional/south,
+/turf/open/floor/plating/stationtrauma_hull,
 /area/shuttle/stationtrauma)
 "zz" = (
 /turf/open/space/ocean{
@@ -160,56 +154,82 @@
 /obj/structure/flora/underwater,
 /turf/open/space/ocean,
 /area/space/ocean)
-"zJ" = (
-/obj/item/clothing/suit/space,
-/obj/item/clothing/head/helmet/space,
-/obj/item/clothing/mask/breath,
-/obj/item/tank/internals/oxygen,
-/obj/item/flashlight,
-/turf/open/floor/iron/stationtrauma_hull,
+"Bi" = (
+/obj/machinery/power/stationtrauma_reactor,
+/obj/structure/cable,
+/turf/open/floor/plating/stationtrauma_hull,
 /area/shuttle/stationtrauma)
-"AC" = (
-/obj/machinery/stationtrauma_water_device/valve,
-/turf/open/floor/iron/stationtrauma_hull,
+"Dw" = (
+/obj/docking_port/stationary/stationtrauma/wreck{
+	width = 16;
+	dwidth = 2
+	},
+/turf/open/space/ocean,
+/area/space/ocean)
+"Dz" = (
+/obj/item/pipe_dispenser/stationtrauma,
+/turf/open/floor/plating/stationtrauma_hull,
 /area/shuttle/stationtrauma)
-"CG" = (
-/obj/machinery/light{
+"DY" = (
+/obj/structure/underwater_scrap,
+/turf/open/floor/plating{
+	baseturfs = /turf/open/space/ocean
+	},
+/area/stationtrauma_test)
+"Fa" = (
+/obj/machinery/atmospherics/pipe/smart/simple{
 	dir = 1
 	},
-/turf/open/floor/iron/stationtrauma_hull,
+/turf/open/floor/plating/stationtrauma_hull,
 /area/shuttle/stationtrauma)
-"Et" = (
-/obj/machinery/bilge_pump/portable,
-/turf/open/floor/iron/stationtrauma_hull,
-/area/shuttle/stationtrauma)
-"EZ" = (
-/obj/item/paper{
-	name = "Маршрут StationTrauma";
-	default_raw_text = "Навигационная консоль: база — затонувший пост — база. Переход: 20 секунд. Вода, экипаж, вещи, реактор и повреждения перемещаются с интерьером. Реактор запускается после загрузки кассеты. Сначала проверьте работающий насос охлаждения и трубопровод. SCRAM сохраняет остаточное тепло. Наружный теплообменник находится справа за обшивкой. Перед выходом в океан наденьте защитный костюм, шлем и маску, включите баллон."
+"Fr" = (
+/obj/machinery/atmospherics/pipe/smart/simple{
+	dir = 4
 	},
-/turf/open/floor/iron/stationtrauma_hull,
+/turf/open/floor/plating/stationtrauma_hull,
+/area/shuttle/stationtrauma)
+"Ft" = (
+/obj/machinery/bilge_pump/portable,
+/turf/open/floor/plating/stationtrauma_hull,
 /area/shuttle/stationtrauma)
 "FI" = (
 /turf/closed/wall{
 	baseturfs = /turf/open/space/ocean
 	},
 /area/stationtrauma_test)
-"GH" = (
-/turf/open/floor/iron/stationtrauma_hull,
+"FR" = (
+/obj/machinery/door/airlock/highsecurity/underwater,
+/turf/open/floor/plating/stationtrauma_hull,
+/area/shuttle/stationtrauma)
+"HL" = (
+/obj/machinery/light{
+	dir = 1
+	},
+/turf/open/floor/plating/stationtrauma_hull,
 /area/shuttle/stationtrauma)
 "JQ" = (
 /turf/closed/wall/stationtrauma_hull,
 /area/shuttle/stationtrauma)
-"Mb" = (
-/obj/machinery/computer/shuttle/stationtrauma,
-/turf/open/floor/iron/stationtrauma_hull,
+"JT" = (
+/obj/machinery/stationtrauma_water_device/valve,
+/turf/open/floor/plating/stationtrauma_hull,
 /area/shuttle/stationtrauma)
-"MG" = (
-/turf/open/floor/iron{
-	baseturfs = /turf/open/space/ocean
+"Lw" = (
+/obj/machinery/stationtrauma_pump_controller,
+/turf/open/floor/plating/stationtrauma_hull,
+/area/shuttle/stationtrauma)
+"LP" = (
+/obj/machinery/bilge_pump,
+/turf/open/floor/plating/stationtrauma_hull,
+/area/shuttle/stationtrauma)
+"Ma" = (
+/obj/item/paper{
+	name = "Маршрут StationTrauma";
+	default_raw_text = "Навигационная консоль: база — затонувший пост — база. Переход: 20 секунд. Вода, экипаж, вещи, реактор и повреждения перемещаются с интерьером. Реактор запускается после загрузки кассеты. Сначала проверьте работающий насос охлаждения и трубопровод. SCRAM сохраняет остаточное тепло. Наружный теплообменник находится справа за обшивкой. Перед выходом в океан наденьте защитный костюм, шлем и маску, включите баллон."
 	},
-/area/stationtrauma_test)
-"PD" = (
+/turf/open/floor/plating/stationtrauma_hull,
+/area/shuttle/stationtrauma)
+"Mg" = (
 /obj/machinery/power/apc{
 	dir = 1;
 	pixel_y = 25;
@@ -218,27 +238,57 @@
 	unlocked = 1
 	},
 /obj/structure/cable,
-/turf/open/floor/iron/stationtrauma_hull,
+/turf/open/floor/plating/stationtrauma_hull,
 /area/shuttle/stationtrauma)
-"PG" = (
-/obj/structure/table,
+"NX" = (
 /obj/item/stack/sheet/iron,
-/turf/open/floor/iron{
+/obj/item/stack/rods,
+/obj/item/stack/tile/iron,
+/turf/open/floor/plating/stationtrauma_hull,
+/area/shuttle/stationtrauma)
+"OR" = (
+/turf/open/floor/plating{
 	baseturfs = /turf/open/space/ocean
 	},
 /area/stationtrauma_test)
+"Qq" = (
+/obj/machinery/power/rtg{
+	power_gen = 5000;
+	affected_by_parts = 0
+	},
+/obj/structure/cable,
+/turf/open/floor/plating/stationtrauma_hull,
+/area/shuttle/stationtrauma)
+"Sg" = (
+/obj/structure/table,
+/obj/item/stack/sheet/iron,
+/turf/open/floor/plating{
+	baseturfs = /turf/open/space/ocean
+	},
+/area/stationtrauma_test)
+"SQ" = (
+/obj/item/paper{
+	name = "Вода при переходах";
+	default_raw_text = "Два резервуара и клапан — замкнутый контур внутри подлодки. Пока клапан закрыт, слева 500 л при 40 C, справа 100 л при 4 C. Проверьте объём и температуру после перехода. Откройте клапан: при полном переносе справа будет 600 л при 34 C. Наружные стыковочные шланги ещё не поддерживаются."
+	},
+/turf/open/floor/plating/stationtrauma_hull,
+/area/shuttle/stationtrauma)
 "TY" = (
 /obj/structure/flora/underwater/glowing,
 /turf/open/space/ocean,
 /area/space/ocean)
-"Uc" = (
-/obj/machinery/power/stationtrauma_reactor,
-/obj/structure/cable,
-/turf/open/floor/iron/stationtrauma_hull,
-/area/shuttle/stationtrauma)
-"Uz" = (
-/obj/machinery/bilge_pump,
-/turf/open/floor/iron/stationtrauma_hull,
+"VK" = (
+/obj/machinery/door/airlock/highsecurity/underwater,
+/turf/open/floor/plating{
+	baseturfs = /turf/open/space/ocean
+	},
+/area/stationtrauma_test)
+"Xx" = (
+/obj/item/wrench,
+/obj/item/crowbar,
+/obj/item/screwdriver,
+/obj/item/weldingtool,
+/turf/open/floor/plating/stationtrauma_hull,
 /area/shuttle/stationtrauma)
 "XR" = (
 /obj/machinery/atmospherics/components/unary/stationtrauma_ocean_exchanger{
@@ -248,10 +298,9 @@
 	baseturfs = list(/turf/open/space/ocean, /turf/baseturf_skipover/shuttle, /turf/open/space/ocean)
 	},
 /area/shuttle/stationtrauma)
-"Zx" = (
-/obj/docking_port/stationary/stationtrauma/wreck,
-/turf/open/space/ocean,
-/area/space/ocean)
+"YS" = (
+/turf/open/floor/plating/stationtrauma_hull,
+/area/shuttle/stationtrauma)
 
 (1,1,1) = {"
 ss
@@ -302,11 +351,11 @@ ss
 ss
 ss
 ss
-ss
-ss
-ss
-ss
-ss
+JQ
+JQ
+FR
+JQ
+JQ
 ss
 ss
 ss
@@ -332,11 +381,11 @@ ss
 ss
 ss
 ss
-ss
-ss
-ss
-ss
-ss
+JQ
+dF
+pq
+nd
+eX
 ss
 ss
 ss
@@ -364,11 +413,11 @@ JQ
 JQ
 JQ
 JQ
-vN
+FR
 JQ
 JQ
 JQ
-tJ
+tA
 ss
 ss
 ss
@@ -379,25 +428,25 @@ ss
 ss
 ss
 FI
-MG
-MG
-MG
-MG
-MG
-MG
+OR
+OR
+OR
+OR
+OR
+OR
 FI
 ss
 ss
 ss
 JQ
-GH
-GH
-GH
-GH
-GH
-GH
-GH
-GH
+YS
+YS
+YS
+YS
+YS
+YS
+YS
+YS
 JQ
 ss
 ss
@@ -409,25 +458,25 @@ ss
 ss
 ss
 FI
-MG
-MG
-MG
-MG
-MG
-MG
+OR
+OR
+OR
+OR
+OR
+OR
 FI
 ss
 ss
 ss
 JQ
-GH
-GH
-Mb
-sD
-GH
-zJ
-rl
-og
+YS
+YS
+rR
+qK
+YS
+rJ
+Xx
+lt
 JQ
 ss
 ss
@@ -439,25 +488,25 @@ ss
 ss
 ss
 FI
-MG
-MG
-MG
-MG
-MG
-MG
+OR
+OR
+OR
+OR
+OR
+OR
 FI
 ss
 ss
 ss
 JQ
-CG
-GH
-EZ
-GH
-GH
-GH
-mV
-ho
+HL
+YS
+Ma
+YS
+YS
+YS
+NX
+dK
 JQ
 ss
 ss
@@ -469,25 +518,25 @@ ss
 ss
 ss
 FI
-MG
-MG
-bU
-MG
-MG
-MG
-pm
+OR
+OR
+nU
+OR
+OR
+OR
+VK
 ss
 ss
 ss
 JQ
-GH
-GH
-Uz
-Et
-GH
-GH
-GH
-AC
+YS
+YS
+LP
+Ft
+YS
+YS
+YS
+JT
 JQ
 ss
 ss
@@ -499,25 +548,25 @@ ss
 ss
 ss
 FI
-MG
-MG
-MG
-MG
-MG
-MG
+OR
+OR
+OR
+OR
+OR
+OR
 FI
 ss
 ss
 ss
 JQ
-GH
-GH
-GH
-GH
-GH
-GH
-iO
-ho
+YS
+YS
+Lw
+Dz
+YS
+YS
+SQ
+dK
 JQ
 ss
 ss
@@ -529,25 +578,25 @@ ss
 ss
 ss
 FI
-MG
-MG
-MG
-MG
-MG
-MG
+OR
+OR
+OR
+OR
+OR
+OR
 FI
 ss
 ss
 ss
 JQ
-GH
-GH
-GH
-GH
-GH
-GH
-GH
-gp
+YS
+YS
+YS
+YS
+YS
+YS
+YS
+uy
 JQ
 ss
 ss
@@ -559,25 +608,25 @@ ss
 ss
 ss
 FI
-MG
-MG
-MG
-MG
-MG
-MG
+OR
+OR
+OR
+OR
+OR
+OR
 FI
 ss
 ss
 ss
 JQ
-GH
-GH
-GH
-GH
-GH
-GH
-GH
-GH
+YS
+YS
+YS
+YS
+YS
+YS
+YS
+YS
 JQ
 ss
 ss
@@ -589,25 +638,25 @@ ss
 ss
 ss
 FI
-MG
-MG
-MG
-MG
-MG
-MG
+OR
+OR
+OR
+OR
+OR
+OR
 FI
 ss
 ss
 ss
 JQ
-PD
-eL
-qo
-gd
-Uc
-GH
-GH
-GH
+Mg
+Qq
+qW
+od
+Bi
+YS
+YS
+yL
 JQ
 ss
 ss
@@ -619,25 +668,25 @@ ss
 ss
 ss
 FI
-MG
-MG
-MG
-MG
-MG
-MG
+OR
+OR
+OR
+OR
+OR
+OR
 FI
 ss
 ss
 ss
 JQ
-GH
-GH
-za
-aD
-xO
-yn
-GH
-GH
+YS
+YS
+wC
+Fa
+fI
+si
+YS
+YS
 JQ
 ss
 ss
@@ -660,14 +709,14 @@ ss
 ss
 ss
 JQ
-GH
-GH
-fJ
-GH
-GH
-fJ
-GH
-GH
+YS
+YS
+Fr
+YS
+YS
+Fr
+YS
+YS
 JQ
 ss
 ss
@@ -1448,7 +1497,7 @@ ss
 ss
 ss
 ss
-Zx
+Dw
 ss
 ss
 ss
@@ -1459,12 +1508,12 @@ ss
 ss
 ss
 FI
-MG
-MG
-MG
-MG
-MG
-MG
+OR
+OR
+OR
+OR
+OR
+OR
 FI
 ss
 ss
@@ -1489,12 +1538,12 @@ ss
 ss
 ss
 FI
-MG
-MG
-MG
-MG
-MG
-MG
+OR
+OR
+OR
+OR
+OR
+OR
 FI
 ss
 ss
@@ -1519,12 +1568,12 @@ ss
 ss
 ss
 FI
-MG
-MG
-MG
-MG
-MG
-MG
+OR
+OR
+OR
+OR
+OR
+OR
 FI
 ss
 ss
@@ -1549,13 +1598,13 @@ ss
 ss
 ss
 FI
-MG
-MG
-PG
-MG
-MG
-MG
-pm
+OR
+OR
+Sg
+OR
+OR
+OR
+VK
 ss
 ss
 ss
@@ -1579,12 +1628,12 @@ ss
 ss
 ss
 FI
-MG
-MG
-MG
-MG
-MG
-MG
+OR
+OR
+OR
+OR
+OR
+OR
 FI
 ss
 ss
@@ -1609,12 +1658,12 @@ ss
 ss
 ss
 FI
-MG
-MG
-MG
-MG
-MG
-nv
+OR
+OR
+OR
+OR
+OR
+DY
 FI
 ss
 ss
@@ -1639,12 +1688,12 @@ ss
 ss
 ss
 FI
-MG
-MG
-MG
-MG
-MG
-MG
+OR
+OR
+OR
+OR
+OR
+OR
 FI
 ss
 ss
@@ -1669,12 +1718,12 @@ ss
 ss
 ss
 FI
-MG
-MG
-MG
-MG
-MG
-MG
+OR
+OR
+OR
+OR
+OR
+OR
 FI
 ss
 ss
@@ -1699,12 +1748,12 @@ ss
 ss
 ss
 FI
-MG
-MG
-MG
-MG
-MG
-MG
+OR
+OR
+OR
+OR
+OR
+OR
 FI
 ss
 ss
