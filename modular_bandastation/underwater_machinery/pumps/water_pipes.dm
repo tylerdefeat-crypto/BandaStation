@@ -53,16 +53,19 @@
 	/// Mapper charge for test fixtures; normal reservoirs start empty.
 	var/initial_water = 0
 	var/initial_temperature = T0C + 4
+	var/water_level = 3
 	var/plumbing_type = /datum/component/plumbing/stationtrauma_water
 
-/obj/machinery/stationtrauma_water_device/Initialize(mapload)
+/obj/machinery/stationtrauma_water_device/Initialize(mapload, new_level)
+	if(new_level in 1 to 5)
+		water_level = new_level
 	. = ..()
 	create_reagents(capacity, NO_REACT)
 	reagents.set_temperature(initial_temperature)
 	if(initial_water > 0)
 		reagents.add_reagent(/datum/reagent/water, initial_water, reagtemp = initial_temperature, no_react = TRUE)
 	if(plumbing_type)
-		AddComponent(plumbing_type)
+		AddComponent(plumbing_type, STATIONTRAUMA_WATER_LAYER_BIT(water_level))
 		AddElement(/datum/element/simple_rotation)
 
 /obj/machinery/stationtrauma_water_device/Destroy()
@@ -71,7 +74,7 @@
 
 /obj/machinery/stationtrauma_water_device/examine(mob/user)
 	. = ..()
-	. += span_notice("Вода: [round(reagents.get_reagent_amount(/datum/reagent/water), 0.1)] / [reagents.maximum_volume] л. Температура: [round(reagents.chem_temp - T0C, 0.1)] °C.")
+	. += span_notice("Вода: [round(reagents.get_reagent_amount(/datum/reagent/water), 0.1)] / [reagents.maximum_volume] л. Температура: [round(reagents.chem_temp - T0C, 0.1)] °C. Уровень труб: [water_level].")
 
 /obj/machinery/stationtrauma_water_device/wrench_act(mob/living/user, obj/item/tool)
 	return default_unfasten_wrench(user, tool)
@@ -143,8 +146,7 @@
 	var/turf/open/origin = get_turf(source)
 	if(!isopenturf(origin) || !isopenturf(target) || QDELETED(source.reagents))
 		return 0
-	origin.immediate_calculate_adjacent_turfs()
-	if(target != origin && (!(target in origin.atmos_adjacent_turfs) || get_dist(origin, target) != 1 || !(get_dir(origin, target) in GLOB.cardinals)))
+	if(target != origin && !origin.can_pass_stationtrauma_water(target))
 		return 0
 	return target.receive_water(source.reagents, source.reagents.get_reagent_amount(/datum/reagent/water))
 
@@ -164,7 +166,8 @@
 	var/turf/open/origin = get_turf(source)
 	if(isopenturf(origin))
 		drain_stationtrauma_water(source, origin)
-		for(var/turf/open/target as anything in origin.atmos_adjacent_turfs)
+		for(var/direction in GLOB.cardinals)
+			var/turf/open/target = get_step(origin, direction)
 			drain_stationtrauma_water(source, target)
 	if(source.reagents.total_volume)
 		var/obj/item/stationtrauma_water_canister/remainder = new(source.drop_location())

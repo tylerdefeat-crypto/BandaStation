@@ -1,23 +1,26 @@
 /// Water reaches the intake through the existing floodwater flow, never through sealed walls.
 /obj/machinery/bilge_pump
 	name = "трюмная помпа"
-	desc = "Собирает воду в трубный буфер. Включается контроллером помп; ЛКМ открывает ближайший контроллер своей группы. Требует АПЦ; оставляет слой 0,5 см. Выход водяной трубы — на юге."
+	desc = "Собирает воду в трубный буфер. Включается контроллером помп; ЛКМ открывает ближайший контроллер своей группы. Требует АПЦ; осушает связанный отсек до нуля. Выход водяной трубы — на юге."
 	icon = 'modular_bandastation/underwater_machinery/pumps/icons/drains.dmi'
 	icon_state = "active_input"
 	density = FALSE
 	idle_power_usage = 5
 	processing_flags = NONE
-	/// Centimetres removed from the intake tile each second.
+	/// Legacy flow units: 1 cm/s corresponds to 10 litres per second from the connected room.
 	var/drain_rate = 100
 	var/on = FALSE
-	var/residual_depth = 0.5
+	var/residual_depth = 0
 	var/buffer_capacity = 10000
 	var/control_group = "water"
+	var/water_level = 3
 
-/obj/machinery/bilge_pump/Initialize(mapload)
+/obj/machinery/bilge_pump/Initialize(mapload, new_level)
+	if(new_level in 1 to 5)
+		water_level = new_level
 	. = ..()
 	create_reagents(buffer_capacity, NO_REACT)
-	AddComponent(/datum/component/plumbing/stationtrauma_water/supply)
+	AddComponent(/datum/component/plumbing/stationtrauma_water/supply, STATIONTRAUMA_WATER_LAYER_BIT(water_level))
 	AddElement(/datum/element/simple_rotation)
 
 /obj/machinery/bilge_pump/Destroy()
@@ -47,7 +50,7 @@
 
 /obj/machinery/bilge_pump/examine(mob/user)
 	. = ..()
-	. += span_notice("Помпа [on ? "включена" : "выключена"]. Скорость осушения у заборника: [drain_rate] см/с.")
+	. += span_notice("Помпа [on ? "включена" : "выключена"]. Расход: [drain_rate * FLOOD_WATER_LITRES_PER_CM] л/с; уровень труб [water_level].")
 	. += span_notice("Буфер: [round(reagents.total_volume, 0.1)] / [reagents.maximum_volume] л; [round(reagents.chem_temp - T0C, 0.1)] °C. Выход подключается к водяным трубам.")
 
 /obj/machinery/bilge_pump/proc/draw_pump_energy(seconds_per_tick)
@@ -63,9 +66,16 @@
 		return
 	var/turf/open/intake = loc
 	var/datum/component/floodwater/water = intake.GetComponent(/datum/component/floodwater)
-	if(!water || water.infinite_source || water.depth <= residual_depth || reagents.holder_full() || !draw_pump_energy(seconds_per_tick))
+	if(water?.infinite_source || reagents.holder_full())
 		return
-	water.remove_water(min(drain_rate * seconds_per_tick, water.depth - residual_depth) * FLOOD_WATER_LITRES_PER_CM, reagents)
+	var/list/room = intake.stationtrauma_water_room()
+	var/has_water = FALSE
+	for(var/turf/open/tile as anything in room)
+		if(tile.get_water_depth() > residual_depth)
+			has_water = TRUE
+			break
+	if(has_water && draw_pump_energy(seconds_per_tick))
+		drain_stationtrauma_water_room(intake, drain_rate * seconds_per_tick * FLOOD_WATER_LITRES_PER_CM, reagents, residual_depth, room)
 
 /obj/machinery/bilge_pump/plumbed
 	name = "трюмная помпа с трубным выходом"
@@ -87,7 +97,7 @@
 	control_group = "portable"
 	var/obj/item/stock_parts/power_store/cell/cell
 
-/obj/machinery/bilge_pump/portable/Initialize(mapload)
+/obj/machinery/bilge_pump/portable/Initialize(mapload, new_level)
 	. = ..()
 	cell = new /obj/item/stock_parts/power_store/cell/high(src)
 

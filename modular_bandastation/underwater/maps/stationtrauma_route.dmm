@@ -50,7 +50,7 @@
 /turf/open/floor/plating/stationtrauma_hull,
 /area/shuttle/stationtrauma)
 "nd" = (
-/obj/machinery/duct/stationtrauma/straight,
+/obj/machinery/duct/stationtrauma,
 /turf/open/floor/plating/stationtrauma_hull,
 /area/shuttle/stationtrauma)
 "nU" = (

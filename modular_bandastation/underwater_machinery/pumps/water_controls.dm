@@ -118,7 +118,11 @@
 	return ..()
 
 /obj/machinery/stationtrauma_water_device/barrel/proc/connect_port()
-	var/obj/machinery/stationtrauma_water_device/connector/found = locate() in loc
+	var/obj/machinery/stationtrauma_water_device/connector/found
+	for(var/obj/machinery/stationtrauma_water_device/connector/candidate in loc)
+		if(candidate.water_level == water_level && !candidate.barrel)
+			found = candidate
+			break
 	if(!found || !found.anchored || found.barrel || QDELETED(found))
 		return FALSE
 	port = found

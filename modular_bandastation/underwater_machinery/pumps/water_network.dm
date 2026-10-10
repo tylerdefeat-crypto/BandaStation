@@ -7,6 +7,13 @@
 	duct_layer = STATIONTRAUMA_WATER_LAYER
 	var/pipe_shape = "smart"
 	var/connection_mask = ALL_CARDINALS
+	var/water_level = 3
+	var/bridges_levels = FALSE
+
+/obj/machinery/duct/stationtrauma/manifold
+	name = "межуровневый водяной коллектор"
+	desc = "Объединяет соседние водяные линии всех пяти уровней. Занимает все уровни на своей клетке. Ключ — снять."
+	bridges_levels = TRUE
 
 /obj/machinery/duct/stationtrauma/straight
 	pipe_shape = "straight"
@@ -20,7 +27,10 @@
 /obj/machinery/duct/stationtrauma/cross
 	pipe_shape = "cross"
 
-/obj/machinery/duct/stationtrauma/Initialize(mapload, new_shape, new_direction)
+/obj/machinery/duct/stationtrauma/Initialize(mapload, new_shape, new_direction, new_level)
+	if(new_level in 1 to 5)
+		water_level = new_level
+	duct_layer = bridges_levels ? (31 << 5) : STATIONTRAUMA_WATER_LAYER_BIT(water_level)
 	if(new_shape)
 		pipe_shape = new_shape
 	if(new_direction)
@@ -51,6 +61,8 @@
 	. = ..()
 	duct_layer = water_layer
 	rebuild_water_connections()
+	pixel_x = (water_level - 3) * 5
+	pixel_y = (water_level - 3) * 5
 
 /obj/machinery/duct/stationtrauma/proc/rebuild_water_connections()
 	if(!net)
@@ -63,7 +75,7 @@
 		for(var/atom/movable/neighbor in get_step(src, direction))
 			var/obj/machinery/duct/stationtrauma/pipe = neighbor
 			if(istype(pipe))
-				if(!pipe.accepts(opposite))
+				if(!(pipe.duct_layer & duct_layer) || !pipe.accepts(opposite))
 					continue
 				if(!pipe.net)
 					pipe.net = net
@@ -85,11 +97,12 @@
 					other.demanders.Cut()
 					qdel(other)
 				neighbours[pipe] = direction
-				LAZYADDASSOC(pipe.neighbours, src, opposite)
+				LAZYINITLIST(pipe.neighbours)
+				pipe.neighbours[src] = opposite
 				pipe.update_appearance(UPDATE_ICON)
 				continue
 			for(var/datum/component/plumbing/stationtrauma_water/component as anything in neighbor.GetComponents(/datum/component/plumbing/stationtrauma_water))
-				if(!component.active() || !(opposite & (component.demand_connects | component.supply_connects)))
+				if(!component.active() || !(component.ducting_layer & duct_layer) || !(opposite & (component.demand_connects | component.supply_connects)))
 					continue
 				if(component.ducts["[opposite]"] != net)
 					net.add_plumber(component, opposite)
@@ -99,37 +112,46 @@
 /obj/machinery/duct/stationtrauma/update_icon_state()
 	. = ..()
 	var/mask = connection_mask
-	if(pipe_shape == "smart" && length(neighbours))
+	if(pipe_shape == "smart")
 		mask = NONE
 		for(var/neighbor in neighbours)
 			mask |= neighbours[neighbor]
 	icon_state = "pipe_[mask]"
 
 /obj/machinery/duct/stationtrauma/examine(mob/user)
-	. = list(desc, span_notice("Секция: [pipe_shape]. Сеть водяная; газ и химические duct не подключаются."))
+	. = list(desc, span_notice("Секция: [pipe_shape], уровень [water_level]. Сеть водяная; газ и химические duct не подключаются."))
 
 /obj/machinery/duct/stationtrauma/on_deconstruction()
 	var/obj/item/stationtrauma_water_pipe_fitting/fitting = new(drop_location())
 	fitting.pipe_shape = pipe_shape
 	fitting.dir = dir
+	fitting.water_level = water_level
+	fitting.bridges_levels = bridges_levels
 
 /obj/item/stationtrauma_water_pipe_fitting
 	name = "секция водяной трубы"
 	desc = "Положите на свободную клетку и прикрутите ключом. Alt+ЛКМ — поворот."
 	icon = 'modular_bandastation/underwater_machinery/pumps/icons/water_pipes.dmi'
-	icon_state = "pipe_3"
-	var/pipe_shape = "straight"
+	icon_state = "pipe_15"
+	var/pipe_shape = "smart"
+	var/water_level = 3
+	var/bridges_levels = FALSE
 
 /obj/item/stationtrauma_water_pipe_fitting/Initialize(mapload)
 	. = ..()
 	AddElement(/datum/element/simple_rotation)
 
+/obj/item/stationtrauma_water_pipe_fitting/examine(mob/user)
+	. = ..()
+	. += span_notice(bridges_levels ? "Межуровневый коллектор: соединяет все пять уровней." : "Уровень водяной трубы: [water_level].")
+
 /obj/item/stationtrauma_water_pipe_fitting/wrench_act(mob/living/user, obj/item/tool)
 	var/turf/tile = get_turf(src)
-	if(!isopenturf(tile) || ducting_layer_check(tile, STATIONTRAUMA_WATER_LAYER))
+	if(!isopenturf(tile) || ducting_layer_check(tile, bridges_levels ? (31 << 5) : STATIONTRAUMA_WATER_LAYER_BIT(water_level)))
 		balloon_alert(user, "место занято")
 		return ITEM_INTERACT_BLOCKING
-	var/obj/machinery/duct/stationtrauma/pipe = new(tile, pipe_shape, dir)
+	var/path = bridges_levels ? /obj/machinery/duct/stationtrauma/manifold : /obj/machinery/duct/stationtrauma
+	var/obj/machinery/duct/stationtrauma/pipe = new path(tile, pipe_shape, dir, water_level)
 	pipe.rebuild_water_connections()
 	qdel(src)
 	return ITEM_INTERACT_SUCCESS
@@ -144,7 +166,7 @@
 		for(var/atom/movable/neighbor in get_step(parent, direction))
 			var/obj/machinery/duct/stationtrauma/pipe = neighbor
 			if(istype(pipe))
-				if(!pipe.accepts(opposite))
+				if(!(pipe.duct_layer & ducting_layer) || !pipe.accepts(opposite))
 					continue
 				if(!pipe.net)
 					pipe.rebuild_water_connections()
@@ -153,7 +175,7 @@
 				pipe.update_appearance(UPDATE_ICON)
 				continue
 			for(var/datum/component/plumbing/stationtrauma_water/other as anything in neighbor.GetComponents(/datum/component/plumbing/stationtrauma_water))
-				if(other.active() && ((other.demand_connects & opposite) && (supply_connects & direction) || (other.supply_connects & opposite) && (demand_connects & direction)))
+				if(other.active() && (other.ducting_layer & ducting_layer) && ((other.demand_connects & opposite) && (supply_connects & direction) || (other.supply_connects & opposite) && (demand_connects & direction)))
 					if(other.ducts["[opposite]"] == ducts["[direction]"] && ducts["[direction]"])
 						continue
 					var/datum/ductnet/network = new
@@ -166,8 +188,8 @@
 	for(var/direction in GLOB.cardinals)
 		if(direction & (supply_connects | demand_connects))
 			var/mutable_appearance/branch = mutable_appearance('modular_bandastation/underwater_machinery/pumps/icons/water_pipes.dmi', "pipe_[direction]", PLUMBING_PIPE_VISIBILE_LAYER)
-			branch.pixel_x = -source.pixel_x
-			branch.pixel_y = -source.pixel_y
+			branch.pixel_x = (stationtrauma_water_level(ducting_layer) - 3) * 5 - source.pixel_x
+			branch.pixel_y = (stationtrauma_water_level(ducting_layer) - 3) * 5 - source.pixel_y
 			overlays += branch
 
 /// A water-only exchanger for a closed loop; heat goes into the infinite ocean, not into room air.
@@ -194,3 +216,15 @@
 			if(heat_capacity && reagents.chem_temp > ocean.temperature)
 				reagents.set_temperature(max(ocean.temperature, reagents.chem_temp - 150000 * seconds_per_tick / heat_capacity))
 			return
+
+/proc/stationtrauma_water_level(layer_bit)
+	for(var/level in 1 to 5)
+		if(layer_bit == STATIONTRAUMA_WATER_LAYER_BIT(level))
+			return level
+	return 3
+
+/datum/component/plumbing/stationtrauma_water/Initialize(new_layer)
+	for(var/level in 1 to 5)
+		if(new_layer == STATIONTRAUMA_WATER_LAYER_BIT(level))
+			ducting_layer = new_layer
+	return ..()

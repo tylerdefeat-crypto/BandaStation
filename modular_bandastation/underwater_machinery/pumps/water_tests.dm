@@ -29,6 +29,7 @@
 	floor.set_water_depth(220, TRUE, T0C + 4)
 	water = floor.GetComponent(/datum/component/floodwater)
 	LIQUID_TEST(water.remove_water(100) == 0 && water.depth == 220, "The shared pump API must protect infinite ocean water")
+	LIQUID_TEST(drain_stationtrauma_water_room(floor, 100, receiver) == 0 && water.depth == 220, "Room collection must also protect the infinite ocean")
 	floor.set_water_depth(0)
 	var/datum/reagents/precise_source = allocate(/datum/reagents, 200, NO_REACT)
 	var/datum/reagents/precise_target = allocate(/datum/reagents, 200, NO_REACT)
@@ -45,21 +46,28 @@
 
 	var/turf/open/adjacent = get_step(floor, EAST)
 	wet_tiles += adjacent
-	for(var/direction in GLOB.cardinals)
-		if(direction != EAST)
-			allocate(/obj/structure/window/reinforced/fulltile, get_step(floor, direction))
+	for(var/turf/open/tile as anything in list(floor, adjacent))
+		for(var/direction in GLOB.cardinals)
+			var/turf/neighbor = get_step(tile, direction)
+			if(neighbor != floor && neighbor != adjacent && isopenturf(neighbor))
+				allocate(/obj/structure/window/reinforced/fulltile, neighbor)
 	floor.immediate_calculate_adjacent_turfs()
 	floor.set_water_depth(100, FALSE, T0C + 40)
 	adjacent.set_water_depth(20, FALSE, T0C + 4)
 	water = floor.GetComponent(/datum/component/floodwater)
-	water.spread()
+	var/list/pass = list()
+	water.spread(pass)
 	var/datum/component/floodwater/mixture = adjacent.GetComponent(/datum/component/floodwater)
-	LIQUID_TEST(floor.get_water_depth() + adjacent.get_water_depth() == 120 && abs(mixture.temperature - (T0C + 28)) < 0.01, "Natural flooding must preserve volume and carry its temperature")
+	LIQUID_TEST(floor.get_water_depth() == 60 && adjacent.get_water_depth() == 60 && abs(mixture.temperature - (T0C + 34)) < 0.01, "Natural flooding must preserve volume and carry its temperature")
+	adjacent.add_water(20, T0C + 34)
+	mixture.spread(pass)
+	LIQUID_TEST(floor.get_water_depth() == 61 && adjacent.get_water_depth() == 61, "A later inflow during the same subsystem pass must invalidate the previous equalization")
 	floor.set_water_depth(0)
 	adjacent.set_water_depth(0)
 
 	var/datum/map_template/template = allocate(/datum/map_template, "modular_bandastation/underwater/maps/stationtrauma_test.dmm")
 	var/turf/origin = locate(70, 35, floor.z)
+	initialize_stationtrauma_test_boundary(template, origin)
 	LIQUID_TEST(template.load(origin), "The pipeline fixture must load in a room large enough for its real ducts")
 	var/turf/open/intake = locate(origin.x + 7, origin.y + 10, origin.z)
 	var/turf/open/reservoir_floor = locate(intake.x + 2, intake.y, intake.z)
@@ -124,6 +132,8 @@
 	tank_connection.process()
 	LIQUID_TEST(reservoir.reagents.total_volume == stored_before && pump.reagents.total_volume == 200, "Breaking a real duct must stop transfer and retain the collected water")
 
+	intake.set_water_depth(0)
+	outlet_floor.set_water_depth(0)
 	var/turf/open/portable_floor = get_step(intake, NORTH)
 	wet_tiles += portable_floor
 	var/obj/machinery/bilge_pump/portable/plumbed/portable = allocate(/obj/machinery/bilge_pump/portable/plumbed, portable_floor)
@@ -173,6 +183,7 @@
 	wet_tiles += tank_floor
 	var/obj/machinery/bilge_pump/pump = allocate(/obj/machinery/bilge_pump, intake)
 	pump.setDir(WEST)
+	pump.residual_depth = 0.5
 	pump.on = TRUE
 	pump.set_machine_stat(pump.machine_stat & ~NOPOWER)
 	var/obj/machinery/stationtrauma_water_device/tank = allocate(/obj/machinery/stationtrauma_water_device, tank_floor)
@@ -259,6 +270,28 @@
 	tank_floor.set_water_depth(0)
 	LIQUID_TEST(drain_stationtrauma_water(remainder, tank_floor) == 1000 && remainder.reagents.total_volume == 0, "Recoverable debris must return its stored water to the world")
 
+
+	for(var/turf/open/tile as anything in row)
+		tile.set_water_depth(0)
+	var/obj/machinery/bilge_pump/complete = allocate(/obj/machinery/bilge_pump, intake)
+	complete.on = TRUE
+	complete.set_machine_stat(complete.machine_stat & ~NOPOWER)
+	isolated.set_water_depth(12.34567, FALSE, T0C + 35)
+	LIQUID_TEST(complete.residual_depth == 0, "Stationary drainage must default to zero residual depth")
+	complete.process(1)
+	for(var/turf/open/tile as anything in row)
+		LIQUID_TEST(tile.get_water_depth() == 0, "A dry intake must collect the entire connected compartment, including fractional tails")
+	LIQUID_TEST(abs(complete.reagents.get_reagent_amount(/datum/reagent/water) - 123.4567) < 0.0001, "Complete room drainage must preserve its fractional volume")
+	LIQUID_TEST(barrier.close(BYPASS_DOOR_CHECKS), "The wet door must close for a stranded-door regression")
+	var/turf/open/door_floor = row[3]
+	door_floor.set_water_depth(220)
+	isolated.set_water_depth(10)
+	for(var/cycle in 1 to 5)
+		var/datum/component/floodwater/stranded = door_floor.GetComponent(/datum/component/floodwater)
+		stranded.spread()
+		complete.process(1)
+	LIQUID_TEST(intake.get_water_depth() == 0 && nearby.get_water_depth() == 0 && door_floor.get_water_depth() == 220 && isolated.get_water_depth() == 10, "Water trapped under a closed door must never refill the dried compartment")
+
 /datum/unit_test/stationtrauma_water_controls
 	var/list/wet_tiles = list()
 
@@ -315,9 +348,9 @@
 
 	var/turf/open/first_floor = locate(base.x + 1, base.y + 2, base.z)
 	var/turf/open/second_floor = get_step(first_floor, EAST)
-	var/obj/machinery/duct/stationtrauma/first_pipe = rpd.build_water_fixture(first_floor, rpd.water_recipes.Find("Прямая водяная труба"), SOUTH)
-	var/obj/machinery/duct/stationtrauma/second_pipe = rpd.build_water_fixture(second_floor, rpd.water_recipes.Find("Прямая водяная труба"), EAST)
-	LIQUID_TEST(first_pipe && second_pipe && first_pipe.net != second_pipe.net, "Pipes whose ends do not face each other must stay in separate networks")
+	var/obj/machinery/duct/stationtrauma/first_pipe = rpd.build_water_fixture(first_floor, rpd.water_recipes.Find("Водяная мультитруба"), SOUTH)
+	var/obj/machinery/duct/stationtrauma/second_pipe = rpd.build_water_fixture(second_floor, rpd.water_recipes.Find("Водяная мультитруба"), EAST)
+	LIQUID_TEST(first_pipe && second_pipe && first_pipe.net == second_pipe.net, "Smart water sections must connect automatically regardless of selected orientation")
 	allocated += list(first_pipe, second_pipe)
 	var/obj/machinery/duct/chemical = allocate(/obj/machinery/duct, get_step(second_floor, SOUTH))
 	LIQUID_TEST(!(chemical in second_pipe.neighbours), "Water pipes must not connect to ordinary chemical ducts")
@@ -360,10 +393,81 @@
 	exchanger.process(1)
 	LIQUID_TEST(exchanger.reagents.total_volume == 1000 && exchanger.reagents.chem_temp < T0C + 40 && exchanger.reagents.chem_temp >= T0C + 4, "A water-loop exchanger must reject heat without deleting its finite charge")
 
+
+/datum/unit_test/stationtrauma_multilayer_pipes/Run()
+	var/turf/open/base = run_loc_floor_bottom_left
+	var/turf/open/center = locate(base.x + 2, base.y + 1, base.z)
+	var/obj/item/pipe_dispenser/stationtrauma/rpd = allocate(/obj/item/pipe_dispenser/stationtrauma, base)
+	var/list/stacked = rpd.dispense_water_selection(center, 1, SOUTH, list(1, 2, 3, 4, 5))
+	allocated += stacked
+	LIQUID_TEST(length(stacked) == 5, "A multilayer RPD click must build five independent overlapping water sections")
+	for(var/obj/machinery/duct/stationtrauma/pipe as anything in stacked)
+		LIQUID_TEST(pipe.duct_layer == STATIONTRAUMA_WATER_LAYER_BIT(pipe.water_level) && pipe.pixel_x == (pipe.water_level - 3) * 5, "Each water level must have its own network bit and native-style offset")
+		for(var/obj/machinery/duct/stationtrauma/other as anything in stacked)
+			LIQUID_TEST(pipe == other || pipe.net != other.net, "Overlapping levels must never mix their networks implicitly")
+	var/obj/machinery/duct/stationtrauma/middle = stacked[3]
+	var/list/arms = list()
+	for(var/direction in list(NORTH, EAST, WEST, SOUTH))
+		var/obj/machinery/duct/stationtrauma/arm = rpd.build_water_fixture(get_step(center, direction), 1, SOUTH, 3)
+		allocated += arm
+		arms += arm
+		LIQUID_TEST(arm && arm.net == middle.net, "Every smart branch must join without rotating the pipe")
+		if(length(arms) == 2)
+			LIQUID_TEST(middle.icon_state == "pipe_5", "Two adjacent branches must automatically draw an elbow: state=[middle.icon_state], neighbors=[length(middle.neighbours)], shape=[middle.pipe_shape]")
+		if(length(arms) == 3)
+			LIQUID_TEST(middle.icon_state == "pipe_13", "A third branch must automatically draw a tee")
+	middle.rebuild_water_connections()
+	middle.rebuild_water_connections()
+	LIQUID_TEST(middle.icon_state == "pipe_15", "Repeated connection rebuilds must preserve the cross directions")
+	LIQUID_TEST(middle.icon_state == "pipe_15", "Four branches must automatically draw a cross")
+	middle.on_deconstruction()
+	qdel(middle)
+	var/obj/item/stationtrauma_water_pipe_fitting/removed = locate() in center
+	LIQUID_TEST(removed && removed.water_level == 3 && removed.pipe_shape == "smart", "Unwrenching must preserve the selected water level in the loose section")
+	for(var/obj/machinery/duct/stationtrauma/arm as anything in arms)
+		LIQUID_TEST(length(arm.neighbours) == 0, "Removing the center must update every neighboring connection")
+	LIQUID_TEST(removed.wrench_act(null, null) == ITEM_INTERACT_SUCCESS, "A loose smart section must reconnect by wrench on its original free level")
+	var/obj/machinery/duct/stationtrauma/reconnected
+	for(var/obj/machinery/duct/stationtrauma/pipe in center)
+		if(pipe.water_level == 3)
+			reconnected = pipe
+	allocated += reconnected
+	LIQUID_TEST(reconnected && reconnected.icon_state == "pipe_15", "Reattaching the section must restore its automatic cross")
+	for(var/obj/machinery/duct/stationtrauma/arm as anything in arms)
+		LIQUID_TEST(arm.net == reconnected.net, "Reattaching must merge all four previously separated networks")
+
+	rpd.mode = (1<<0)
+	var/list/loose = rpd.dispense_water_selection(base, 1, SOUTH, list(1, 5))
+	allocated += loose
+	LIQUID_TEST(length(loose) == 2 && istype(loose[1], /obj/item/stationtrauma_water_pipe_fitting), "Disabling Connect must dispense loose sections on every selected level")
+	rpd.mode = (1<<2)
+	for(var/obj/item/stationtrauma_water_pipe_fitting/fitting as anything in loose)
+		LIQUID_TEST(rpd.collect_water_fitting(fitting) && QDELETED(fitting), "Destroy mode must collect disconnected water sections")
+	rpd.mode = (1<<0) | (1<<1)
+	var/turf/open/bridge_floor = locate(base.x + 2, base.y + 4, base.z)
+	var/obj/machinery/duct/stationtrauma/left = rpd.build_water_fixture(get_step(bridge_floor, WEST), 1, SOUTH, 1)
+	var/obj/machinery/duct/stationtrauma/right = rpd.build_water_fixture(get_step(bridge_floor, EAST), 1, SOUTH, 5)
+	allocated += list(left, right)
+	LIQUID_TEST(left && right && left.net != right.net, "Separate water levels must start isolated")
+	var/obj/machinery/duct/stationtrauma/manifold/bridge = rpd.build_water_fixture(bridge_floor, 2, SOUTH)
+	allocated += bridge
+	LIQUID_TEST(bridge && left.net == right.net && left.net == bridge.net, "An explicit collector must connect different water levels")
+	LIQUID_TEST(!rpd.build_water_fixture(bridge_floor, 1, SOUTH, 2), "The collector must reserve all five levels on its cell")
+	qdel(bridge)
+	LIQUID_TEST(left.net != right.net, "Removing the collector must isolate the different levels again")
+	var/turf/open/port_floor = get_step(get_turf(right), EAST)
+	var/obj/machinery/stationtrauma_water_device/connector/port = rpd.build_water_fixture(port_floor, rpd.water_recipes.Find("Порт бочки"), SOUTH, 5)
+	var/obj/machinery/stationtrauma_water_device/barrel/barrel = rpd.build_water_fixture(port_floor, rpd.water_recipes.Find("Бочка 1000 л"), NORTH, 5)
+	allocated += list(port, barrel)
+	LIQUID_TEST(port && barrel && barrel.connect_port(), "A barrel and its same-tile connector must support the selected water level")
+	var/datum/component/plumbing/stationtrauma_water/connection = port.GetComponent(/datum/component/plumbing/stationtrauma_water)
+	LIQUID_TEST(connection.ducting_layer == STATIONTRAUMA_WATER_LAYER_BIT(5) && connection.ducts["8"] == right.net, "A level-five device must connect only to its level-five pipe")
+
 #ifdef FLOODWATER_TEST_ONLY
 TEST_FOCUS(/datum/unit_test/stationtrauma_water_pipes)
 TEST_FOCUS(/datum/unit_test/stationtrauma_room_drain)
 TEST_FOCUS(/datum/unit_test/stationtrauma_water_controls)
+TEST_FOCUS(/datum/unit_test/stationtrauma_multilayer_pipes)
 #endif
 
 #undef LIQUID_TEST

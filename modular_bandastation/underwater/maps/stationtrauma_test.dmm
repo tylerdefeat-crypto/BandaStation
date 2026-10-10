@@ -22,7 +22,7 @@
 	},
 /area/stationtrauma_test)
 "aM" = (
-/obj/machinery/duct/stationtrauma/elbow{
+/obj/machinery/duct/stationtrauma{
 	dir = 1
 	},
 /turf/closed/wall{
@@ -37,6 +37,14 @@
 /area/space/ocean)
 "cP" = (
 /obj/item/tank/internals/oxygen,
+/turf/open/floor/plating{
+	baseturfs = /turf/open/space/ocean
+	},
+/area/stationtrauma_test)
+"cT" = (
+/obj/machinery/duct/stationtrauma{
+	water_level = 1
+	},
 /turf/open/floor/plating{
 	baseturfs = /turf/open/space/ocean
 	},
@@ -79,6 +87,17 @@
 /obj/machinery/atmospherics/components/binary/stationtrauma_coolant_pump/precharged{
 	dir = 1;
 	on = 1
+	},
+/turf/open/floor/plating{
+	baseturfs = /turf/open/space/ocean
+	},
+/area/stationtrauma_test)
+"fm" = (
+/obj/machinery/duct/stationtrauma{
+	water_level = 1
+	},
+/obj/machinery/duct/stationtrauma{
+	water_level = 5
 	},
 /turf/open/floor/plating{
 	baseturfs = /turf/open/space/ocean
@@ -216,7 +235,7 @@
 	unlocked = 1
 	},
 /obj/structure/cable,
-/obj/machinery/duct/stationtrauma/straight{
+/obj/machinery/duct/stationtrauma{
 	dir = 4
 	},
 /turf/open/floor/plating{
@@ -345,7 +364,7 @@
 /area/space/ocean)
 "Ig" = (
 /obj/machinery/atmospherics/pipe/smart/manifold4w,
-/obj/machinery/duct/stationtrauma/elbow{
+/obj/machinery/duct/stationtrauma{
 	dir = 4
 	},
 /turf/closed/wall{
@@ -397,8 +416,16 @@
 	},
 /area/stationtrauma_test)
 "OL" = (
-/obj/machinery/duct/stationtrauma/straight{
+/obj/machinery/duct/stationtrauma{
 	dir = 4
+	},
+/turf/open/floor/plating{
+	baseturfs = /turf/open/space/ocean
+	},
+/area/stationtrauma_test)
+"OX" = (
+/obj/machinery/duct/stationtrauma{
+	water_level = 5
 	},
 /turf/open/floor/plating{
 	baseturfs = /turf/open/space/ocean
@@ -410,8 +437,16 @@
 	baseturfs = /turf/open/space/ocean
 	},
 /area/stationtrauma_test)
+"QE" = (
+/obj/item/stationtrauma_water_pipe_fitting{
+	bridges_levels = 1
+	},
+/turf/open/floor/plating{
+	baseturfs = /turf/open/space/ocean
+	},
+/area/stationtrauma_test)
 "QH" = (
-/obj/machinery/duct/stationtrauma/elbow{
+/obj/machinery/duct/stationtrauma{
 	dir = 8
 	},
 /turf/open/floor/plating{
@@ -428,7 +463,7 @@
 /obj/machinery/atmospherics/pipe/smart/simple{
 	dir = 4
 	},
-/obj/machinery/duct/stationtrauma/straight,
+/obj/machinery/duct/stationtrauma,
 /turf/open/floor/plating{
 	baseturfs = /turf/open/space/ocean
 	},
@@ -646,9 +681,9 @@ uR
 uR
 uR
 lR
-wA
-wA
-wA
+OX
+OX
+fm
 wA
 wA
 wA
@@ -672,9 +707,9 @@ uR
 uR
 uR
 lR
-wA
-wA
-wA
+OX
+QE
+cT
 wA
 wA
 wA
@@ -698,9 +733,9 @@ uR
 uR
 uR
 lR
-wA
-wA
-wA
+fm
+cT
+cT
 wA
 wA
 wA
