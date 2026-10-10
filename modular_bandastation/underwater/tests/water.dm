@@ -54,7 +54,17 @@
 	source.spread()
 	WATER_TEST(second.get_water_depth() > 0 && second.get_water_depth() < FLOOD_WATER_MAX_DEPTH, "Flooding must begin gradually after opening a breach (source=[source.depth], destination=[second.get_water_depth()])")
 	WATER_TEST(first.get_water_depth() == FLOOD_WATER_MAX_DEPTH, "The ocean is an infinite reservoir")
+	var/datum/component/floodwater/front = second.GetComponent(/datum/component/floodwater)
+	var/list/initial_depths = list()
+	initial_depths[first] = FLOOD_WATER_MAX_DEPTH
+	initial_depths[second] = 0
+	initial_depths[third] = 0
+	front.spread(initial_depths)
+	WATER_TEST(third.get_water_depth() == 0, "New inflow must not advance beyond its first neighbor during the same flow tick")
+	front.spread()
+	WATER_TEST(second.get_water_depth() > third.get_water_depth() && third.get_water_depth() > 0, "On the next tick a wave must advance with a higher level closer to the breach")
 	barrier.close()
+	WATER_TEST(second.get_water_depth() == 0, "Closing an ocean airlock must clear water from its tile")
 	var/sealed_depth = second.get_water_depth()
 	source.spread()
 	WATER_TEST(second.get_water_depth() == sealed_depth, "Closing the breach must stop incoming water before the atmos adjacency cache updates")
@@ -70,7 +80,7 @@
 	second.set_water_depth(0)
 	third.set_water_depth(0)
 	first.set_water_depth(100)
-	for(var/cycle in 1 to 20)
+	for(var/cycle in 1 to 80)
 		for(var/turf/open/tile as anything in row)
 			var/datum/component/floodwater/water = tile.GetComponent(/datum/component/floodwater)
 			water?.spread()

@@ -6,18 +6,27 @@ SUBSYSTEM_DEF(floodwater)
 	runlevels = RUNLEVEL_GAME | RUNLEVEL_POSTGAME
 	var/list/active = list()
 	var/list/currentrun = list()
-	var/list/equalized = list()
+	var/list/depths = list()
 
 /datum/controller/subsystem/floodwater/fire(resumed = FALSE)
 	if(!resumed)
 		currentrun = active.Copy()
-		equalized = list()
+		active = list()
+		depths = list()
+		for(var/datum/component/floodwater/water as anything in currentrun)
+			if(QDELETED(water))
+				continue
+			var/turf/open/tile = water.parent
+			depths[tile] = water.depth
+			for(var/direction in GLOB.cardinals)
+				var/turf/open/neighbor = get_step(tile, direction)
+				if(isopenturf(neighbor))
+					depths[neighbor] = neighbor.get_water_depth()
 	while(length(currentrun))
 		var/datum/component/floodwater/water = currentrun[length(currentrun)]
 		currentrun.len--
-		active -= water
 		if(!QDELETED(water))
-			water.spread(equalized)
+			water.spread(depths)
 		if(MC_TICK_CHECK)
 			return
 
@@ -63,39 +72,9 @@ SUBSYSTEM_DEF(floodwater)
 			room += neighbor
 	return room
 
-/datum/component/floodwater/proc/spread(list/equalized)
+/datum/component/floodwater/proc/spread(list/depths)
 	var/turf/open/tile = parent
-	// shortcut: connected floors share one elevation; add height-aware flow if stepped decks are introduced.
-	if(!infinite_source)
-		var/list/previous = equalized?[tile]
-		if(previous && previous[1] == depth && previous[2] == temperature)
-			return
-		var/list/room = tile.stationtrauma_water_room()
-		var/total_depth = 0
-		var/thermal_total = 0
-		var/uniform = TRUE
-		for(var/turf/open/member as anything in room)
-			var/datum/component/floodwater/water = member.GetComponent(/datum/component/floodwater)
-			if(!water || water.depth != depth || water.temperature != temperature)
-				uniform = FALSE
-			total_depth += water?.depth || 0
-			thermal_total += (water?.depth || 0) * (water?.temperature || 0)
-		if(uniform || total_depth <= 0)
-			if(equalized)
-				var/list/state = list(depth, temperature)
-				for(var/turf/open/member as anything in room)
-					equalized[member] = state
-			return
-		var/level = total_depth / length(room)
-		var/mixed_temperature = thermal_total / total_depth
-		var/list/state = list(level, mixed_temperature)
-		for(var/turf/open/member as anything in room)
-			var/datum/component/floodwater/water = member.GetComponent(/datum/component/floodwater)
-			if(!water || water.depth != level || water.temperature != mixed_temperature)
-				member.set_water_depth(level, FALSE, mixed_temperature)
-			if(equalized)
-				equalized[member] = state
-		return
+	var/source_depth = isnull(depths?[tile]) ? depth : depths[tile]
 	for(var/direction in GLOB.cardinals)
 		var/turf/open/next_tile = get_step(tile, direction)
 		if(!isopenturf(next_tile) || istype(next_tile, /turf/open/water) || !tile.can_pass_stationtrauma_water(next_tile))
@@ -103,21 +82,39 @@ SUBSYSTEM_DEF(floodwater)
 		var/datum/component/floodwater/next_water = next_tile.GetComponent(/datum/component/floodwater)
 		if(next_water?.infinite_source)
 			continue
-		var/difference = depth - (next_water?.depth || 0)
-		if(difference <= FLOOD_WATER_FLOW_EPSILON)
+		var/next_depth = isnull(depths?[next_tile]) ? (next_water?.depth || 0) : depths[next_tile]
+		var/difference = source_depth - next_depth
+		if(difference <= (infinite_source ? FLOOD_WATER_FLOW_EPSILON : 0))
 			continue
-		var/accepted = next_tile.add_water(min(FLOOD_WATER_OCEAN_FLOW, difference) * FLOOD_WATER_LITRES_PER_CM, temperature)
+		// A snapshot prevents newly arrived water crossing another tile in this same tick.
+		var/flow = infinite_source ? min(FLOOD_WATER_OCEAN_FLOW, difference) : min(25, difference / 4, depth)
+		var/accepted = next_tile.add_water(flow * FLOOD_WATER_LITRES_PER_CM, temperature)
 		if(accepted)
-			wake()
+			if(infinite_source)
+				wake()
+			else
+				remove_water(accepted)
+				if(QDELETED(src))
+					return
 
-/// Collect the connected compartment proportionally, including the final thin layer, without losing water to holder rounding.
+/turf/open/proc/stationtrauma_water_intake()
+	var/list/intake = list(src)
+	for(var/direction in GLOB.cardinals)
+		var/turf/open/neighbor = get_step(src, direction)
+		if(isopenturf(neighbor) && can_pass_stationtrauma_water(neighbor))
+			var/datum/component/floodwater/water = neighbor.GetComponent(/datum/component/floodwater)
+			if(water && !water.infinite_source)
+				intake += neighbor
+	return intake
+
+/// Collect the local intake proportionally without losing fractional water to holder rounding.
 /proc/drain_stationtrauma_water_room(turf/open/intake, volume, datum/reagents/receiver, residual_depth = 0, list/room)
 	if(!isopenturf(intake) || QDELETED(receiver) || !isnum(volume) || !IS_FINITE(volume) || volume <= 0)
 		return 0
 	var/datum/component/floodwater/source_water = intake.GetComponent(/datum/component/floodwater)
 	if(source_water?.infinite_source)
 		return 0
-	room ||= intake.stationtrauma_water_room()
+	room ||= intake.stationtrauma_water_intake()
 	var/available = 0
 	var/thermal_total = 0
 	for(var/turf/open/tile as anything in room)
@@ -133,7 +130,17 @@ SUBSYSTEM_DEF(floodwater)
 	var/amount = min(available, volume, max(0, free_space))
 	if(amount <= 0)
 		return 0
-	var/accepted = receiver.add_reagent(/datum/reagent/water, amount, reagtemp = thermal_total / available, no_react = TRUE)
+	var/stored_before = receiver.get_reagent_amount(/datum/reagent/water)
+	var/heat_before = receiver.heat_capacity()
+	var/temperature_before = receiver.chem_temp
+	var/mixed_temperature = thermal_total / available
+	var/accepted = receiver.add_reagent(/datum/reagent/water, amount, reagtemp = mixed_temperature, no_react = TRUE)
+	var/datum/reagent/water/collected = receiver.has_reagent(/datum/reagent/water)
+	if(collected && (accepted > 0 || amount < CHEMICAL_QUANTISATION_LEVEL))
+		// Keep the real floor volume when TG rounds the addition, including a final tiny tail.
+		collected.volume = stored_before + amount
+		receiver.set_temperature((heat_before * temperature_before + collected.specific_heat * amount * mixed_temperature) / receiver.heat_capacity())
+		accepted = amount
 	if(accepted <= 0)
 		return 0
 	var/fraction = min(1, accepted / available)

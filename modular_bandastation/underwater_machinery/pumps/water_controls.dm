@@ -1,10 +1,10 @@
 /proc/stationtrauma_parse_flow(value)
 	if(value == "max")
-		return 5000
+		return 200
 	var/rate = isnum(value) ? value : text2num("[value]")
 	if(!isnum(rate) || !IS_FINITE(rate))
 		return null
-	return clamp(rate, 0, 5000)
+	return clamp(rate, 0, 200)
 
 /obj/machinery/stationtrauma_pump_controller
 	name = "контроллер трюмных помп"
@@ -16,7 +16,7 @@
 	processing_flags = NONE
 	var/control_group = "water"
 	var/on = FALSE
-	var/flow_rate = 1000
+	var/flow_rate = 100
 
 /obj/machinery/stationtrauma_pump_controller/attack_hand(mob/living/user, list/modifiers)
 	if(..())
@@ -43,7 +43,7 @@
 		ui.open()
 
 /obj/machinery/stationtrauma_pump_controller/ui_data(mob/user)
-	return list("on" = on, "rate" = flow_rate, "max_rate" = 5000)
+	return list("on" = on, "rate" = flow_rate, "max_rate" = 200)
 
 /obj/machinery/stationtrauma_pump_controller/ui_act(action, list/params, datum/tgui/ui, datum/ui_state/state)
 	if(..())
@@ -194,7 +194,7 @@
 	idle_power_usage = 5
 	plumbing_type = /datum/component/plumbing/stationtrauma_water/inline_pump
 	var/on = FALSE
-	var/flow_rate = 1000
+	var/flow_rate = 100
 
 /obj/machinery/stationtrauma_water_device/inline_pump/attack_hand(mob/living/user, list/modifiers)
 	if(..())
@@ -208,7 +208,7 @@
 		ui.open()
 
 /obj/machinery/stationtrauma_water_device/inline_pump/ui_data(mob/user)
-	return list("on" = on, "rate" = flow_rate, "max_rate" = 5000)
+	return list("on" = on, "rate" = flow_rate, "max_rate" = 200)
 
 /obj/machinery/stationtrauma_water_device/inline_pump/ui_act(action, list/params, datum/tgui/ui, datum/ui_state/state)
 	if(..())
@@ -228,7 +228,7 @@
 	name = "забортный выпуск воды"
 	desc = "Подведите водяную трубу к западному входу, разверните наружной стороной к соседнему океану. ЛКМ — питание и расход. Выпуск против внешнего давления требует АПЦ."
 	capacity = 10000
-	var/flow_rate = 1000
+	var/flow_rate = 100
 	var/discharged_volume = 0
 
 /obj/machinery/stationtrauma_water_device/outlet/overboard/process(seconds_per_tick)
@@ -258,7 +258,7 @@
 		ui.open()
 
 /obj/machinery/stationtrauma_water_device/outlet/overboard/ui_data(mob/user)
-	return list("on" = on, "rate" = flow_rate, "max_rate" = 5000)
+	return list("on" = on, "rate" = flow_rate, "max_rate" = 200)
 
 /obj/machinery/stationtrauma_water_device/outlet/overboard/ui_act(action, list/params, datum/tgui/ui, datum/ui_state/state)
 	if(..())

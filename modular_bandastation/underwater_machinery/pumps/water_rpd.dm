@@ -77,7 +77,7 @@
 	if(istype(built, /obj/machinery/duct/stationtrauma))
 		var/obj/machinery/duct/stationtrauma/pipe = built
 		pipe.rebuild_water_connections()
-	else if(!istype(built, /obj/machinery/stationtrauma_water_device/barrel) && !istype(built, /obj/machinery/stationtrauma_pump_controller))
+	else if(!istype(built, /obj/machinery/stationtrauma_water_device/barrel) && !istype(built, /obj/machinery/stationtrauma_pump_controller) && !istype(built, /obj/machinery/bilge_pump/portable))
 		// Native plumbing scans its surroundings when anchored after rotation.
 		built.set_anchored(FALSE)
 		built.set_anchored(TRUE)
@@ -92,6 +92,7 @@
 			var/obj/item/stationtrauma_water_pipe_fitting/fitting = new(tile)
 			fitting.water_level = water_level
 			fitting.bridges_levels = index == 2
+			fitting.update_appearance(UPDATE_ICON)
 			built += fitting
 			continue
 		var/obj/machinery/device = build_water_fixture(tile, index, direction, water_level)

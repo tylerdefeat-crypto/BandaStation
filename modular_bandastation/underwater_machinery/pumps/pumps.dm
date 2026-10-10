@@ -7,21 +7,23 @@
 	density = FALSE
 	idle_power_usage = 5
 	processing_flags = NONE
-	/// Legacy flow units: 1 cm/s corresponds to 10 litres per second from the connected room.
-	var/drain_rate = 100
+	/// One cm/s corresponds to ten litres per second across the local intake.
+	var/drain_rate = 10
 	var/on = FALSE
 	var/residual_depth = 0
 	var/buffer_capacity = 10000
 	var/control_group = "water"
 	var/water_level = 3
+	var/plumbing_type = /datum/component/plumbing/stationtrauma_water/supply
 
 /obj/machinery/bilge_pump/Initialize(mapload, new_level)
 	if(new_level in 1 to 5)
 		water_level = new_level
 	. = ..()
 	create_reagents(buffer_capacity, NO_REACT)
-	AddComponent(/datum/component/plumbing/stationtrauma_water/supply, STATIONTRAUMA_WATER_LAYER_BIT(water_level))
-	AddElement(/datum/element/simple_rotation)
+	AddComponent(plumbing_type, STATIONTRAUMA_WATER_LAYER_BIT(water_level))
+	if(!istype(src, /obj/machinery/bilge_pump/portable))
+		AddElement(/datum/element/simple_rotation)
 
 /obj/machinery/bilge_pump/Destroy()
 	release_stationtrauma_water(src)
@@ -62,18 +64,29 @@
 /obj/machinery/bilge_pump/process(seconds_per_tick)
 	if(!on)
 		return PROCESS_KILL
-	if(!anchored || !isopenturf(loc))
+	if((!anchored && !istype(src, /obj/machinery/bilge_pump/portable)) || !isopenturf(loc))
 		return
 	var/turf/open/intake = loc
 	var/datum/component/floodwater/water = intake.GetComponent(/datum/component/floodwater)
 	if(water?.infinite_source || reagents.holder_full())
 		return
-	var/list/room = intake.stationtrauma_water_room()
+	var/list/room = intake.stationtrauma_water_intake()
 	var/has_water = FALSE
+	var/deepest = 0
 	for(var/turf/open/tile as anything in room)
 		if(tile.get_water_depth() > residual_depth)
 			has_water = TRUE
-			break
+		deepest = max(deepest, tile.get_water_depth())
+	if(has_water && !residual_depth && deepest < 0.001)
+		var/list/compartment = intake.stationtrauma_water_room()
+		var/only_tail = TRUE
+		for(var/turf/open/tile as anything in compartment)
+			if(tile.get_water_depth() >= 0.001)
+				only_tail = FALSE
+				break
+		if(only_tail)
+			// Finish the sub-millilitre film instead of leaving an asymptotic flood overlay.
+			room = compartment
 	if(has_water && draw_pump_energy(seconds_per_tick))
 		drain_stationtrauma_water_room(intake, drain_rate * seconds_per_tick * FLOOD_WATER_LITRES_PER_CM, reagents, residual_depth, room)
 
@@ -85,7 +98,7 @@
 
 /obj/machinery/bilge_pump/portable
 	name = "аварийный насос"
-	desc = "Переносной насос с баком 200 л и аккумулятором. Ключ — крепление, ЛКМ — меню сбора и слива. Выход водяной трубы — на юге. Отвёртка открывает отсек батареи, лом извлекает её."
+	desc = "Переносной насос с баком 200 л и аккумулятором. Работает без крепления и направления, как обогреватель. ЛКМ — сбор и слив. При закреплении ключом подключает трубы с любой стороны. Отвёртка — отсек батареи, лом — извлечь её."
 	icon = 'modular_bandastation/underwater_machinery/pumps/icons/liquid_pump.dmi'
 	icon_state = "liquid_pump"
 	density = TRUE
@@ -95,6 +108,7 @@
 	residual_depth = 0
 	buffer_capacity = 200
 	control_group = "portable"
+	plumbing_type = /datum/component/plumbing/stationtrauma_water/supply/omni
 	var/obj/item/stock_parts/power_store/cell/cell
 
 /obj/machinery/bilge_pump/portable/Initialize(mapload, new_level)
@@ -111,7 +125,7 @@
 /obj/machinery/bilge_pump/portable/control_pump(mob/living/user)
 	var/list/connections = GetComponents(/datum/component/plumbing/stationtrauma_water/supply)
 	var/datum/component/plumbing/stationtrauma_water/supply/connection = length(connections) ? connections[1] : null
-	var/status = !on ? "выключен" : reagents.holder_full() ? "бак заполнен" : !anchored ? "не закреплён" : panel_open ? "отсек батареи открыт" : !is_operational ? "неисправен" : !cell?.charge ? "нет заряда" : "сбор"
+	var/status = !on ? "выключен" : reagents.holder_full() ? "бак заполнен" : panel_open ? "отсек батареи открыт" : !is_operational ? "неисправен" : !cell?.charge ? "нет заряда" : "сбор"
 	var/choice = tgui_input_list(user, "Режим: [status]. Бак: [round(reagents.total_volume, 0.1)] / 200 л, [round(reagents.chem_temp - T0C, 0.1)] °C. Заряд: [cell ? round(cell.percent()) : 0]%. Труба: [length(connection?.ducts) ? "подключена" : "нет"].", name, list(on ? "Выключить" : "Включить", "Слить рядом"))
 	if(QDELETED(src) || !choice || !user.can_perform_action(src, NEED_DEXTERITY | NEED_HANDS | FORBID_TELEKINESIS_REACH))
 		return

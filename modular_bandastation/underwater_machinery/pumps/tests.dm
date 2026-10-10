@@ -32,12 +32,9 @@
 	var/obj/machinery/bilge_pump/portable/portable = allocate(/obj/machinery/bilge_pump/portable, intake)
 	portable.on = TRUE
 	intake.set_water_depth(100)
-	portable.process(1)
-	PUMP_TEST(intake.get_water_depth() == 100, "An unsecured portable pump must not operate")
-	portable.anchored = TRUE
 	var/charge_before = portable.cell.charge
 	portable.process(1)
-	PUMP_TEST(intake.get_water_depth() == 92, "The secured portable pump must drain without area power")
+	PUMP_TEST(intake.get_water_depth() == 92, "The unanchored portable pump must drain without direction or area power")
 	PUMP_TEST(portable.cell.charge < charge_before, "Portable pumping must consume real battery charge")
 	PUMP_TEST(portable.reagents.total_volume == 80, "Every portable pump must collect into its own tank")
 	portable.cell.charge = 0

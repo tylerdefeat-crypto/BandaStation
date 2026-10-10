@@ -121,8 +121,11 @@
 	var/accepted = min(volume, FLOOD_WATER_MAX_DEPTH * FLOOD_WATER_LITRES_PER_CM - old_volume)
 	if(accepted <= 0)
 		return 0
+	var/new_depth = (old_volume + accepted) / FLOOD_WATER_LITRES_PER_CM
+	if(new_depth == get_water_depth())
+		return 0
 	var/mixed_temperature = water ? (old_volume * water.temperature + accepted * water_temperature) / (old_volume + accepted) : water_temperature
-	set_water_depth((old_volume + accepted) / FLOOD_WATER_LITRES_PER_CM, FALSE, mixed_temperature)
+	set_water_depth(new_depth, FALSE, mixed_temperature)
 	return accepted
 
 /// Only water crosses the floor boundary; other reagents remain in their native holder.
@@ -190,6 +193,9 @@
 	RegisterSignal(parent, COMSIG_ATOM_EXAMINE, PROC_REF(examine_depth))
 	RegisterSignals(parent, list(COMSIG_ATOM_ENTERED, COMSIG_ATOM_AFTER_SUCCESSFUL_INITIALIZED_ON), PROC_REF(on_entered))
 	var/turf/open/tile = parent
+	for(var/obj/door in tile)
+		if(istype(door, /obj/machinery/door) || istype(door, /obj/structure/fluff/airlock_filler))
+			RegisterSignal(door, COMSIG_ATOM_DENSITY_CHANGED, PROC_REF(on_door_density))
 	tile.AddElement(/datum/element/watery_tile)
 	if(isspaceturf(tile))
 		tile.AddElement(/datum/element/forced_gravity, STANDARD_GRAVITY, TRUE)
@@ -270,6 +276,8 @@
 
 /datum/component/floodwater/proc/on_entered(turf/source, atom/movable/arrived)
 	SIGNAL_HANDLER
+	if(istype(arrived, /obj/machinery/door) || istype(arrived, /obj/structure/fluff/airlock_filler))
+		RegisterSignal(arrived, COMSIG_ATOM_DENSITY_CHANGED, PROC_REF(on_door_density), override = TRUE)
 	if(!isliving(arrived) || !(arrived.flags_1 & INITIALIZED_1))
 		return
 	var/mob/living/swimmer = arrived
@@ -277,6 +285,48 @@
 	var/datum/status_effect/floodwater/effect = swimmer.has_status_effect(/datum/status_effect/floodwater)
 	effect?.update_water()
 	swimmer.refresh_gravity()
+
+/datum/component/floodwater/proc/on_door_density(obj/door)
+	SIGNAL_HANDLER
+	if(!door.density || (door.flags_1 & ON_BORDER_1) || infinite_source || door.loc != parent)
+		return
+	var/turf/open/tile = parent
+	var/volume = depth * FLOOD_WATER_LITRES_PER_CM
+	var/water_temperature = temperature
+	var/obj/machinery/door/filled_door
+	if(istype(door, /obj/structure/fluff/airlock_filler))
+		var/obj/structure/fluff/airlock_filler/filler = door
+		filled_door = filler.filled_airlock
+	var/list/destinations = list()
+	for(var/direction in GLOB.cardinals)
+		var/turf/open/neighbor = get_step(tile, direction)
+		if(!isopenturf(neighbor) || neighbor.blocks_air || istype(neighbor, /turf/open/water))
+			continue
+		var/passable = TRUE
+		for(var/obj/obstacle in tile.contents + neighbor.contents)
+			if(obstacle == door || obstacle == filled_door)
+				if(obstacle.loc != neighbor)
+					continue
+			if(!CANATMOSPASS(obstacle, obstacle.loc == tile ? neighbor : tile, FALSE))
+				passable = FALSE
+				break
+		if(!passable)
+			continue
+		var/datum/component/floodwater/water = neighbor.GetComponent(/datum/component/floodwater)
+		if(water?.infinite_source)
+			volume = 0
+			break
+		destinations |= neighbor.stationtrauma_water_room()
+	for(var/turf/open/destination as anything in destinations)
+		if(volume <= 0)
+			break
+		volume -= destination.add_water(volume, water_temperature)
+	if(volume > 0)
+		// A completely full sealed compartment still needs a recoverable displaced volume.
+		var/obj/item/stationtrauma_water_canister/remainder = new(tile)
+		remainder.create_reagents(volume, NO_REACT)
+		remainder.reagents.add_reagent(/datum/reagent/water, volume, reagtemp = water_temperature, no_react = TRUE)
+	tile.set_water_depth(0)
 
 /datum/component/floodwater/proc/add_water_overlay(atom/source, list/overlays)
 	SIGNAL_HANDLER

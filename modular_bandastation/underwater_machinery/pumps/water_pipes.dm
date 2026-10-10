@@ -37,6 +37,9 @@
 	demand_connects = NONE
 	supply_connects = SOUTH
 
+/datum/component/plumbing/stationtrauma_water/supply/omni
+	supply_connects = ALL_CARDINALS
+
 /datum/component/plumbing/stationtrauma_water/outlet
 	demand_connects = WEST
 	supply_connects = NONE

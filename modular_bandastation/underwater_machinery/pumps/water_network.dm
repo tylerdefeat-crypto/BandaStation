@@ -2,8 +2,9 @@
 /obj/machinery/duct/stationtrauma
 	name = "водяная труба"
 	desc = "Труба водяного контура. Ключ — снять, водяной RPD — проложить. Не соединяется с газовыми трубами или химическими duct."
-	icon = 'modular_bandastation/underwater_machinery/pumps/icons/water_pipes.dmi'
-	icon_state = "pipe_0"
+	icon = 'icons/obj/pipes_n_cables/!pipes_bitmask.dmi'
+	icon_state = "48_3"
+	duct_color = STATIONTRAUMA_WATER_COLOR
 	duct_layer = STATIONTRAUMA_WATER_LAYER
 	var/pipe_shape = "smart"
 	var/connection_mask = ALL_CARDINALS
@@ -61,8 +62,6 @@
 	. = ..()
 	duct_layer = water_layer
 	rebuild_water_connections()
-	pixel_x = (water_level - 3) * 5
-	pixel_y = (water_level - 3) * 5
 
 /obj/machinery/duct/stationtrauma/proc/rebuild_water_connections()
 	if(!net)
@@ -111,12 +110,20 @@
 
 /obj/machinery/duct/stationtrauma/update_icon_state()
 	. = ..()
-	var/mask = connection_mask
-	if(pipe_shape == "smart")
-		mask = NONE
-		for(var/neighbor in neighbours)
-			mask |= neighbours[neighbor]
-	icon_state = "pipe_[mask]"
+	var/connections = NONE
+	for(var/neighbor in neighbours)
+		connections |= neighbours[neighbor]
+	var/bitfield = CARDINAL_TO_FULLPIPES(connections)
+	if(ISSTUB(connections))
+		var/short_ends = connections ? REVERSE_DIR(connections) & connection_mask : NONE
+		var/shift = 0
+		while(ISSTUB(connections | short_ends) && (connection_mask >> shift))
+			var/candidate = connection_mask & (1 << shift)
+			if(!(candidate & connections))
+				short_ends |= candidate
+			shift++
+		bitfield |= CARDINAL_TO_SHORTPIPES(short_ends)
+	icon_state = "[bitfield]_[water_level]"
 
 /obj/machinery/duct/stationtrauma/examine(mob/user)
 	. = list(desc, span_notice("Секция: [pipe_shape], уровень [water_level]. Сеть водяная; газ и химические duct не подключаются."))
@@ -127,12 +134,14 @@
 	fitting.dir = dir
 	fitting.water_level = water_level
 	fitting.bridges_levels = bridges_levels
+	fitting.update_appearance(UPDATE_ICON)
 
 /obj/item/stationtrauma_water_pipe_fitting
 	name = "секция водяной трубы"
 	desc = "Положите на свободную клетку и прикрутите ключом. Alt+ЛКМ — поворот."
-	icon = 'modular_bandastation/underwater_machinery/pumps/icons/water_pipes.dmi'
-	icon_state = "pipe_15"
+	icon = 'icons/obj/pipes_n_cables/!pipes_bitmask.dmi'
+	icon_state = "48_3"
+	color = STATIONTRAUMA_WATER_COLOR
 	var/pipe_shape = "smart"
 	var/water_level = 3
 	var/bridges_levels = FALSE
@@ -140,6 +149,10 @@
 /obj/item/stationtrauma_water_pipe_fitting/Initialize(mapload)
 	. = ..()
 	AddElement(/datum/element/simple_rotation)
+
+/obj/item/stationtrauma_water_pipe_fitting/update_icon_state()
+	. = ..()
+	icon_state = "48_[water_level]"
 
 /obj/item/stationtrauma_water_pipe_fitting/examine(mob/user)
 	. = ..()
@@ -183,13 +196,15 @@
 					network.add_plumber(other, opposite)
 
 /datum/component/plumbing/stationtrauma_water/create_overlays(atom/movable/source, list/overlays)
-	if(tile_covered)
+	if(tile_covered || !active())
 		return
 	for(var/direction in GLOB.cardinals)
 		if(direction & (supply_connects | demand_connects))
-			var/mutable_appearance/branch = mutable_appearance('modular_bandastation/underwater_machinery/pumps/icons/water_pipes.dmi', "pipe_[direction]", PLUMBING_PIPE_VISIBILE_LAYER)
-			branch.pixel_x = (stationtrauma_water_level(ducting_layer) - 3) * 5 - source.pixel_x
-			branch.pixel_y = (stationtrauma_water_level(ducting_layer) - 3) * 5 - source.pixel_y
+			var/state = ducts["[direction]"] ? "intact" : "exposed"
+			var/mutable_appearance/branch = mutable_appearance('icons/obj/pipes_n_cables/pipe_underlays.dmi', "[state]_[direction]_[stationtrauma_water_level(ducting_layer)]", PLUMBING_PIPE_VISIBILE_LAYER)
+			branch.color = STATIONTRAUMA_WATER_COLOR
+			branch.pixel_x = -source.pixel_x
+			branch.pixel_y = -source.pixel_y
 			overlays += branch
 
 /// A water-only exchanger for a closed loop; heat goes into the infinite ocean, not into room air.
